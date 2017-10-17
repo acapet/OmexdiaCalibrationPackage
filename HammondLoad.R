@@ -1,17 +1,16 @@
 require(reshape2)
+require(gdata)
 
-hamdat<- read.xls("/home/arthur/Desktop/DOCS/ADRHYPOX/DATAS/HAMMOND/HAMMOND3.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T)
+hamdat<- read.xls("HAMMOND3.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T)
 
 hamdat<-cbind(hamdat,Mid=(hamdat$Bottom+hamdat$Top)/2)
 colnames(hamdat)[which(colnames(hamdat)=="TCO2")]<-"DIC"
 
-hamdatfl<- read.xls("/home/arthur/Desktop/DOCS/ADRHYPOX/DATAS/HAMMOND/HAMMOND_FL2.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+hamdatfl<- read.xls("HAMMOND_FL2.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 if(F){
-  require(gdata)
 
-##  PLOTTING  ##
-
+  ##  PLOTTING  ##
 require(ggplot2)
 
 hamdat<-ddply(hamdat,.(Station), function(dsub){
@@ -42,18 +41,12 @@ ggplot(hamdatforp2, aes(y=(Bottom+Top)/2, x=value, color=factor(Station)))+
   geom_point()+geom_path()+
   facet_wrap(~variable,scales="free")+ylim(20,0)+scale_color_discrete(name="Stations")+ylab("Depth-[cm]")
 
-
-
-
-
 library(ggmap)
-
 
 myLocation <- c(12.52, 43.84, 13.25 ,44.25)
 adriLoc <- c(11, 42, 16, 48)
 
 myMap <- get_map(location=adriLoc,source="google", maptype="satellite", crop=FALSE)
-
 m<-ggmap(myMap)
 m1<-
   m+
@@ -61,7 +54,6 @@ m1<-
   geom_text( data=hamdatfl, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
 
 ggplot(melt(hamdatfl,id.vars=c("Station","Lon","Lat")),aes(x=Station, y=))
-
 
 # EGU MAP
 myLocation <- c(12.52, 43.84, 13.25 ,44.25)
