@@ -44,4 +44,6 @@ parSta<-pars
 DIA <-OCALL(pars)
 
 # But you could directly display 
+pars["AlphIrr"]<-0.5
+
 Simplot(pars)
