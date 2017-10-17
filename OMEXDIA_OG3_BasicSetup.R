@@ -18,7 +18,7 @@ exp.profile <- function(x, x.0, y.0, y.inf, x.att)
 parsdf<-rbind(
   # abiotic conditions
   data.frame(row.names="Temp"       ,guess=14       ,min=5        ,max=26       ,unit="°C"       ,printfactor=1,printunit=NA    ,  constrain ='Pel. Mod.')      , # Temperature
-  data.frame(row.names="Sal"        ,guess=37       ,min=36       ,max=38       ,unit="psu"      ,printfactor=1,printunit=NA     ,  constrain ='Pel. Mod.')       , # Salinity
+  data.frame(row.names="Sal"        ,guess=36       ,min=36       ,max=38       ,unit="psu"      ,printfactor=1,printunit=NA     ,  constrain ='Pel. Mod.')       , # Salinity
   data.frame(row.names="por"        ,guess=0.8      ,min=0.7      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
   data.frame(row.names="porinf"     ,guess=0.62     ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
   data.frame(row.names="pora"       ,guess=0.5      ,min=0.25     ,max=0.75     ,unit=" "        ,printfactor=1,printunit=NA     ,  constrain ='Fixed Map')   , # porosity decrease
