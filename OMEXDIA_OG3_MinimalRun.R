@@ -36,7 +36,12 @@ source("OMEXDIA_OG3_SimplePlot.R")
 
 # load the librairy from the Fortran OMEXDIA model 
 system("R CMD SHLIB omexdia_OG3.f")
-dyn.load("omexdia_OG3.so")
+
+if (.Platform$OS.type){
+  dyn.load("omexdia_OG3.so")
+}else {
+  dyn.load("omexdia_OG3.dll")  
+}
 
 parSta<-pars
 
