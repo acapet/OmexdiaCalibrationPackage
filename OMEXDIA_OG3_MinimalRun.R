@@ -30,14 +30,15 @@ source("OMEXDIA_OG3_OCALL_SS.R")
 
 # Utilities for result display 
 source("OMEXDIA_OG3_SimplePlot.R")
-#source("OMEXDIA_OG3_ParTablePlot.R")
+source("OMEXDIA_OG3_ParTablePlot.R")
+source("OMEXDIA_OG3_FluxTable.R")
 #source("OMEXDIA_OG3_FitTablePlot.R")
-#source("OMEXDIA_OG3_FluxTable.R")
+
 
 # load the librairy from the Fortran OMEXDIA model 
 system("R CMD SHLIB omexdia_OG3.f")
 
-if (.Platform$OS.type){
+if (.Platform$OS.type == "unix"){
   dyn.load("omexdia_OG3.so")
 }else {
   dyn.load("omexdia_OG3.dll")  
@@ -52,3 +53,64 @@ DIA <-OCALL(pars)
 pars["AlphIrr"]<-0.5
 
 Simplot(pars)
+
+
+################
+##  WITH DATA ##
+
+# The following should load data inside "datadf" and "datadffl" dataframes.
+# Test with the example 'HammondLoad.R' to have an idea of the requested format, then build your own "...Load.R" script based on your own data.
+
+source('HammondLoad.R')
+source('OMEXDIA_OG3_ObsAtSta.R')
+
+sta<-"H2"
+
+localdata   <- OBSatstaSSf(sta)
+localdata$variable<-as.character(localdata$variable)
+
+localdatafl <- subset(localdata, LowerDepth==0&UpperDepth==0)
+localdata   <- subset(localdata, !(LowerDepth==0&UpperDepth==0))
+
+ggplot(localdata,
+       aes(x=value,y=UpperDepth/2+LowerDepth/2,
+             ymax=UpperDepth,ymin=LowerDepth,
+             xmin=value-err, xmax=value+err))+
+  geom_errorbar()+
+  geom_errorbarh()+
+  geom_point(size=2)+
+  facet_wrap(~variable,scales = "free")+ylim(c(20,0))
+
+#  Cost function 
+source('OMEXDIA_OG3_COST_generic.R')
+source('OMEXDIA_OG3_DIA2OBS.R')
+source('OMEXDIA_OG3_BudgetFunctions.R')
+
+C1<-OCOST_GEN(pars,Vlist = "NH3")
+C2<-OCOST_GEN(pars,Vlist = c("NH3","DIC"))
+C3<-OCOST_GEN(pars,Vlist = c("NH3","DIC"), Flist = "DIC")
+
+# Better to test one by one : 
+Simplot(pars,TRUE)+
+  ggtitle(paste(sta,"0. No Fit"))
+
+partableplot(pars)
+
+fluxtable(pars)$p
+
+# Collect all on the same plot
+pdf(paste(totdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2+5,height=15)
+grid.arrange(Simplot(pars)+
+               ggtitle(paste(sta,"0. No Fit")),
+             arrangeGrob(partableplot(pars)),
+             arrangeGrob(fluxtable(pars)$p),
+             ncol = 3,nrow=1, widths=c(5*3,7,5), heights = c(12))
+dev.off()
+
+
+
+
+
+
+
+

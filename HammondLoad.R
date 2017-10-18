@@ -1,19 +1,23 @@
 require(reshape2)
 require(gdata)
 
-hamdat<- read.xls("HAMMOND3.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T)
+datadf<- read.xls("HAMMOND3.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T)
 
-hamdat<-cbind(hamdat,Mid=(hamdat$Bottom+hamdat$Top)/2)
-colnames(hamdat)[which(colnames(hamdat)=="TCO2")]<-"DIC"
+datadf<-cbind(datadf,Mid=(datadf$Bottom+datadf$Top)/2)
+colnames(datadf)[which(colnames(datadf)=="TCO2")]<-"DIC"
 
-hamdatfl<- read.xls("HAMMOND_FL2.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+datadffl<- read.xls("HAMMOND_FL2.xls", na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+
+colnames(datadf)[which(colnames(datadf)=="Mid")]<-"MidDepth"
+colnames(datadf)[which(colnames(datadf)=="Top")]<-"UpperDepth"
+colnames(datadf)[which(colnames(datadf)=="Bottom")]<-"LowerDepth"
 
 if(F){
 
   ##  PLOTTING  ##
 require(ggplot2)
 
-hamdat<-ddply(hamdat,.(Station), function(dsub){
+datadf<-ddply(datadf,.(Station), function(dsub){
   print(dsub)
   Surnind<-which(dsub[,"Bottom"]==0)
   print(Surnind)
@@ -30,14 +34,14 @@ hamdat<-ddply(hamdat,.(Station), function(dsub){
 }
 )
 
-hamdatforp<-melt(hamdat,id.vars=c("Station","Top","Bottom","Mid","yday"))
+datadfforp<-melt(datadf,id.vars=c("Station","Top","Bottom","Mid","yday"))
   
-ggplot(hamdatforp, aes(y=(Bottom+Top)/2, x=value, color=factor(Station)))+
+ggplot(datadfforp, aes(y=(Bottom+Top)/2, x=value, color=factor(Station)))+
   geom_point()+geom_path()+
   facet_wrap(~variable,scales="free")+ylim(20,0)+scale_color_discrete(name="Stations")+ylab("Depth-[cm]")
 
-hamdatforp2<-subset(hamdatforp,variable %in% c("DIC","NH3","PO4","SiO2","OC","Bsi"))
-ggplot(hamdatforp2, aes(y=(Bottom+Top)/2, x=value, color=factor(Station)))+
+datadfforp2<-subset(datadfforp,variable %in% c("DIC","NH3","PO4","SiO2","OC","Bsi"))
+ggplot(datadfforp2, aes(y=(Bottom+Top)/2, x=value, color=factor(Station)))+
   geom_point()+geom_path()+
   facet_wrap(~variable,scales="free")+ylim(20,0)+scale_color_discrete(name="Stations")+ylab("Depth-[cm]")
 
@@ -50,10 +54,10 @@ myMap <- get_map(location=adriLoc,source="google", maptype="satellite", crop=FAL
 m<-ggmap(myMap)
 m1<-
   m+
-  geom_point(data=hamdatfl, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
-  geom_text( data=hamdatfl, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
+  geom_point(data=datadffl, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+  geom_text( data=datadffl, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
 
-ggplot(melt(hamdatfl,id.vars=c("Station","Lon","Lat")),aes(x=Station, y=))
+ggplot(melt(datadffl,id.vars=c("Station","Lon","Lat")),aes(x=Station, y=))
 
 # EGU MAP
 myLocation <- c(12.52, 43.84, 13.25 ,44.25)
@@ -70,8 +74,8 @@ m
 
 m1<-
   m+
-  geom_point(data=subset(hamdatfl,Station!="H3"), aes(x = Lon, y = Lat, colour=Station,label=Station),size=6)+
-  geom_text( data=subset(hamdatfl,Station!="H3"), aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)+
+  geom_point(data=subset(datadffl,Station!="H3"), aes(x = Lon, y = Lat, colour=Station,label=Station),size=6)+
+  geom_text( data=subset(datadffl,Station!="H3"), aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)+
   theme(legend.position="left")
 
 m1
