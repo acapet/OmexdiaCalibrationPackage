@@ -88,7 +88,7 @@ p1<-qplot(1:10, 1:10, geom = "blank")+theme_bw()+
 if (exists("localdatafl")){
   dforp<-subset(d,select=value)
   rownames(dforp)<-d$variable
-  dforp[datafl$variable,"Meas."]<-localdatafl$value
+  dforp[localdatafl$variable,"Meas."]<-localdatafl$value
   
   fpdf<-format(dforp,digits = 3,nsmall=0,scientific=F,drop0trailing=T)
   fpdf[ grep("NA",fpdf[,2]),2]<-""

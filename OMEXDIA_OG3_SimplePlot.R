@@ -3,7 +3,7 @@ Simplot<-function(p, plotdata=FALSE, YL=20) {
 DI<-OCALL(p)
 
 if (plotdata) {
-b <- DIA2OBS(DI,b,p)
+b <- DIA2OBS(DI,localdata,p)
 }
 
 dfvarplot <- as.data.frame(cbind(DI$y,grid=Grid$x.mid,por=porGrid$mid))
