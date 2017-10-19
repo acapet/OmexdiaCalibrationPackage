@@ -32,7 +32,7 @@ source("OMEXDIA_OG3_OCALL_SS.R")
 source("OMEXDIA_OG3_SimplePlot.R")
 source("OMEXDIA_OG3_ParTablePlot.R")
 source("OMEXDIA_OG3_FluxTable.R")
-#source("OMEXDIA_OG3_FitTablePlot.R")
+source("OMEXDIA_OG3_FitTablePlot.R")
 
 
 # load the librairy from the Fortran OMEXDIA model 
@@ -88,7 +88,7 @@ source('OMEXDIA_OG3_BudgetFunctions.R')
 
 C1<-OCOST_GEN(pars,Vlist = "NH3")
 C2<-OCOST_GEN(pars,Vlist = c("NH3","DIC"))
-C3<-OCOST_GEN(pars,Vlist = c("NH3","DIC"), Flist = "DIC")
+C3<-OCOST_GEN(pars,Vlist = c("NH3","DIC"), Flist = c("DIC","NH3"))
 
 # Better to test one by one : 
 Simplot(pars,TRUE)+
@@ -99,13 +99,14 @@ partableplot(pars)
 fluxtable(pars)$p
 
 # Collect all on the same plot
-pdf(paste(totdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2+5,height=15)
-grid.arrange(Simplot(pars)+
-               ggtitle(paste(sta,"0. No Fit")),
-             arrangeGrob(partableplot(pars)),
-             arrangeGrob(fluxtable(pars)$p),
-             ncol = 3,nrow=1, widths=c(5*3,7,5), heights = c(12))
+pdf(paste(sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
+grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
+             arrangeGrob(partableplot(parSta)),
+             arrangeGrob(fluxtable(parSta)$p,
+                         fittableplot(C3),ncol=1,heights=c(6,4)),
+             ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))
 dev.off()
+
 
 
 

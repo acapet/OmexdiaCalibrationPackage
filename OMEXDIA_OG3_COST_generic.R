@@ -31,7 +31,7 @@ if(!is.null(Flist))
   
   Mf<-as.data.frame(flist)
   colnames(Mf)<-paste0(Flist,"flux")
-  bfl1<-subset(bfl,variable %in% paste0(Flist,"flux"),select=c("variable","time","value","err"))
+  bfl1<-subset(localdatafl,variable %in% paste0(Flist,"flux"),select=c("variable","time","value","err"))
   
   CostF<-modCost(model = Mf,
                 obs   = bfl1,
