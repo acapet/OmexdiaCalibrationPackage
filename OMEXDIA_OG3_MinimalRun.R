@@ -1,3 +1,14 @@
+# This script is part of the OmexdiaCalibration suite.
+# It loads all the auxiliarry functions, and runs + display a first simulation.
+# It then provides an example of how to load data, compute cost function for specific variables, 
+# and display the comparison with model ouptuts
+#
+# A. Capet, 2017, acapet@ulg.ac.be
+
+############################
+# LIBRAIRIES and SOURCES   #
+############################
+
 # The package to read .xls
 require(gdata)
 # The package with the solution methods
@@ -6,6 +17,7 @@ require(marelac)
 # Calibration procedures
 require(FME) 
 
+# Tools
 require(plyr)
 library(ggplot2)
 library(RColorBrewer)
@@ -16,16 +28,21 @@ require(reshape2)
 source("OMEXDIA_OG3_BasicSetup.R")
 
 # Get observations for a selected station
-#source("OMEXDIA_OG3_ObsAtSta.R")
+source("OMEXDIA_OG3_ObsAtSta.R")
 
 # Convert model outputs to observation-equivalent
-#source("OMEXDIA_OG3_DIA2OBS.R")
+source("OMEXDIA_OG3_DIA2OBS.R")
 
 # Runs the model for a given subset of parameters and returns the model ouptut
 source("OMEXDIA_OG3_OCALL_SS.R")
 
+# Generic cost function
+source('OMEXDIA_OG3_COST_generic.R')
+
+# BudgetDiagnostic tools
+source('OMEXDIA_OG3_BudgetFunctions.R')
+
 # Alters the current Porosity profiles and other things according to station info
-# ( It is probably possible to get rid of that one) 
 #source("OMEXDIA_OG3_AdaptParsForStation.R")
 
 # Utilities for result display 
@@ -34,8 +51,7 @@ source("OMEXDIA_OG3_ParTablePlot.R")
 source("OMEXDIA_OG3_FluxTable.R")
 source("OMEXDIA_OG3_FitTablePlot.R")
 
-
-# load the librairy from the Fortran OMEXDIA model 
+# load the Fortran OMEXDIA model 
 system("R CMD SHLIB omexdia_OG3.f")
 
 if (.Platform$OS.type == "unix"){
@@ -44,28 +60,35 @@ if (.Platform$OS.type == "unix"){
   dyn.load("omexdia_OG3.dll")  
 }
 
+############################
+#      EXAMPLE OF USE      #
+############################
+
+# The variable global parSta is used inside auxiliary functions
+# It consists in the full parameter list, adapted for the station 
+# Here we just copy the general parameters value as given in "OMEXDIA_OG3_BasicSetup.R"
 parSta<-pars
 
-# Model outputs are store in there 
+# OCALL gets the model solution for parameters given in argument
 DIA <-OCALL(pars)
 
-# But you could directly display 
-pars["AlphIrr"]<-0.5
-
+# Display can be done directly with parameters value
 Simplot(pars)
 
+# .. or with model outputs -> TO UPDATE
+# Simplot(DIA)
 
 ################
-##  WITH DATA ##
+##  USER DATA ##
+################
 
-# The following should load data inside "datadf" and "datadffl" dataframes.
-# Test with the example 'HammondLoad.R' to have an idea of the requested format, then build your own "...Load.R" script based on your own data.
-
+# The following should load all stations data inside "datadf" and "datadffl" dataframes.
+# Test with the example 'HammondLoad.R' to have an idea of the requested format.
+#    then build your own "...Load.R" script based on your own data.
 source('HammondLoad.R')
-source('OMEXDIA_OG3_ObsAtSta.R')
-
 sta<-"H2"
 
+# We then create "localdata" dataframes, specific to one station.
 localdata   <- OBSatstaSSf(sta)
 localdata$variable<-as.character(localdata$variable)
 
@@ -81,16 +104,14 @@ ggplot(localdata,
   geom_point(size=2)+
   facet_wrap(~variable,scales = "free")+ylim(c(20,0))
 
-#  Cost function 
-source('OMEXDIA_OG3_COST_generic.R')
-source('OMEXDIA_OG3_DIA2OBS.R')
-source('OMEXDIA_OG3_BudgetFunctions.R')
+# parSta<-AdaptParsForStation_SS(sta)
 
+#  Cost function can be called with a list of profile variables and a list of flux variables
 C1<-OCOST_GEN(pars,Vlist = "NH3")
 C2<-OCOST_GEN(pars,Vlist = c("NH3","DIC"))
 C3<-OCOST_GEN(pars,Vlist = c("NH3","DIC"), Flist = c("DIC","NH3"))
 
-# Better to test one by one : 
+# Better to test those display script one by one : 
 Simplot(pars,TRUE)+
   ggtitle(paste(sta,"0. No Fit"))
 
