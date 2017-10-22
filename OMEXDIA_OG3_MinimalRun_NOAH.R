@@ -62,11 +62,12 @@ Simplot(pars)
 # Test with the example 'HammondLoad.R' to have an idea of the requested format, then build your own "...Load.R" script based on your own data.
 
 source('Load_Data.R')
-source('OMEXDIA_OG3_ObsAtSta_NEW.R')
+source('OMEXDIA_OG3_ObsAtSta_NOAH.R')
 
 sta<-"C"
+cam<-"HE432"
 
-localdata   <- OBSatstaSSf(sta)
+localdata   <- OBSatstaSSf(sta,cam)
 localdata$variable<-as.character(localdata$variable)
 
 localdatafl <- subset(localdata, LowerDepth==0&UpperDepth==0)
@@ -86,10 +87,11 @@ source('OMEXDIA_OG3_COST_generic.R')
 source('OMEXDIA_OG3_DIA2OBS.R')
 source('OMEXDIA_OG3_BudgetFunctions.R')
 
-C1<-OCOST_GEN(pars,Vlist = c("TN"))
-C2<-OCOST_GEN(pars,Vlist = c("TN","SiDet"))
+C1<-OCOST_GEN(pars,Vlist = c("NH3"))
+C1<-OCOST_GEN(pars,Vlist = c("SIO"))
 
-C3<-OCOST_GEN(pars,Vlist = c("TN","SiDet"), Flist = c("SiDet","TN"))
+C2<-OCOST_GEN(pars,Vlist = c("SIO","NH3"))
+C3<-OCOST_GEN(pars,Vlist = c("SIO","NH3"), Flist = c("NH3","NO3"))
 
 #C1<-OCOST_GEN(pars,Vlist = c("NH3"))
 #C2<-OCOST_GEN(pars,Vlist = c("NH3","DIC"))
