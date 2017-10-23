@@ -21,6 +21,7 @@ datafile<-"NOAH_C.xlsx"  #data-file including sheets of nutrients, fluxes, stati
 ##Define variable use
 dfnuvarsstay<-c("Station","Campaign","UpperDepth","LowerDepth","MidDepth", "OriginalDepth_cm",
               "yearday","date") #entities that should be exluded from the merging to a variable and value cloumn
+
 dfnuvarsspec<-c("NOx","NO2","NO3","NH4_OPA","PO4","Si_OH_4") #variables that should be plotted in an extra plot
 
 dfflvarsstay<-c("Station","Campaign","BottomDepth","yearday","date","Lon",
@@ -41,7 +42,7 @@ plotting<-1 #set to 1 if you want to produce plots
 Loc_stamen <- c(4, 53, 9, 56)
 Loc_google <- c(3, 53, 10, 56)  
 
-mapping<-1 #set to 1 if you want to produce maps
+mapping<-0 #set to 1 if you want to produce maps
 
 ## now you can run the script!
 
@@ -60,12 +61,12 @@ require(plyr)
 library(ggmap)
 
 ### Loading data
-sheet_profiles<-"Profiles"  #data-file of nutrient data and depth
+sheet_profiles<-"Profiles"  #data-file of profile data and depth
 sheet_fluxes<-"Fluxes" #data-file of flux data including location of stations (lon,lat)
 sheet_stations<-"Stations" #data-file including station data on location, porosity etx
 
 ##Load nutrient data and create dataframe
-datadfnu<-read.xls(datafile, sheet_profiles,
+datadfpr<-read.xls(datafile, sheet_profiles,
                    na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
 
 ##Load benthic fluxes and create dataframe
@@ -75,14 +76,14 @@ datadffl<- read.xls(datafile, sheet_fluxes, na.strings=c("#"),as.is = TRUE,fileE
 datadfsta<- read.xls(datafile, sheet_stations, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 ##Define variable names
-colnames(datadfnu)[which(colnames(datadfnu)=="Top")]<-"UpperDepth"
-colnames(datadfnu)[which(colnames(datadfnu)=="Bottom")]<-"LowerDepth"
-colnames(datadfnu)[which(colnames(datadfnu)=="NH4_OPA")]<-"NH3"
-colnames(datadfnu)[which(colnames(datadfnu)=="NOx")]<-"NO3"
-colnames(datadfnu)[which(colnames(datadfnu)=="Si_OH_4")]<-"SIO"
-colnames(datadfnu)[which(colnames(datadfnu)=="NH4_OPA_ERR")]<-"NH3_ERR"
-colnames(datadfnu)[which(colnames(datadfnu)=="NOx_ERR")]<-"NO3_ERR"
-colnames(datadfnu)[which(colnames(datadfnu)=="Si_OH_4_ERR")]<-"SIO_ERR"#colnames(datadf)[which(colnames(datadf)=="Si_frozen")]<-"SiDet"
+colnames(datadfpr)[which(colnames(datadfpr)=="Top")]<-"UpperDepth"
+colnames(datadfpr)[which(colnames(datadfpr)=="Bottom")]<-"LowerDepth"
+colnames(datadfpr)[which(colnames(datadfpr)=="NH4_OPA")]<-"NH3"
+colnames(datadfpr)[which(colnames(datadfpr)=="NOx")]<-"NO3"
+colnames(datadfpr)[which(colnames(datadfpr)=="Si_OH_4")]<-"SIO"
+colnames(datadfpr)[which(colnames(datadfpr)=="NH4_OPA_ERR")]<-"NH3_ERR"
+colnames(datadfpr)[which(colnames(datadfpr)=="NOx_ERR")]<-"NO3_ERR"
+colnames(datadfpr)[which(colnames(datadfpr)=="Si_OH_4_ERR")]<-"SIO_ERR"#colnames(datadf)[which(colnames(datadf)=="Si_frozen")]<-"SiDet"
 #colnames(datadf)[which(colnames(datadf)=="OC")]<-"TOC"
 
 colnames(datadffl)[which(colnames(datadffl)=="FNH4")]<-"FNH3"
@@ -93,8 +94,8 @@ colnames(datadffl)[which(colnames(datadffl)=="FSiO4")]<-"FSIO"
 colnames(datadffl)[which(colnames(datadffl)=="FSiO4_ERR")]<-"FSIO_ERR"
 
 ##Deal with missing data
-datadfnu<-cbind(datadfnu,MidDepth=(datadfnu$LowerDepth+datadfnu$UpperDepth)/2)
-#datadffl<-cbind(datadffl,MidDepth=(datadffl$Bottom+datadffl$Top)/2)
+datadfpr<-cbind(datadfpr,MidDepth=(datadfpr$LowerDepth+datadfpr$UpperDepth)/2)
+
 
 ##Add variables
 #datadf<-ddply(datadf,.(Station), function(dsub){
@@ -119,48 +120,46 @@ if (plotting==1) {
 
 ###Convert datafiles to data frames and subsets of data
 
-datadfnuforp<-melt(datadfnu,id.vars=dfnuvarsstay) #creating data frame
-datadfnuforp2<-subset(datadfnuforp,variable %in% dfnuvarsspec) #creating subset of data
+datadfprforp<-melt(datadfpr,id.vars=dfnuvarsstay) #creating data frame
+datadfprforp2<-subset(datadfprforp,variable %in% dfnuvarsspec) #creating subset of data
 # ART 22102017: added a test to consider only the elements of "dfflvarsstay" that are effectively present as column in the "FLUX" sheet 
 datadfflforp<-melt(datadffl,id.vars=dfflvarsstay[which(dfflvarsstay %in% colnames(datadffl))]) #creating data frame
 
 # ART 22102017
 # Identifying errors from variables
-datadfnuforpv_err   <- subset(datadfnuforp,grepl("_ERR",variable))
-datadfnuforpv       <- subset(datadfnuforp,!grepl("_ERR",variable))
-datadfnuforpv$error <- datadfnuforpv_err$value
+datadfprforpv_err   <- subset(datadfprforp,grepl("_ERR",variable))
+datadfprforpv       <- subset(datadfprforp,!grepl("_ERR",variable))
+datadfprforpv$error <- datadfprforpv_err$value
 
 datadfflforpv_err   <- subset(datadfflforp,grepl("_ERR",variable))
 datadfflforpv       <- subset(datadfflforp,!grepl("_ERR",variable))
 datadfflforpv$error <- datadfflforpv_err$value
 
 
-
-
 ###Plot data according to Campaigns
 
 ##Specfiy color affiliation
-colordfnuaffi<-eval(parse(text=coloraffiname),envir = datadfnuforpv)
-colordfnuaffi2<-eval(parse(text=coloraffiname),envir = datadfnuforp2) 
+colordfnuaffi<-eval(parse(text=coloraffiname),envir = datadfprforpv)
+colordfnuaffi2<-eval(parse(text=coloraffiname),envir = datadfprforp2) 
 colordfflaffi<-eval(parse(text=coloraffiname),envir = datadfflforpv) 
 
 ##Plot nutrient data
-ggplot(datadfnuforpv, aes(y=MidDepth, x=value, color=Campaign))+ 
+ggplot(datadfprforpv, aes(y=MidDepth, x=value, color=colordfnuaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
 #  geom_point()+geom_path()+
   geom_errorbarh(aes(xmin=value-error,xmax=value+error))+geom_path()+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab(ylabname)+xlab(xlabname)
 
 ##Plot subset of nutrient data
-ggplot(datadfnuforp2, aes(y=MidDepth, x=value, color=Campaign))+ 
-#ggplot(datadfnuforp2, aes(y=MidDepth, x=value, color=factor(colordfnuaffi2)))+ 
+ggplot(datadfprforp2, aes(y=MidDepth, x=value, color=colordfnuaffi2))+ 
+#ggplot(datadfprforp2, aes(y=MidDepth, x=value, color=factor(colordfnuaffi2)))+ 
   geom_point()+geom_path()+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab(ylabname)+xlab(xlabname)
 
 ##Plot flux data according to Campaigns
 datadfflforpv$BottomDepth=datadfsta$BottomDepth
-ggplot(datadfflforpv, aes(y=BottomDepth, x=value, color=Campaign))+ 
+ggplot(datadfflforpv, aes(y=BottomDepth, x=value, color=colordfflaffi))+ 
   #geom_point()+geom_path()+
   geom_errorbarh(aes(xmin=value-error,xmax=value+error))+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+

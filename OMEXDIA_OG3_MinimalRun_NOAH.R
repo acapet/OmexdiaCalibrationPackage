@@ -103,8 +103,7 @@ Simplot(pars,TRUE)+
 
 partableplot(pars)
 
-fluxtable(pars)$p
-
+dev
 # Collect all on the same plot
 pdf(paste(sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
 grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),

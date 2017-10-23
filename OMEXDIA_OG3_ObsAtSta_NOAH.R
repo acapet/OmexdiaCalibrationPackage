@@ -3,8 +3,7 @@ OBSatstaSSf <- function(sta,cam){
 
   ##Prepare nutrient data
   # remove data above SWI  
-  bTM <-subset(datadfnu,MidDepth>0 & Station==sta & Campaign==cam,select=c("MidDepth","UpperDepth","LowerDepth",varlimod))
-
+  bTM <-subset(datadfpr,MidDepth>0 & Station==sta & Campaign==cam,select=c("MidDepth","UpperDepth","LowerDepth",varlimod))
   b1<-melt(bTM,.(MidDepth,UpperDepth,LowerDepth))
 
   # what is called time here is a depth index  .. we should change this
@@ -21,21 +20,23 @@ OBSatstaSSf <- function(sta,cam){
   # Oxygen 4%. was measured colorimetrically,
 # as described in Berelson et al. Ž1990.. Radon Ž5%.
 
-  # Is error present in the datafile ? 
+  # A.Eisele 23.10.1017: reading error present in datafile
+  b1[which(b1$var=="PO4"),"err"]  <- datadfpr$PO4_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)]
+  b1[which(b1$var=="SIO"),"err"]  <- datadfpr$SIO_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)]
+  b1[which(b1$var=="NH3"),"err"]  <- datadfpr$NH3_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)] 
+  b1[which(b1$var=="NO3"),"err"]  <- datadfpr$NO3_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)] 
   
-  
-  
-  
-  
+
+  ### TODO: adding an automatical checkup if the error is available in the original data and if not progessing with the following assumptions...
   
   # Or should it be provided as a relative value (the case here) 
  # b1[which(b1$var=="DIC"),"err"]  <- b1[which(b1$var=="DIC"),"value"]*0.04
-  b1[which(b1$var=="PO4"),"err"]  <- b1[which(b1$var=="PO4"),"value"]*0.04
-  b1[which(b1$var=="SIO"),"err"]  <- b1[which(b1$var=="SIO"),"value"]*0.04
-  b1[which(b1$var=="NH3"),"err"]  <- b1[which(b1$var=="NH3"),"value"]*0.04  
+ # b1[which(b1$var=="PO4"),"err"]  <- b1[which(b1$var=="PO4"),"value"]*0.04
+#  b1[which(b1$var=="SIO"),"err"]  <- b1[which(b1$var=="SIO"),"value"]*0.04
+#  b1[which(b1$var=="NH3"),"err"]  <- b1[which(b1$var=="NH3"),"value"]*0.04  
  # b1[which(b1$var=="TOC"),"err"]  <- b1[which(b1$var=="TOC"),"value"]*0.02
-  b1[which(b1$var=="TN"),"err"]  <- b1[which(b1$var=="TN"),"value"]*0.07
-  b1[which(b1$var=="SiDet"),"err"]<- b1[which(b1$var=="SiDet"),"value"]*0.02*5
+#  b1[which(b1$var=="TN"),"err"]  <- b1[which(b1$var=="TN"),"value"]*0.07
+#  b1[which(b1$var=="SiDet"),"err"]<- b1[which(b1$var=="SiDet"),"value"]*0.02*5
   
   
   
