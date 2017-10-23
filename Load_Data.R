@@ -60,12 +60,12 @@ require(plyr)
 library(ggmap)
 
 ### Loading data
-sheet_nutrients<-"Nutrients"  #data-file of nutrient data and depth
+sheet_profiles<-"Profiles"  #data-file of nutrient data and depth
 sheet_fluxes<-"Fluxes" #data-file of flux data including location of stations (lon,lat)
 sheet_stations<-"Stations" #data-file including station data on location, porosity etx
 
 ##Load nutrient data and create dataframe
-datadfnu<-read.xls(datafile, sheet_nutrients,
+datadfnu<-read.xls(datafile, sheet_profiles,
                    na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
 
 ##Load benthic fluxes and create dataframe
