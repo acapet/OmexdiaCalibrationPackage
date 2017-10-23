@@ -1,6 +1,6 @@
 #title: "Load_Observation_Data"
-#author: "Annika Eisele (Helmholtz-Zentrum Geesthacht) and Arthur Carpet (Universite de Liege)"
-#comment: "R-coding alterations by A.Eisele based on R-scripts provided by A.Carpet"" 
+#author: "Annika Eisele (Helmholtz-Zentrum Geesthacht) and Arthur Capet (Universite de Liege)"
+#comment: "R-coding alterations by A.Eisele based on R-scripts provided by A.Capet"" 
 #date: "18 Oktober 2017"
 
 ### About this script
@@ -11,8 +11,6 @@
 #Input "datafluxfile" should contain at least data on station, lon, lat, date, depth and variable fluxes columnwise
 #Remeber: R is case-sensitive, so check for letters in your Excel-Files and define variables!
 
-
-
 ### Define usage
 
 ##!Set working directory to corresponding file directory before running the script!
@@ -20,7 +18,6 @@
 ##Define Excel-Files
 datafile<-"NOAH_C.xlsx"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
-  
 ##Define variable use
 dfnuvarsstay<-c("Station","Campaign","UpperDepth","LowerDepth","MidDepth", "OriginalDepth_cm",
               "yearday","date") #entities that should be exluded from the merging to a variable and value cloumn
@@ -31,21 +28,20 @@ dfflvarsstay<-c("Station","Campaign","BottomDepth","yearday","date","Lon",
 
 varlimod<-c("NH3","SIO","PO4","NO3") # List of variables that have to be retained
 
-
 ##Define labels and color code affiliation 
 xlabname<-"value [mmol/m^2/d]"
 ylabname<-"Depth [cm]"
 
 coloraffiname<-"Campaign" #or Station
 
-plotting<-0 #set to 1 if you want to produce plots
+plotting<-1 #set to 1 if you want to produce plots
 
 ##Location of Stations
 #mydata_Loc <- c(8.015, 54.07)
 Loc_stamen <- c(4, 53, 9, 56)
 Loc_google <- c(3, 53, 10, 56)  
 
-mapping<-0 #set to 1 if you want to produce maps
+mapping<-1 #set to 1 if you want to produce maps
 
 ## now you can run the script!
 
@@ -56,16 +52,12 @@ mapping<-0 #set to 1 if you want to produce maps
 #datadffl
 #datadfflforp
 
-
-
-
 ###Load necessary packages
 require(reshape2)
 require(gdata)
 library(readxl)
 require(plyr)
 library(ggmap)
-
 
 ### Loading data
 sheet_nutrients<-"Nutrients"  #data-file of nutrient data and depth
@@ -76,13 +68,11 @@ sheet_stations<-"Stations" #data-file including station data on location, porosi
 datadfnu<-read.xls(datafile, sheet_nutrients,
                    na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
 
-
 ##Load benthic fluxes and create dataframe
 datadffl<- read.xls(datafile, sheet_fluxes, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 ##Load station information and create dataframe
 datadfsta<- read.xls(datafile, sheet_stations, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
-
 
 ##Define variable names
 colnames(datadfnu)[which(colnames(datadfnu)=="Top")]<-"UpperDepth"
@@ -111,7 +101,7 @@ datadfnu<-cbind(datadfnu,MidDepth=(datadfnu$LowerDepth+datadfnu$UpperDepth)/2)
 #  print(dsub)
 #  Surnind<-which(dsub[,"MidDepth"]==0)
 #  print(Surnind)
- # DICdelt <- dsub[,"DIC"]-dsub[Surnind,"DIC"]
+#  DICdelt <- dsub[,"DIC"]-dsub[Surnind,"DIC"]
 #  DINdelt <- dsub[,"NH4_OPA"]-dsub[Surnind,"NH4_OPA"]
 #  DIPdelt <- dsub[,"PO4"]-dsub[Surnind,"PO4"]
 #  cbind(dsub, data.frame( 
@@ -125,39 +115,54 @@ datadfnu<-cbind(datadfnu,MidDepth=(datadfnu$LowerDepth+datadfnu$UpperDepth)/2)
 #}
 #)
 
-
 if (plotting==1) {
 
 ###Convert datafiles to data frames and subsets of data
 
 datadfnuforp<-melt(datadfnu,id.vars=dfnuvarsstay) #creating data frame
 datadfnuforp2<-subset(datadfnuforp,variable %in% dfnuvarsspec) #creating subset of data
-datadfflforp<-melt(datadffl,id.vars=dfflvarsstay) #creating data frame
+# ART 22102017: added a test to consider only the elements of "dfflvarsstay" that are effectively present as column in the "FLUX" sheet 
+datadfflforp<-melt(datadffl,id.vars=dfflvarsstay[which(dfflvarsstay %in% colnames(datadffl))]) #creating data frame
+
+# ART 22102017
+# Identifying errors from variables
+datadfnuforpv_err   <- subset(datadfnuforp,grepl("_ERR",variable))
+datadfnuforpv       <- subset(datadfnuforp,!grepl("_ERR",variable))
+datadfnuforpv$error <- datadfnuforpv_err$value
+
+datadfflforpv_err   <- subset(datadfflforp,grepl("_ERR",variable))
+datadfflforpv       <- subset(datadfflforp,!grepl("_ERR",variable))
+datadfflforpv$error <- datadfflforpv_err$value
+
+
 
 
 ###Plot data according to Campaigns
 
-  
 ##Specfiy color affiliation
-colordfnuaffi<-eval(parse(text=coloraffiname),envir = datadfnuforp)
+colordfnuaffi<-eval(parse(text=coloraffiname),envir = datadfnuforpv)
 colordfnuaffi2<-eval(parse(text=coloraffiname),envir = datadfnuforp2) 
-colordfflaffi<-eval(parse(text=coloraffiname),envir = datadfflforp) 
+colordfflaffi<-eval(parse(text=coloraffiname),envir = datadfflforpv) 
 
 ##Plot nutrient data
-ggplot(datadfnuforp, aes(y=MidDepth, x=value, color=factor(colordfnuaffi)))+ 
-  geom_point()+geom_path()+
+ggplot(datadfnuforpv, aes(y=MidDepth, x=value, color=Campaign))+ 
+#  geom_point()+geom_path()+
+  geom_errorbarh(aes(xmin=value-error,xmax=value+error))+geom_path()+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab(ylabname)+xlab(xlabname)
 
 ##Plot subset of nutrient data
-ggplot(datadfnuforp2, aes(y=MidDepth, x=value, color=factor(colordfnuaffi2)))+ 
+ggplot(datadfnuforp2, aes(y=MidDepth, x=value, color=Campaign))+ 
+#ggplot(datadfnuforp2, aes(y=MidDepth, x=value, color=factor(colordfnuaffi2)))+ 
   geom_point()+geom_path()+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab(ylabname)+xlab(xlabname)
 
 ##Plot flux data according to Campaigns
-ggplot(datadfflforp, aes(y=BottomDepth, x=value, color=factor(colordfflaffi)))+ 
-  geom_point()+geom_path()+
+datadfflforpv$BottomDepth=datadfsta$BottomDepth
+ggplot(datadfflforpv, aes(y=BottomDepth, x=value, color=Campaign))+ 
+  #geom_point()+geom_path()+
+  geom_errorbarh(aes(xmin=value-error,xmax=value+error))+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab(ylabname)+xlab(xlabname)
 
@@ -177,7 +182,6 @@ if (mapping==1) {
     geom_text( data=datadfsta, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
   Sys.sleep(10) 
   ms1
-
 
   ##Mapping with google
   myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)
