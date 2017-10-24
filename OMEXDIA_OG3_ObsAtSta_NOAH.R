@@ -44,13 +44,13 @@ OBSatstaSSf <- function(sta,cam){
   
   
   # Original data are contained in "datadffl"
-#  bO2f<-data.frame(variable="O2flux",
- #                  time=length(bTM[,1])+1,
-  #                 value=-datadffl[which(datadffl$Station==sta & datadffl$Campaign=cam),"FO2"],
-   #                err=min(datadffl[which(datadffl$Station==sta & datadffl$Campaign=cam),"FO2_ERR"],1.5),
-    #               LowerDepth=0,
-     #              UpperDepth=0
-      #             )
+  bO2f<-data.frame(variable="O2flux",
+                   time=length(bTM[,1])+1,
+                   value=-datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FO2"],
+                  err=min(datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FO2_ERR"],1.5),
+                   LowerDepth=0,
+                   UpperDepth=0
+                   )
 #  bDICf<-data.frame(variable="DICflux",
  #                  time=length(bTM[,1])+1,
   #                 value=-datadffl[which(datadffl$Station==sta),"FDIC"],
@@ -97,7 +97,7 @@ OBSatstaSSf <- function(sta,cam){
     bPO4f["err"] <-0.03
   }
   
-  b1<-rbind(b1,bNO3f,bNH3f,bSIOf,bPO4f) #bDICf
+  b1<-rbind(b1,bNO3f,bNH3f,bSIOf,bPO4f,bO2f) #bDICf
   
 return(b1)
 }

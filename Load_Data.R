@@ -33,9 +33,9 @@ varlimod<-c("NH3","SIO","PO4","NO3") # List of variables that have to be retaine
 xlabname<-"value [mmol/m^2/d]"
 ylabname<-"Depth [cm]"
 
-coloraffiname<-"Campaign" #or Station
+camosta<-"Campaign" #or Station
 
-plotting<-1 #set to 1 if you want to produce plots
+plotting<-0 #set to 1 if you want to produce plots
 
 ##Location of Stations
 #mydata_Loc <- c(8.015, 54.07)
@@ -139,6 +139,7 @@ datadfflforpv$error <- datadfflforpv_err$value
 ###Plot data according to Campaigns
 
 ##Specfiy color affiliation
+coloraffiname<-camosta
 colordfnuaffi<-eval(parse(text=coloraffiname),envir = datadfprforpv)
 colordfnuaffi2<-eval(parse(text=coloraffiname),envir = datadfprforp2) 
 colordfflaffi<-eval(parse(text=coloraffiname),envir = datadfflforpv) 

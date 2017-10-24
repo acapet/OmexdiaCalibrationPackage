@@ -19,12 +19,12 @@ parsdf<-rbind(
   # abiotic conditions
   data.frame(row.names="Temp"       ,guess=14       ,min=5        ,max=26       ,unit="°C"       ,printfactor=1,printunit=NA    ,  constrain ='Pel. Mod.')      , # Temperature
   data.frame(row.names="Sal"        ,guess=36       ,min=36       ,max=38       ,unit="psu"      ,printfactor=1,printunit=NA     ,  constrain ='Pel. Mod.')       , # Salinity
-  data.frame(row.names="por"        ,guess=0.8      ,min=0.7      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
-  data.frame(row.names="porinf"     ,guess=0.62     ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
+  data.frame(row.names="por"        ,guess=0.65      ,min=0.5      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
+  data.frame(row.names="porinf"     ,guess=0.6     ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
   data.frame(row.names="pora"       ,guess=0.5      ,min=0.25     ,max=0.75     ,unit=" "        ,printfactor=1,printunit=NA     ,  constrain ='Fixed Map')   , # porosity decrease
   # Bioturbation
   data.frame(row.names="biot"       ,guess=10/365   ,min=0.01/365 ,max=30/365   ,unit="cm2/d"    ,printfactor=365, printunit="cm2/yr" , constrain ='Biol.') ,     # bioturbation coefficient % range from TROMP1995
-  data.frame(row.names="mixL"       ,guess=12       ,min=5        ,max=20       ,unit="cm"       ,printfactor=1,printunit=NA          , constrain ='Biol.')  ,     # depth of mixed layer
+  data.frame(row.names="mixL"       ,guess=12       ,min=5        ,max=30       ,unit="cm"       ,printfactor=1,printunit=NA          , constrain ='Biol.')  ,     # depth of mixed layer
   data.frame(row.names="AlphIrr"    ,guess=91/365   ,min=0/365    ,max=180/365  ,unit="/d"       ,printfactor=1, printunit="cm2/d"    , constrain ='Biol.')    ,     # depth of mixed layer
   data.frame(row.names="IrrEnh"     ,guess=1        ,min=1        ,max=18       ,unit="-"        ,printfactor=1, printunit=NA         , constrain ='Stat. Calib.')      ,     # depth of mixed layer
   
@@ -66,7 +66,8 @@ parsdf<-rbind(
   data.frame(row.names="kinO2denit" ,guess=10      ,min=1        ,max=20       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 inhib denitrif
   data.frame(row.names="kinNO3anox" ,guess=10      ,min=.5       ,max=20       ,unit="mmolNO3/m3",printfactor=1,printunit=NA   , constrain ='Stat. Calib.'), # half-sat NO3 inhib anoxic min
   data.frame(row.names="kinO2anox"  ,guess=8       ,min=.5       ,max=20       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 inhib anoxic min
-  # Nutrient bottom water conditions
+ 
+   # Nutrient bottom water conditions
   data.frame(row.names="bwO2"       ,guess=300     ,min=0        ,max=500      ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water O2 Concentration
   data.frame(row.names="bwNH3"      ,guess=2       ,min=1        ,max=10       ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water NH3 Concentration
   data.frame(row.names="bwNO3"      ,guess=2       ,min=0        ,max=30       ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water NO3 Concentration
