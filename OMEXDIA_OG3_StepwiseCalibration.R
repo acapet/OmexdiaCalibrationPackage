@@ -22,9 +22,11 @@ pseudoNrun<-200
 ## Parameters 
 PLISTN <- c("pFast","WPOC","biot","mixL","AlphIrr","bwO2","w") #pRef,"rSlow","NCrref","NCrSdet"
 # Observation profiles 
-VLISTN <- c("NH3") #c("TOC","TN")
+VLISTN <- c("NH3","NO3","CN") #c("TOC","TN") "CN"
 # Observation fluxes
 FLISTN <- c("NH3","NO3","O2")
+
+
 
 PLISTSIO <- c("rSi","SiCdet","EquilSiO")
 VLISTSIO <- c("SIO") #"SiDet"
@@ -53,7 +55,12 @@ FLIST<-list(FLISTN,FLISTSIO,FLISTPO4)
 
 #loop problematical for second loop iteration! needs to remove variables before second loop can be started!
 #for (icamosta in c(1:length(datadfsta$Station))){
-icamosta<-2
+
+
+source('Load_Data.R') #load station data
+
+
+icamosta<-1
   sta<-datadfsta$Station[icamosta]  
   cam<-datadfsta$Campaign[icamosta]
   
@@ -62,16 +69,6 @@ icamosta<-2
   
   
   source("OMEXDIA_OG3_Load.R") #load OMXEDIA model
-  
-  source('Load_Data.R') #load station data
-
-  source('OMEXDIA_OG3_ObsAtSta_NOAH.R') #convert station data
-
-
-
-
-  totdir=paste('FITtest_',sta, '_', cam,sep="")    
-  dir.create(totdir) #create new folder
 
 
   # We then create "localdata" dataframes, specific to one station.
@@ -100,6 +97,10 @@ icamosta<-2
   
   
   
+  totdir=paste('FITtest_',sta, '_', cam,sep="")    
+  dir.create(totdir) #create new folder
+  
+  
   # Plot 0 : No Fit
   pdf(paste(totdir,"_Fit0.pdf",sep=""),width=5*(3+1)+2+5,height=15)
   grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"_",cam,"0. No Fit")),
@@ -108,6 +109,9 @@ icamosta<-2
                ncol = 3,nrow=1, widths=c(5*3,7,5), heights = c(12))
   dev.off()
 
+  
+  #!!!Error in DIA$y[which(ModelDepths > localdata$UpperDepth[i] & ModelDepths <  : 
+  #!!!                       subscript out of bounds
   
   # Defining the list of parameters that may be calibrated in one of the calibration steps
   parRange <- parRange[which(rownames(parRange) %in% unlist(PLIST)),] 
@@ -127,7 +131,7 @@ icamosta<-2
                   p=parSta[PLIST[[ifit]]],
                    Vlist=VLIST[[ifit]],
                    Flist=FLIST[[ifit]],
-                   control=list(numiter=pseudoNrun),
+             #      control=list(numiter=pseudoNrun),
                    lower=parsmin[PLIST[[ifit]]],
                    upper=parsmax[PLIST[[ifit]]], 
                   method="Pseudo")

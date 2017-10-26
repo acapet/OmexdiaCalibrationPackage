@@ -4,9 +4,15 @@ OBSatstaSSf <- function(sta,cam){
   ##Prepare nutrient data
   # remove data above SWI  
   bTM <-subset(datadfpr,MidDepth>0 & Station==sta & Campaign==cam,select=c("MidDepth","UpperDepth","LowerDepth",varlimod))
-  b1<-melt(bTM,.(MidDepth,UpperDepth,LowerDepth))
 
-  # what is called time here is a depth index  .. we should change this
+  bTP <-subset(datadfpo,MidDepth>0 & Station==sta,select=c("MidDepth","UpperDepth","LowerDepth",varlimodpo))
+
+  b1<-melt(bTM,.(MidDepth,UpperDepth,LowerDepth))
+  
+  #b2<-melt(bTP,.(MidDepth,UpperDepth,LowerDepth))
+
+  #b1<-rbind(b1,b2)
+    # what is called time here is a depth index  .. we should change this
   b1$time<-seq(1:length(bTM[,1]))
   
 #   Analyses of chamber waters and pore waters were
@@ -25,6 +31,10 @@ OBSatstaSSf <- function(sta,cam){
   b1[which(b1$var=="SIO"),"err"]  <- datadfpr$SIO_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)]
   b1[which(b1$var=="NH3"),"err"]  <- datadfpr$NH3_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)] 
   b1[which(b1$var=="NO3"),"err"]  <- datadfpr$NO3_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)] 
+
+#  b1[which(b1$var=="NP"),"err"]  <- datadfpo$NP_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)]
+#  b1[which(b1$var=="CN"),"err"]  <- datadfpo$CN_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)] 
+ # b1[which(b1$var=="CP"),"err"]  <- datadfpo$CP_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)] 
   
 
   ### TODO: adding an automatical checkup if the error is available in the original data and if not progessing with the following assumptions...
@@ -52,7 +62,7 @@ OBSatstaSSf <- function(sta,cam){
                    UpperDepth=0
                    )
 #  bDICf<-data.frame(variable="DICflux",
- #                  time=length(bTM[,1])+1,
+ #                  time=length(b1[,1])+1,
   #                 value=-datadffl[which(datadffl$Station==sta),"FDIC"],
    #                err=datadffl[which(datadffl$Station==sta),"FDIC_ERR"],
     #               LowerDepth=0,
@@ -86,6 +96,31 @@ OBSatstaSSf <- function(sta,cam){
                     LowerDepth=0,
                     UpperDepth=0
   )
+  CN<-data.frame(variable="CN",
+                    time=length(b1[,1])+1,
+                    value=-mean(datadfpo[which(datadfpo$Station==sta),"CN"]),
+                    err=mean(datadfpo[which(datadfpo$Station==sta),"CN_ERR"]),
+                    LowerDepth=0,
+                    UpperDepth=0
+  )
+  
+  CP<-data.frame(variable="CP",
+                 time=length(b1[,1])+1,
+                 value=-mean(datadfpo[which(datadfpo$Station==sta),"CP"]),
+                 err=mean(datadfpo[which(datadfpo$Station==sta),"CP_ERR"]),
+                 LowerDepth=0,
+                 UpperDepth=0
+  )
+  NP<-data.frame(variable="NP",
+                 time=length(b1[,1])+1,
+                 value=-mean(datadfpo[which(datadfpo$Station==sta),"NP"]),
+                 err=mean(datadfpo[which(datadfpo$Station==sta),"NP_ERR"]),
+                 LowerDepth=0,
+                 UpperDepth=0
+  )
+  
+  
+  # bTP <-subset(datadfpo,MidDepth>0 & Station==sta,select=c("MidDepth","UpperDepth","LowerDepth",varlimodpo))
   
   # Impose common error on fluxes, taken from the median of estimated errors 
   if (F) {
@@ -97,7 +132,7 @@ OBSatstaSSf <- function(sta,cam){
     bPO4f["err"] <-0.03
   }
   
-  b1<-rbind(b1,bNO3f,bNH3f,bSIOf,bPO4f,bO2f) #bDICf
+  b1<-rbind(b1,bNO3f,bNH3f,bSIOf,bPO4f,bO2f,CN) #bDICf NP CP
   
 return(b1)
 }
