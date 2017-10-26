@@ -31,7 +31,7 @@ dfpovarsstay<-c("Station","Campaign","Date","Lat","Lon","Kind","BottomDepth","Up
 
 
 varlimod<-c("NH3","SIO","PO4","NO3") # List of variables that have to be retained
-varlimodpo<-c("DIC")
+varlimodpo<-c("DIC","TN")#,"por","TN") #"TOC")
 
 #varlimod<-c(varlimodpo,varlimodpr)
 
@@ -111,12 +111,25 @@ colnames(datadfpo)[which(colnames(datadfpo)=="totalPhosphat")]<-"TPO4"
 colnames(datadfpo)[which(colnames(datadfpo)=="anorg_Phosphat")]<-"IPO4"
 colnames(datadfpo)[which(colnames(datadfpo)=="org_Phosphat")]<-"OPO4"
 colnames(datadfpo)[which(colnames(datadfpo)=="Ignitionloss")]<-"GV"
+
 colnames(datadfpo)[which(colnames(datadfpo)=="Porosity")]<-"por"
+colnames(datadfpo)[which(colnames(datadfpo)=="Porosity_ERR")]<-"por_ERR"
+
 colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2N")]<-"CN"
 colnames(datadfpo)[which(colnames(datadfpo)=="N2P_org")]<-"NP"
 colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2P_org")]<-"CP"
+colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2N_ERR")]<-"CN_ERR"
+colnames(datadfpo)[which(colnames(datadfpo)=="N2P_org_ERR")]<-"NP_ERR"
+colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2P_org_ERR")]<-"CP_ERR"
+
 colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg")]<-"DIC"
 colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg_ERR")]<-"DIC_ERR"
+
+colnames(datadfpo)[which(colnames(datadfpo)=="N")]<-"TN"
+colnames(datadfpo)[which(colnames(datadfpo)=="N_ERR")]<-"TN_ERR"
+
+#colnames(datadfpo)[which(colnames(datadfpo)=="C_org")]<-"TOC"
+#colnames(datadfpo)[which(colnames(datadfpo)=="C_org_ERR")]<-"TOC_ERR"
 
 
 ##Deal with missing data

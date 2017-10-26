@@ -9,11 +9,11 @@ OBSatstaSSf <- function(sta,cam){
 
   b1<-melt(bTM,.(MidDepth,UpperDepth,LowerDepth))
   
-  #b2<-melt(bTP,.(MidDepth,UpperDepth,LowerDepth))
+  b2<-melt(bTP,.(MidDepth,UpperDepth,LowerDepth))
 
-  #b1<-rbind(b1,b2)
+  b1<-rbind(b1,b2)
     # what is called time here is a depth index  .. we should change this
-  b1$time<-seq(1:length(bTM[,1]))
+  b1$time<-seq(1:length(b1[,1]))
   
 #   Analyses of chamber waters and pore waters were
 #   carried out using techniques cited in Giordani and
@@ -32,7 +32,12 @@ OBSatstaSSf <- function(sta,cam){
   b1[which(b1$var=="NH3"),"err"]  <- datadfpr$NH3_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)] 
   b1[which(b1$var=="NO3"),"err"]  <- datadfpr$NO3_ERR[which(datadfpr$MidDepth>0 & datadfpr$Station==sta & datadfpr$Campaign==cam)] 
 
-#  b1[which(b1$var=="NP"),"err"]  <- datadfpo$NP_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)]
+  b1[which(b1$var=="DIC"),"err"]  <- datadfpo$DIC_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta )]
+  b1[which(b1$var=="TN"),"err"]  <- datadfpo$TN_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta )]
+  #b1[which(b1$var=="TOC"),"err"]  <- datadfpo$TOC_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta )]
+# b1[which(b1$var=="por"),"err"]  <- datadfpo$por_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta )]
+  
+  #  b1[which(b1$var=="NP"),"err"]  <- datadfpo$NP_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)]
 #  b1[which(b1$var=="CN"),"err"]  <- datadfpo$CN_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)] 
  # b1[which(b1$var=="CP"),"err"]  <- datadfpo$CP_ERR[which(datadfpo$MidDepth>0 & datadfpo$Station==sta)] 
   
@@ -55,7 +60,7 @@ OBSatstaSSf <- function(sta,cam){
   
   # Original data are contained in "datadffl"
   bO2f<-data.frame(variable="O2flux",
-                   time=length(bTM[,1])+1,
+                   time=length(b1[,1])+1,
                    value=-datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FO2"],
                   err=min(datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FO2_ERR"],1.5),
                    LowerDepth=0,
@@ -69,28 +74,28 @@ OBSatstaSSf <- function(sta,cam){
      #              UpperDepth=0
   #)
   bNO3f<-data.frame(variable="NO3flux",
-                   time=length(bTM[,1])+1,
+                   time=length(b1[,1])+1,
                    value=-datadffl[which(datadffl$Station==sta) & datadffl$Campaign==cam,"FNO3"],
                    err=datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FNO3_ERR"],
                    LowerDepth=0,
                    UpperDepth=0
   )
   bNH3f<-data.frame(variable="NH3flux",
-                   time=length(bTM[,1])+1,
+                   time=length(b1[,1])+1,
                    value=-datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FNH3"],
                    err=datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FNH3_ERR"],
                    LowerDepth=0,
                    UpperDepth=0
   )
   bSIOf<-data.frame(variable="SIOflux",
-                   time=length(bTM[,1])+1,
+                   time=length(b1[,1])+1,
                    value=-datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FSIO"],
                    err=datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FSIO_ERR"],
                    LowerDepth=0,
                    UpperDepth=0
   )
   bPO4f<-data.frame(variable="PO4flux",
-                    time=length(bTM[,1])+1,
+                    time=length(b1[,1])+1,
                     value=-datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FPO4"],
                     err=datadffl[which(datadffl$Station==sta & datadffl$Campaign==cam),"FPO4_ERR"],
                     LowerDepth=0,
@@ -132,7 +137,7 @@ OBSatstaSSf <- function(sta,cam){
     bPO4f["err"] <-0.03
   }
   
-  b1<-rbind(b1,bNO3f,bNH3f,bSIOf,bPO4f,bO2f,CN) #bDICf NP CP
+  b1<-rbind(b1,bNO3f,bNH3f,bSIOf,bPO4f,bO2f) #bDICf NP CP
   
 return(b1)
 }

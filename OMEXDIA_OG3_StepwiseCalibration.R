@@ -12,7 +12,7 @@ rm(list=ls()) #clears the environment
 # USER CORNER #
 ############### 
 
-pseudoNrun<-200   
+pseudoNrun<-300   
 
 # Here follows the definition of the calibration steps
 # Should be updated to allow more specifc steps redefinition
@@ -20,12 +20,17 @@ pseudoNrun<-200
 
 # To consider for the first calibration step
 ## Parameters 
+PLISTC <- c("pFast","WPOC","mixL","w") #pRef,"rSlow","NCrref","NCrSdet"
+# Observation profiles 
+VLISTC <- c("DIC")#,"TN","TOC","por") #c("TOC","TN") "CN"
+# Observation fluxes
+FLISTC <- c("O2")
+
 PLISTN <- c("pFast","WPOC","biot","mixL","AlphIrr","bwO2","w") #pRef,"rSlow","NCrref","NCrSdet"
 # Observation profiles 
-VLISTN <- c("NH3","NO3","CN") #c("TOC","TN") "CN"
+VLISTN <- c("NH3","NO3")#,"TN","TOC","por") #c("TOC","TN") "CN"
 # Observation fluxes
 FLISTN <- c("NH3","NO3","O2")
-
 
 
 PLISTSIO <- c("rSi","SiCdet","EquilSiO")
@@ -39,9 +44,9 @@ FLISTPO4 <- c("PO4")
 
 # added by A.Eisele 24.10.2017
 #generalized list for automatical calibration procedure on desired fitting steps
-PLIST<-list(PLISTN,PLISTSIO,PLISTPO4)
-VLIST<-list(VLISTN,VLISTSIO,VLISTPO4)
-FLIST<-list(FLISTN,FLISTSIO,FLISTPO4)
+PLIST<-list(PLISTC,PLISTN,PLISTSIO,PLISTPO4)
+VLIST<-list(VLISTC,VLISTN,VLISTSIO,VLISTPO4)
+FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
 
 
 
@@ -97,7 +102,7 @@ icamosta<-1
   
   
   
-  totdir=paste('FITtest_',sta, '_', cam,sep="")    
+  totdir=paste('FITNEW_',sta, '_', cam,sep="")    
   dir.create(totdir) #create new folder
   
   
@@ -131,7 +136,7 @@ icamosta<-1
                   p=parSta[PLIST[[ifit]]],
                    Vlist=VLIST[[ifit]],
                    Flist=FLIST[[ifit]],
-             #      control=list(numiter=pseudoNrun),
+                   control=list(numiter=pseudoNrun),
                    lower=parsmin[PLIST[[ifit]]],
                    upper=parsmax[PLIST[[ifit]]], 
                   method="Pseudo")
@@ -174,25 +179,23 @@ icamosta<-1
   
   
   # Some Sensitivity Plots
+  pdf(paste(totdir,"_Sens.pdf",sep=""),width=10,height=10)
   pairs(Sens)
-  pdf(paste(totdir,"_SensPlot1.pdf",sep=""),width=10,height=10)
   dev.off()
   
 
   
+  pdf(paste(totdir,"_Sens2.pdf",sep=""),width=10,height=10)
   plot(Sens)
-  pdf(paste(totdir,"_SensPlot2.pdf",sep=""),width=10,height=10)
   dev.off()
   
+  pdf(paste(totdir,"_Sens3.pdf",sep=""),width=10,height=10)
   sS<-summary(Sens)
   sS$param<-rownames(sS)
   sS$param <- factor(sS$param, levels = sS$param[order( sS$L1,decreasing = T)])
   ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
   dev.off()
   
-  pdf(paste(totdir,"_Sens.pdf",sep=""),width=10,height=10)
-  pairs(Sens)
-  dev.off()
   
   # Assessing parameters collinearity, based on the sensitivity analysis
   cc<-collin(Sens)
