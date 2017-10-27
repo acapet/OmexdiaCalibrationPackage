@@ -5,51 +5,7 @@
 # The present script implement a stpewise calibration of user data, looping through stations, 
 # or campaigns, following the stepwise approach defined in Capet et al . 2017
 
-rm(list=ls()) #clears the environment
-
-
-###############
-# USER CORNER #
-############### 
-
-pseudoNrun<-300   
-
-# Here follows the definition of the calibration steps
-# Should be updated to allow more specifc steps redefinition
-
-
-# To consider for the first calibration step
-## Parameters 
-PLISTC <- c("pFast","WPOC","mixL","w") #pRef,"rSlow","NCrref","NCrSdet"
-# Observation profiles 
-VLISTC <- c("DIC")#,"TN","TOC","por") #c("TOC","TN") "CN"
-# Observation fluxes
-FLISTC <- c("O2")
-
-PLISTN <- c("pFast","WPOC","biot","mixL","AlphIrr","bwO2","w") #pRef,"rSlow","NCrref","NCrSdet"
-# Observation profiles 
-VLISTN <- c("NH3","NO3")#,"TN","TOC","por") #c("TOC","TN") "CN"
-# Observation fluxes
-FLISTN <- c("NH3","NO3","O2")
-
-
-PLISTSIO <- c("rSi","SiCdet","EquilSiO")
-VLISTSIO <- c("SIO") #"SiDet"
-FLISTSIO <- c("SIO")
-  
-PLISTPO4 <- c("PCrSdet","rCaPprod")
-VLISTPO4 <- c("PO4")
-FLISTPO4 <- c("PO4")
-
-
-# added by A.Eisele 24.10.2017
-#generalized list for automatical calibration procedure on desired fitting steps
-PLIST<-list(PLISTC,PLISTN,PLISTSIO,PLISTPO4)
-VLIST<-list(VLISTC,VLISTN,VLISTSIO,VLISTPO4)
-FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
-
-
-
+#called by:UsersDefinitions.R
 
 #added by A.Eisele 24.10.2017
 #loop iteration over different stations or campaigns
@@ -59,13 +15,12 @@ FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
 #################################
 
 #loop problematical for second loop iteration! needs to remove variables before second loop can be started!
-#for (icamosta in c(1:length(datadfsta$Station))){
 
 
 source('Load_Data.R') #load station data
 
+for (icamosta in c(1:length(datadfsta$Station))){
 
-icamosta<-1
   sta<-datadfsta$Station[icamosta]  
   cam<-datadfsta$Campaign[icamosta]
   
@@ -77,7 +32,7 @@ icamosta<-1
 
 
   # We then create "localdata" dataframes, specific to one station.
-  localdata   <- OBSatstaSSf(sta,cam)
+  localdata   <- OBSatstaSSf(sta)
   localdata$variable<-as.character(localdata$variable)
   
   localdatafl <- subset(localdata, LowerDepth==0&UpperDepth==0)
@@ -102,7 +57,7 @@ icamosta<-1
   
   
   
-  totdir=paste('FITNEW_',sta, '_', cam,sep="")    
+  totdir=paste('FITNEW_',sta,sep="")    
   dir.create(totdir) #create new folder
   
   
@@ -130,6 +85,8 @@ icamosta<-1
   # Inserted loop over Fitting procedure depending on desired Fitting steps
   #######################################
 
+  pseudoNrun<-300   
+  
   for (ifit in c(1:length(PLIST))){
     
     Fit <- modFit(f=OCOST_GEN,
@@ -255,7 +212,7 @@ icamosta<-1
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
   
-  remain<-c("PLIST", "VLIST", "FLIST","icamosta","pseudoNrun")
+  remain<-c("PLIST", "VLIST", "FLIST","icamosta")
   rm(list=setdiff(ls(), remain))
   
-#}
+}

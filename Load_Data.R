@@ -11,53 +11,12 @@
 #Input "datafluxfile" should contain at least data on station, lon, lat, date, depth and variable fluxes columnwise
 #Remeber: R is case-sensitive, so check for letters in your Excel-Files and define variables!
 
-### Define usage
 
-##!Set working directory to corresponding file directory before running the script!
+dfprvarsstay<-c("Station","Campaign","UpperDepth","LowerDepth","MidDepth") #entities that should be exluded from t+he merging to a variable and value cloumn
 
-##Define Excel-Files
-datafile<-"NOAH_C.xlsx"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
+dfflvarsstay<-c("Station","Campaign") #entities that should be exluded from the merging to a variable and value cloumn
 
-##Define variable use
-dfprvarsstay<-c("Station","Campaign","UpperDepth","LowerDepth","MidDepth", "OriginalDepth_cm",
-              "yearday","date") #entities that should be exluded from t+he merging to a variable and value cloumn
-
-dfprvarsspec<-c("NOx","NO2","NO3","NH4_OPA","PO4","Si_OH_4") #variables that should be plotted in an extra plot
-
-dfflvarsstay<-c("Station","Campaign","BottomDepth","yearday","date","Lon",
-                "Lat") #entities that should be exluded from the merging to a variable and value cloumn
-
-dfpovarsstay<-c("Station","Campaign","Date","Lat","Lon","Kind","BottomDepth","UpperDepth","LowerDepth","OriginalDepth","MidDepth")
-
-
-varlimod<-c("NH3","SIO","PO4","NO3") # List of variables that have to be retained
-varlimodpo<-c("DIC","TN")#,"por","TN") #"TOC")
-
-#varlimod<-c(varlimodpo,varlimodpr)
-
-##Define labels and color code affiliation 
-xlabname<-"value [mmol/m^2/d]"
-ylabname<-"Depth [cm]"
-
-camosta<-"Campaign" #or Station
-
-plotting<-0 #set to 1 if you want to produce plots
-
-##Location of Stations
-#mydata_Loc <- c(8.015, 54.07)
-Loc_stamen <- c(4, 53, 9, 56)
-Loc_google <- c(3, 53, 10, 56)  
-
-mapping<-0 #set to 1 if you want to produce maps
-
-## now you can run the script!
-
-## Output-variables for further usage are:
-#datadf
-#datadfforp
-#datadfforp2
-#datadffl
-#datadfflforp
+dfstavarsstay<-c("Station","Campaign","Date","Lat","Lon","BottomDepth")
 
 ###Load necessary packages
 require(reshape2)
@@ -70,11 +29,9 @@ library(ggmap)
 sheet_profiles<-"Profiles"  #data-file of profile data and depth
 sheet_fluxes<-"Fluxes" #data-file of flux data including location of stations (lon,lat)
 sheet_stations<-"Stations" #data-file including station data on location, porosity etx
-sheet_porosity<-"Porosity" #data-file including station data on location, porosity etx
-  
+
 ##Load nutrient data and create dataframe
-datadfpr<-read.xls(datafile, sheet_profiles,
-                   na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
+datadfpr<-read.xls(datafile, sheet_profiles, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
 
 ##Load benthic fluxes and create dataframe
 datadffl<- read.xls(datafile, sheet_fluxes, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
@@ -82,86 +39,19 @@ datadffl<- read.xls(datafile, sheet_fluxes, na.strings=c("#"),as.is = TRUE,fileE
 ##Load station information and create dataframe
 datadfsta<- read.xls(datafile, sheet_stations, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
-##Load station information and create dataframe
-datadfpo<- read.xls(datafile, sheet_porosity, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
-
-
-##Define variable names
-colnames(datadfpr)[which(colnames(datadfpr)=="Top")]<-"UpperDepth"
-colnames(datadfpr)[which(colnames(datadfpr)=="Bottom")]<-"LowerDepth"
-colnames(datadfpr)[which(colnames(datadfpr)=="NO3")]<-"NO3_WO_NO"
-colnames(datadfpr)[which(colnames(datadfpr)=="NO3_ERR")]<-"NO3_WO_NO_ERR"
-
-colnames(datadfpr)[which(colnames(datadfpr)=="NH4_OPA")]<-"NH3"
-colnames(datadfpr)[which(colnames(datadfpr)=="NOx")]<-"NO3"
-colnames(datadfpr)[which(colnames(datadfpr)=="Si_OH_4")]<-"SIO"
-colnames(datadfpr)[which(colnames(datadfpr)=="NH4_OPA_ERR")]<-"NH3_ERR"
-colnames(datadfpr)[which(colnames(datadfpr)=="NOx_ERR")]<-"NO3_ERR"
-colnames(datadfpr)[which(colnames(datadfpr)=="Si_OH_4_ERR")]<-"SIO_ERR"#colnames(datadf)[which(colnames(datadf)=="Si_frozen")]<-"SiDet"
-#colnames(datadf)[which(colnames(datadf)=="OC")]<-"TOC"
-
-colnames(datadffl)[which(colnames(datadffl)=="FNH4")]<-"FNH3"
-colnames(datadffl)[which(colnames(datadffl)=="FNH4_ERR")]<-"FNH3_ERR"
-colnames(datadffl)[which(colnames(datadffl)=="FNOx")]<-"FNO3"
-colnames(datadffl)[which(colnames(datadffl)=="FNOx_ERR")]<-"FNO3_ERR"
-colnames(datadffl)[which(colnames(datadffl)=="FSiO4")]<-"FSIO"
-colnames(datadffl)[which(colnames(datadffl)=="FSiO4_ERR")]<-"FSIO_ERR"
-
-colnames(datadfpo)[which(colnames(datadfpo)=="totalPhosphat")]<-"TPO4"
-colnames(datadfpo)[which(colnames(datadfpo)=="anorg_Phosphat")]<-"IPO4"
-colnames(datadfpo)[which(colnames(datadfpo)=="org_Phosphat")]<-"OPO4"
-colnames(datadfpo)[which(colnames(datadfpo)=="Ignitionloss")]<-"GV"
-
-colnames(datadfpo)[which(colnames(datadfpo)=="Porosity")]<-"por"
-colnames(datadfpo)[which(colnames(datadfpo)=="Porosity_ERR")]<-"por_ERR"
-
-colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2N")]<-"CN"
-colnames(datadfpo)[which(colnames(datadfpo)=="N2P_org")]<-"NP"
-colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2P_org")]<-"CP"
-colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2N_ERR")]<-"CN_ERR"
-colnames(datadfpo)[which(colnames(datadfpo)=="N2P_org_ERR")]<-"NP_ERR"
-colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg2P_org_ERR")]<-"CP_ERR"
-
-colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg")]<-"DIC"
-colnames(datadfpo)[which(colnames(datadfpo)=="C_anorg_ERR")]<-"DIC_ERR"
-
-colnames(datadfpo)[which(colnames(datadfpo)=="N")]<-"TN"
-colnames(datadfpo)[which(colnames(datadfpo)=="N_ERR")]<-"TN_ERR"
-
-#colnames(datadfpo)[which(colnames(datadfpo)=="C_org")]<-"TOC"
-#colnames(datadfpo)[which(colnames(datadfpo)=="C_org_ERR")]<-"TOC_ERR"
-
 
 ##Deal with missing data
 datadfpr<-cbind(datadfpr,MidDepth=(datadfpr$LowerDepth+datadfpr$UpperDepth)/2)
-datadfpo<-cbind(datadfpo,MidDepth=(datadfpo$LowerDepth+datadfpo$UpperDepth)/2)
 
 
-##Add variables
-#datadf<-ddply(datadf,.(Station), function(dsub){
-#  print(dsub)
-#  Surnind<-which(dsub[,"MidDepth"]==0)
-#  print(Surnind)
-#  DICdelt <- dsub[,"DIC"]-dsub[Surnind,"DIC"]
-#  DINdelt <- dsub[,"NH4_OPA"]-dsub[Surnind,"NH4_OPA"]
-#  DIPdelt <- dsub[,"PO4"]-dsub[Surnind,"PO4"]
-#  cbind(dsub, data.frame( 
-#                          #DICdelt = DICdelt,
-#                          DINdelt = DINdelt,
-#                          DIPdelt = DIPdelt,
-#                          #CN = DICdelt/DINdelt,
-#                          #CP = DICdelt/DIPdelt,
-#                          NP = DINdelt/DIPdelt)
-#  )
-#}
-#)
+
 
 if (plotting==1) {
 
 ###Convert datafiles to data frames and subsets of data
 
 datadfprforp<-melt(datadfpr,id.vars=dfprvarsstay) #creating data frame
-datadfprforp2<-subset(datadfprforp,variable %in% dfprvarsspec) #creating subset of data
+datadfprforp2<-subset(datadfprforp,variable %in% plotvars) #creating subset of data
 # ART 22102017: added a test to consider only the elements of "dfflvarsstay" that are effectively present as column in the "FLUX" sheet 
 datadfflforp<-melt(datadffl,id.vars=dfflvarsstay[which(dfflvarsstay %in% colnames(datadffl))]) #creating data frame
 datadfpoforp<-melt(datadfpo,id.vars=dfpovarsstay) #creating data frame

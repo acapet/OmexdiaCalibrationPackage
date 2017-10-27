@@ -28,7 +28,7 @@ require(reshape2)
 source("OMEXDIA_OG3_BasicSetup.R")
 
 # Get observations for a selected station
-source("OMEXDIA_OG3_ObsAtSta_NOAH.R")
+source("OMEXDIA_OG3_ObsAtSta.R")
 
 # Convert model outputs to observation-equivalent
 source("OMEXDIA_OG3_DIA2OBS.R")
