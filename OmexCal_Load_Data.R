@@ -1,7 +1,22 @@
-#title: "Load_Observation_Data"
-#author: "Annika Eisele (Helmholtz-Zentrum Geesthacht) and Arthur Capet (Universite de Liege)"
-#comment: "R-coding alterations by A.Eisele based on R-scripts provided by A.Capet"" 
-#date: "18 Oktober 2017"
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+# A. Eisele, annika.eisele@hzg.de
+################
+#
+# Description :
+# This script loads all the auxiliary functions, and runs + display a first simulation.
+# It then provides an example of how to load data, compute model misfits for specific variables, 
+# and display the comparison with model ouptuts
+#
+################
 
 ### About this script
 #This is a script to upload observation data and convert them to a data frame in R for further processing
@@ -102,6 +117,7 @@ rm(dfFluxes_err)
 # Plotting (According to flags in User file)
 
 if (plotting) {
+  dir.create(plotdir)
 ###Convert datafiles to data frames and subsets of data
   dfProfilesforp <-subset(dfProfiles,variable %in% plotvars) # creating subset of data with only model variables (given in svarnames)
 
@@ -112,7 +128,6 @@ if (plotting) {
   colordfnuaffi  <- eval(parse(text=coloraffiname),envir = dfProfiles)
   colordfnuaffi2 <- eval(parse(text=coloraffiname),envir = dfProfilesforp) 
   colordfflaffi  <- eval(parse(text=coloraffiname),envir = dfFluxes) 
-#  colordfpoaffi<-eval(parse(text=coloraffiname),envir = datadfpoforp) 
 
 ##Plot nutrient data
   G1 <- ggplot(dfProfiles, aes(y=MidDepth, x=value, color=colordfnuaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
@@ -122,32 +137,34 @@ if (plotting) {
     ylab(ylabname)+xlab(xlabname)
   
   pdf(paste0(plotdir,"/ProfileData1.pdf"))
-  G1
+   print(G1)
   dev.off()
 
 ##Plot subset of nutrient data
-  ggplot(dfProfilesforp, aes(y=MidDepth, x=value, color=colordfnuaffi2))+ 
+  G2 <- ggplot(dfProfilesforp, aes(y=MidDepth, x=value, color=colordfnuaffi2))+ 
     geom_point()+
     geom_errorbarh(aes(xmin=value-err,xmax=value+err))+geom_path()+
     facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
     ylab(ylabname)+xlab(xlabname)
 
+  pdf(paste0(plotdir,"/ProfileData2.pdf"))
+  print(G2)
+  dev.off()
+  
 ##Plot flux data according to Campaigns
   dfFluxesforpv <- dfFluxes 
   dfFluxesforpv$BottomDepth<-dfStations$BottomDepth
 
-  ggplot(dfFluxesforpv, aes(y=BottomDepth, x=value, color=colordfflaffi))+ 
+  G3 <- ggplot(dfFluxesforpv, aes(y=BottomDepth, x=value, color=colordfflaffi))+ 
   geom_point()+
   geom_errorbarh(aes(xmin=value-err,xmax=value+err))+
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab("Water Depth - [m]")+xlab(xlabname)
 
-##Plot porosity data
-#ggplot(datadfpoforp, aes(y=MidDepth, x=value, color=colordfpoaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
-#  geom_point()+geom_path()+
-#  geom_errorbarh(aes(xmin=value-error,xmax=value+error))+geom_path()+
-#  facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
-#  ylab(ylabname)+xlab(xlabname)
+  pdf(paste0(plotdir,"/FluxData2.pdf"))
+  print(G3)
+  dev.off()
+  
 }
 
 ### Mapping Stations
@@ -161,7 +178,10 @@ if (mapping) {
     geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
     geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
   Sys.sleep(10) 
+  
+  pdf(paste0(plotdir,"/StationMap.pdf"))
   ms1
+  dev.off()
 
   ##Mapping with google
   myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)

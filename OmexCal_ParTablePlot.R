@@ -1,3 +1,26 @@
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+# A. Eisele, annika.eisele@hzg.de
+################
+#
+# Description :
+# This function  provides a table summarizing Parameters value
+#
+# Argument : 
+# * p : parameter vector
+#
+# Value : 
+# * t : a ggplot table object.  
+################
+
 partableplot<-function(p) {
   
   parsdfl<-parsdf

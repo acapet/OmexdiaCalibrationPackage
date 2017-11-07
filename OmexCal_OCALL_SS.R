@@ -1,3 +1,22 @@
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+# A. Eisele, annika.eisele@hzg.de
+################
+#
+# Description :
+# This functions receives a vector of parameter and returns the correpsonding Steady-State Omexdia model solution
+#
+################
+
+
 OCALL <- function (p) {
   parpert<-parSta
   parpert[c(names(p))]<-as.numeric(p)

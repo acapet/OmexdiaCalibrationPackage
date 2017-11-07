@@ -1,3 +1,22 @@
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+# A. Eisele, annika.eisele@hzg.de
+################
+#
+# Description :
+# This script : 
+# * defines essential objects for OMEXIDA simulaitons (grids, etc ..)
+# * Provide guess value and bounds for parameters
+################
+
 require(ReacTran)   
 require(marelac)
 require(ggplot2)
@@ -98,7 +117,7 @@ qplot(1:10, 1:10, geom = "blank")+theme_bw()+
   annotation_custom(grob = tableGrob(format(parsdfforprint,digits = 3,nsmall=0,scientific=F,drop0trailing=T))) 
 
 # names of state variables and initial conditions
-svarnames   <- c("FDET", "SDET", "O2", "NO3", "NH3", "ODU","DIC","SiDet","SIO","PO4","FeP","CaP")
+svarnames   <- c("FDET", "SDET", "O2", "NOx", "NH3", "ODU","DIC","SiDet","SIO","PO4","FeP","CaP")
 nspec       <- length(svarnames)
 Cini        <- rep(10, N*nspec)
 DbGrid      <- setup.prop.1D(func = exp.profile, x.0 = pars["mixL"],

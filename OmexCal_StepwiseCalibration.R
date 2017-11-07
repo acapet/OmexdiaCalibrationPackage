@@ -1,14 +1,24 @@
-# This script is part of the OmexdiaCalibration suite.
-# A. Capet, 2017, acapet@ulg.ac.be 
-# changed by A.Eisele, 2017, annika.eisele@hzg.de
-
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+# A.Eisele, 2017, annika.eisele@hzg.de
+################
+#
+# Description :
 # The present script implement a stpewise calibration of user data, looping through stations, 
 # or campaigns, following the stepwise approach defined in Capet et al . 2017
-
-#called by:UsersDefinitions.R
-
-#added by A.Eisele 24.10.2017
-#loop iteration over different stations or campaigns
+#
+################
+#
+# added by A.Eisele 24.10.2017
+# loop iteration over different stations or campaigns
 
 ##################################
 # Load model and observation data
