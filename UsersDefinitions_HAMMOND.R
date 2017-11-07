@@ -83,12 +83,11 @@ PLIST<-list(PLISTC,PLISTN,PLISTSIO,PLISTPO4)
 VLIST<-list(VLISTC,VLISTN,VLISTSIO,VLISTPO4)
 FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
 
-
-
-
 #####################
 #Plotting and Mapping
 #####################
+# Directory for Plot outputs
+plotdir  <- paste0(getwd(),"/Plots_HAM/")
 
 #Define if you wish to plot your observation data before the calibration procedure
 plotting<-1 #set to 1 if you want to produce plots of your observation data

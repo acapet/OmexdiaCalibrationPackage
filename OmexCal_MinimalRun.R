@@ -42,7 +42,7 @@ Simplot(pars)
 ##  USER DATA ##
 ################
 
-if (FALSE){
+if (TRUE){
   source('UsersDefinitions_HAMMOND.R')
   sta<-"H2"
   cam<-"Sep89"
@@ -52,7 +52,7 @@ if (FALSE){
   cam<-"HE432"
 }
 
-source('Load_Data.R')
+source('OmexCal_Load_Data.R')
 
 # We then create "local" dataframes, specific to one station.
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
@@ -72,7 +72,6 @@ ggplot(localdata,
 
 #  Cost function can be called with a list of profile variables and a list of flux variables
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
- C2 <- OCOST_GEN(pars,Vlist = "NOx")
  C3 <- OCOST_GEN(pars,Vlist = c("NOx","PO4","NH3"))
  C4 <- OCOST_GEN(pars,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
 

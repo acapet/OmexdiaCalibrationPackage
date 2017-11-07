@@ -35,16 +35,16 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
     return(d)})
   
   Mp <- dcast(llocaldata,slice~variable,value.var="modval")
-  Op<- llocaldata[,c("variable","slice","value","err")]
+  Op <- llocaldata[,c("variable","slice","value","err")]
   
   ########### To BE corrected ##############
   DIA$NOxdeepflux <- DIA$NO3deepflux
   DIA$NOxflux     <- DIA$NO3flux
   DIA$NOxIrrflux  <- DIA$NOxIrrflux
   ############################################
-  
+
   # Shaping Fluxes Data 
-  if(!is.null(Flist))
+  if(!is.null(Flist) )
   {  flist<-lapply(Flist,function(Fi){
     # It is considered that irrigative and diffusive fluxes should be merged to match measured (incubation) fluxes
     ff<-( (DIA[[paste0(Fi,"flux")]] +IntegratedRate(DIA[[paste0(Fi,"Irrflux")]]))/100)
@@ -58,7 +58,7 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
   Mf<-as.data.frame(flist)
   colnames(Mf)<-paste0(Flist,"flux")
   
-  llocaldatafl <- subset(localdatafl,variable %in% paste0("F",Vlist))
+  llocaldatafl <- subset(localdatafl,variable %in% paste0("F",Flist))
   llocaldatafl$variable<-paste0(substr(llocaldatafl$variable,2,50),"flux")
   
   Of<-llocaldatafl[,c("variable","value","err")]

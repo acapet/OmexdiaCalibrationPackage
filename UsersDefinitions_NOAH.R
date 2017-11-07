@@ -1,7 +1,22 @@
-#title   : "UsersDefinitions"
-#author  : "Annika Eisele (Helmholtz-Zentrum Geesthacht) and Arthur Capet (Universite de Liege)"
-#comment : "R-coding alterations by A.Eisele based on R-scripts provided by A.Capet"" 
-#date    : "18 Oktober 2017"
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+# A. Eisele, annika.eisele@hzg.de
+################
+#
+# Description :
+# This script loads all the auxiliary functions, and runs + display a first simulation.
+# It then provides an example of how to load data, compute model misfits for specific variables, 
+# and display the comparison with model ouptuts
+#
+################
 
 ###################### 
 #About this script
@@ -14,7 +29,7 @@
 # Futhermore you can define if you wish that your locations of the observation stations are mapped
 # Define the usage and you can run the script without further editing
 # The Input "datafile" should be in the general setup defined and described at OMEXDIACalibrationPackage
-# Remember: R is case-sensitive, so check for letters in your Excel-Files and defined variables!
+# Remeber: R is case-sensitive, so check for letters in your Excel-Files and defined variables!
 
 ##!Set working directory to corresponding file directory before running the script!
 # rm(list=ls()) #clears the environment
@@ -73,7 +88,7 @@ FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
 #Plotting and Mapping
 #####################
 # Directory for Plot outputs
-plotdir  <- paste0(getwd(),"/Plots/")
+plotdir  <- paste0(getwd(),"/Plots_NOAH/")
 
 #Define if you wish to plot your observation data before the calibration procedure
 plotting <- 1 #set to 1 if you want to produce plots of your observation data
