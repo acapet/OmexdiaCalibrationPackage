@@ -145,7 +145,6 @@ fluxtable(pars)$p
 
 ``` r
 # Collect all on the same plot
-#pdf(paste(plotdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
 grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
              arrangeGrob(partableplot(parSta)),
              arrangeGrob(fluxtable(parSta)$p,
@@ -154,7 +153,3 @@ grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
 ```
 
 ![](Figs/unnamed-chunk-6-4.png)
-
-``` r
-#dev.off()
-```
