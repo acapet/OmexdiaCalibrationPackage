@@ -32,29 +32,20 @@ camlist <- "Sep89"
 
 source('OmexCal_Load_Data.R') 
 
-
-
 #Looping
-
 dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
 
 for (icamosta in (1:nrow(dsStasub))){
-  icamosta <- 1
+#  icamosta <- 1
   sta<-dsStasub$Station[icamosta]  
   cam<-dsStasub$Campaign[icamosta]
   
   print(sta)
-  # We then create "local" dataframes, specific to one station.
+  # We then create "local" dataframes, specific to one station/campaign.
   localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
   localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
   localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
   
-  print(cam)
-  
-  # We then create "local" dataframes, specific to one station.
-  localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
-  localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
-  localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
   
   # Setting the Non-local irrigation framework
   parsdf["AlphIrr","guess"]<-10/365
@@ -62,9 +53,7 @@ for (icamosta in (1:nrow(dsStasub))){
 
   # Load parameters
   parRange    <- parsdf[,c("guess","min","max","unit","printfactor","printunit")]
-  # pars        <- as.numeric(parRange[,"guess"])
-  # names(pars) <- rownames(parRange)
-  
+
   # Update parameters with local value (+ background update of the global porosity grid )
   parSta    <- OmexCal_AdaptForSta(pars)
   
@@ -81,22 +70,12 @@ for (icamosta in (1:nrow(dsStasub))){
                ncol = 3,nrow=1, widths=c(5*3,7,5), heights = c(12))
   dev.off()
 
-  
-  #!!!Error in DIA$y[which(ModelDepths > localdata$UpperDepth[i] & ModelDepths <  : 
-  #!!!                       subscript out of bounds
-  
   # Defining the list of parameters that may be calibrated in one of the calibration steps
   parRange <- parRange[which(rownames(parRange) %in% unlist(PLIST)),] 
   parsvect <- as.numeric(as.matrix(parRange$guess)); names(parsvect) <- rownames(parRange); 
   parsmin  <- as.numeric(as.matrix(parRange$min)); names(parsmin) <- rownames(parRange); 
   parsmax  <- as.numeric(as.matrix(parRange$max)); names(parsmax) <- rownames(parRange); 
   
-  
-  #######################################
-  # A.Eisele 23.10.2017
-  # Inserted loop over Fitting procedure depending on desired Fitting steps
-  #######################################
-
   pseudoNrun<-300   
   
   for (ifit in c(1:length(PLIST))){
@@ -109,7 +88,6 @@ for (icamosta in (1:nrow(dsStasub))){
                    lower=parsmin[PLIST[[ifit]]],
                    upper=parsmax[PLIST[[ifit]]], 
                   method="Pseudo")
-    
     
     Simplot(Fit$par)
     paste("Fit", ifit, "done")
@@ -133,8 +111,6 @@ for (icamosta in (1:nrow(dsStasub))){
     print(parSta)
   }
     
-
-  
   ##########################
   ## Collinearity + Refit ##
   ##########################
@@ -151,8 +127,6 @@ for (icamosta in (1:nrow(dsStasub))){
   pdf(paste(totdir,"_Sens.pdf",sep=""),width=10,height=10)
   pairs(Sens)
   dev.off()
-  
-
   
   pdf(paste(totdir,"_Sens2.pdf",sep=""),width=10,height=10)
   plot(Sens)

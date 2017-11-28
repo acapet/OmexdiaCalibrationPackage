@@ -1,10 +1,16 @@
 # OmexdiaCalibrationPackage
 
+This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+This toolbox is aimed at facilitating the calibration of the Omexdia diagentic model to user data.
+It exploits essentially codes and methods developped by K. Soetaert (NIOZ).
 
-First Commit contains:
 
-* omexdia_OG3.f .......... : Extended OMEXDIA model, in Fortran
-* OMEXDIA_OG3_BasicSetup.R : Parameters and grid setup
-* OMEXDIA_OG3_OCALL_SS.R . : Function to call the model with modified subset of parameters
-* OMEXDIA_OG3_SimplePlot.R : Plot profiles for one given set of parameters
-* OMEXDIA_OG3_MinimalRun.R : Try this one !! (First simple test)
+
+
+
+*****
+Arthur Capet (acapet@uliege.be), Oct 2017.
+
+Contributors : 
+ A. Capet , acapet@ulg.ac.be 
+ A.Eisele, 2017, annika.eisele@hzg.de
