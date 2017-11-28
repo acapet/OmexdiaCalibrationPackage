@@ -15,71 +15,6 @@ This script loads all the auxiliary functions, and runs + display a first simula
 source("OmexCal_Load.R")
 ```
 
-    ## Loading required package: gdata
-
-    ## gdata: read.xls support for 'XLS' (Excel 97-2004) files ENABLED.
-
-    ## 
-
-    ## gdata: read.xls support for 'XLSX' (Excel 2007+) files ENABLED.
-
-    ## 
-    ## Attaching package: 'gdata'
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     nobs
-
-    ## The following object is masked from 'package:utils':
-    ## 
-    ##     object.size
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     startsWith
-
-    ## Loading required package: ReacTran
-
-    ## Loading required package: rootSolve
-
-    ## Loading required package: deSolve
-
-    ## Loading required package: shape
-
-    ## Loading required package: marelac
-
-    ## Loading required package: seacarb
-
-    ## Loading required package: oce
-
-    ## Loading required package: gsw
-
-    ## Loading required package: testthat
-
-    ## 
-    ## Attaching package: 'marelac'
-
-    ## The following objects are masked from 'package:oce':
-    ## 
-    ##     coriolis, gravity
-
-    ## Loading required package: FME
-
-    ## Loading required package: coda
-
-    ## Loading required package: plyr
-
-    ## Loading required package: gridExtra
-
-    ## 
-    ## Attaching package: 'gridExtra'
-
-    ## The following object is masked from 'package:gdata':
-    ## 
-    ##     combine
-
-    ## Loading required package: reshape2
-
 Example of use
 ==============
 
@@ -96,9 +31,7 @@ DIA <-OCALL(parSta)
 Simplot(pars)
 ```
 
-    ## Warning: Removed 16 rows containing missing values (geom_path).
-
-![](OmexCal_MinimalRun_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-2-1.png)
+![](Figs/unnamed-chunk-2-1.png)
 
 ``` r
 # .. or with model outputs -> TO UPDATE
@@ -115,28 +48,7 @@ source('UsersDefinitions_HAMMOND.R')
 
 # This loads data the based on info given in the UserDefinitions....R
 source('OmexCal_Load_Data.R')
-```
 
-    ## Warning in dir.create(plotdir): '/home/arthur/Desktop/DOCS/TEACHING/
-    ## SedModelling/GitHub/OmexdiaCalibration/Plots_HAM' already exists
-
-    ## Warning: Removed 44 rows containing missing values (geom_point).
-
-    ## Warning: Removed 44 rows containing missing values (geom_errorbarh).
-
-    ## Warning: Removed 3 rows containing missing values (geom_path).
-
-    ## Warning: Removed 27 rows containing missing values (geom_point).
-
-    ## Warning: Removed 27 rows containing missing values (geom_errorbarh).
-
-    ## Warning: Removed 3 rows containing missing values (geom_path).
-
-    ## Warning: Removed 7 rows containing missing values (geom_point).
-
-    ## Warning: Removed 7 rows containing missing values (geom_errorbarh).
-
-``` r
 sta<-"H2"
 cam<-"Sep89"
 
@@ -151,18 +63,7 @@ Some parameters are general, some have to ba adapted for each station/campaign. 
 ``` r
 # In addition, some global parameters have to be given a local (station+campagin) value
 parSta    <- OmexCal_AdaptForSta()
-```
 
-    ## Warning in OmexCal_AdaptForSta(): Using local portop value for H2 Sep89
-
-    ## Warning in OmexCal_AdaptForSta(): Using global porbot value for H2 Sep89
-
-    ## Warning in OmexCal_AdaptForSta(): Using global pora value for H2 Sep89
-
-    ## Warning in OmexCal_AdaptForSta(): Assuming Accumulation given in HAMMOND_Data.xls are gr/cm²/yr and a dry sediment density of 2.5 gr/cm³.
-    ##           Consider adapting OmexCal_AdaptParsForStation if needed (or, better, convert your data)
-
-``` r
 ggplot(localdata,
        aes(x=value,y=UpperDepth/2+LowerDepth/2,
              ymax=UpperDepth,ymin=LowerDepth,
@@ -173,13 +74,7 @@ ggplot(localdata,
   facet_wrap(~variable,scales = "free")+ylim(c(30,0))
 ```
 
-    ## Warning: Removed 9 rows containing missing values (geom_errorbar).
-
-    ## Warning: Removed 9 rows containing missing values (geom_errorbarh).
-
-    ## Warning: Removed 9 rows containing missing values (geom_point).
-
-![](OmexCal_MinimalRun_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
+![](Figs/unnamed-chunk-4-1.png)
 
 Modal-Data metrics
 ==================
@@ -234,27 +129,19 @@ Simplot(pars,plotdata=TRUE)+        # The flag TRUE is used to disaply the data 
   ggtitle(paste(sta,"0. No Fit"))
 ```
 
-    ## Warning: Ignoring unknown aesthetics: y
-
-    ## Warning: Ignoring unknown aesthetics: y
-
-    ## Warning: Removed 16 rows containing missing values (geom_path).
-
-![](OmexCal_MinimalRun_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-1.png)
+![](Figs/unnamed-chunk-6-1.png)
 
 ``` r
 partableplot(pars)
 ```
 
-![](OmexCal_MinimalRun_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-2.png)
+![](Figs/unnamed-chunk-6-2.png)
 
 ``` r
 fluxtable(pars)$p
 ```
 
-    ## No id variables; using all as measure variables
-
-![](OmexCal_MinimalRun_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-3.png)
+![](Figs/unnamed-chunk-6-3.png)
 
 ``` r
 # Collect all on the same plot
@@ -266,15 +153,7 @@ grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
              ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))
 ```
 
-    ## Warning: Ignoring unknown aesthetics: y
-
-    ## Warning: Ignoring unknown aesthetics: y
-
-    ## No id variables; using all as measure variables
-
-    ## Warning: Removed 16 rows containing missing values (geom_path).
-
-![](OmexCal_MinimalRun_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-4.png)
+![](Figs/unnamed-chunk-6-4.png)
 
 ``` r
 #dev.off()
