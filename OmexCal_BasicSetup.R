@@ -15,6 +15,8 @@
 # This script : 
 # * defines essential objects for OMEXIDA simulaitons (grids, etc ..)
 # * Provide guess value and bounds for parameters
+# 
+# This is a script, not a function, so variables defined here are global.
 ################
 
 require(ReacTran)   
@@ -38,8 +40,8 @@ parsdf<-rbind(
   # abiotic conditions
   data.frame(row.names="Temp"       ,guess=14       ,min=5        ,max=26       ,unit="°C"       ,printfactor=1,printunit=NA    ,  constrain ='Pel. Mod.')      , # Temperature
   data.frame(row.names="Sal"        ,guess=36       ,min=36       ,max=38       ,unit="psu"      ,printfactor=1,printunit=NA     ,  constrain ='Pel. Mod.')       , # Salinity
-  data.frame(row.names="por"        ,guess=0.65      ,min=0.5      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
-  data.frame(row.names="porinf"     ,guess=0.6     ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
+  data.frame(row.names="portop"     ,guess=0.65      ,min=0.5      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
+  data.frame(row.names="porbot"     ,guess=0.6     ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
   data.frame(row.names="pora"       ,guess=0.5      ,min=0.25     ,max=0.75     ,unit=" "        ,printfactor=1,printunit=NA     ,  constrain ='Fixed Map')   , # porosity decrease
   # Bioturbation
   data.frame(row.names="biot"       ,guess=10/365   ,min=0.01/365 ,max=30/365   ,unit="cm2/d"    ,printfactor=365, printunit="cm2/yr" , constrain ='Biol.') ,     # bioturbation coefficient % range from TROMP1995
@@ -120,6 +122,7 @@ qplot(1:10, 1:10, geom = "blank")+theme_bw()+
 svarnames   <- c("FDET", "SDET", "O2", "NOx", "NH3", "ODU","DIC","SiDet","SIO","PO4","FeP","CaP")
 nspec       <- length(svarnames)
 Cini        <- rep(10, N*nspec)
+
 DbGrid      <- setup.prop.1D(func = exp.profile, x.0 = pars["mixL"],
                              y.0 = pars["biot"]  , y.inf = 0 , x.att = 1, 
                              grid = Grid)
@@ -142,19 +145,26 @@ pars["DispDIC"]    <- mean(as.numeric(DiffCoeffs[c("CO2","HCO3","CO3")]))
 pars["DispSIO"]    <- as.numeric(DiffCoeffs["H4SiO4"])
 pars["DispPO4"]    <- as.numeric(DiffCoeffs["PO4"])
 
-porGrid            <- setup.prop.1D(value =   pars["por"] , grid = Grid)  
-porGridSolid       <- setup.prop.1D(value = 1-pars["por"] , grid = Grid )
+############
+# Porosity #
+############
 
-if (F){ # Constant Porosity
-} else { # Exp. Porosity
-  porGrid             <- setup.prop.1D(func = exp.profile, x.0 = 0,
-                                       y.0 = pars["por"], y.inf =pars["porinf"], x.att = 1/pars["pora"] , 
+  # Opt1 : Constant porosity (ie., no compaction)
+  porGrid            <- setup.prop.1D(value =   pars["portop"] , grid = Grid)  
+  porGridSolid       <- setup.prop.1D(value = 1-pars["portop"] , grid = Grid )
+
+  if (TRUE) { 
+  # Opt2 : Exponential porosity decrease (ie., compaction)
+  porGrid             <- setup.prop.1D(func  = exp.profile, x.0 = 0,
+                                       y.0   = pars["portop"],
+                                       y.inf = pars["porbot"],
+                                       x.att = 1/pars["pora"] , 
                                        grid = Grid)
-  porGrid$mid[N]<-porGrid$mid[N-1]
-  porGrid$int[N+1]<-porGrid$mid[N]
-  porGrid$int[N]<-porGrid$mid[N]
-  porGridSolid$mid    <- 1-porGrid$mid
-  porGridSolid$int    <- 1-porGrid$int
+  porGrid$mid[N]   <- porGrid$mid[N-1]
+  porGrid$int[N+1] <- porGrid$mid[N]
+  porGrid$int[N]   <- porGrid$mid[N]
+  porGridSolid$mid <- 1-porGrid$mid
+  porGridSolid$int <- 1-porGrid$int
 }
 
 

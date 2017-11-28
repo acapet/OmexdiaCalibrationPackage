@@ -1,75 +1,77 @@
-################
+################################################################################################################
 #
 # This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
 # This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
 #
 # Arthur Capet (acapet@ulg.ac.be), Oct 2017.
 #
-################
+################################################
 # Contributors : 
 # A. Capet , acapet@ulg.ac.be 
 # A.Eisele, 2017, annika.eisele@hzg.de
-################
+################################################
 #
 # Description :
-# The present script implement a stpewise calibration of user data, looping through stations, 
-# or campaigns, following the stepwise approach defined in Capet et al . 2017
+# The present script implement a stepwise calibration of user data, looping through stations, 
+# or campaigns, following the stepwise approach defined in Capet et al . (in prep.)
 #
-################
-#
-# added by A.Eisele 24.10.2017
-# loop iteration over different stations or campaigns
-
-##################################
+################################################
 # Load model and observation data
-#################################
+################################################
 
-#loop problematical for second loop iteration! needs to remove variables before second loop can be started!
+# ! <Annika : loop problematical for second loop iteration! needs to remove variables before second loop can be started!
 
 
-source('Load_Data.R') #load station data
+# load OMXEDIA model
+source("OmexCal_Load.R")  
 
-for (icamosta in c(1:length(datadfsta$Station))){
+# load station data
+source('UsersDefinitions_HAMMOND.R')
+stalist <- c("H1","H2")
+camlist <- "Sep89"
 
-  sta<-datadfsta$Station[icamosta]  
-  cam<-datadfsta$Campaign[icamosta]
+source('OmexCal_Load_Data.R') 
+
+
+
+#Looping
+
+dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
+
+for (icamosta in (1:nrow(dsStasub))){
+  icamosta <- 1
+  sta<-dsStasub$Station[icamosta]  
+  cam<-dsStasub$Campaign[icamosta]
   
   print(sta)
+  # We then create "local" dataframes, specific to one station.
+  localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
+  localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
+  localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
+  
   print(cam)
   
-  
-  source("OMEXDIA_OG3_Load.R") #load OMXEDIA model
-
-
-  # We then create "localdata" dataframes, specific to one station.
-  localdata   <- OBSatstaSSf(sta)
-  localdata$variable<-as.character(localdata$variable)
-  
-  localdatafl <- subset(localdata, LowerDepth==0&UpperDepth==0)
-  localdata   <- subset(localdata, !(LowerDepth==0&UpperDepth==0))
-
+  # We then create "local" dataframes, specific to one station.
+  localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
+  localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
+  localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
   
   # Setting the Non-local irrigation framework
   parsdf["AlphIrr","guess"]<-10/365
   parsdf["IrrEnh","guess"]<-1 
+
+  # Load parameters
+  parRange    <- parsdf[,c("guess","min","max","unit","printfactor","printunit")]
+  # pars        <- as.numeric(parRange[,"guess"])
+  # names(pars) <- rownames(parRange)
   
+  # Update parameters with local value (+ background update of the global porosity grid )
+  parSta    <- OmexCal_AdaptForSta(pars)
   
-  # The following wil have to be considered to load station specific- environmental info
-  # into global variables, ie. Porosity parameters, bottom water conditions, sedimentation rate, etc ...
-  # adapted <-AdaptParsForStation_SS(pars,station)
-  # parSta <-adapted$parslpars
-  parSta <-pars
+  Simplot(parSta)
   
-  
-  parRange<-parsdf[,c("guess","min","max","unit","printfactor","printunit")]
-  pars<-as.numeric(parRange[,"guess"])
-  names(pars)<-rownames(parRange)
-  
-  
-  
-  totdir=paste('FITNEW_',sta,sep="")    
+  totdir=paste(plotdir,'FITNEW_',sta,sep="")    
   dir.create(totdir) #create new folder
-  
   
   # Plot 0 : No Fit
   pdf(paste(totdir,"_Fit0.pdf",sep=""),width=5*(3+1)+2+5,height=15)

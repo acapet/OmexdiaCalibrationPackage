@@ -52,6 +52,9 @@ source('OmexCal_COST_generic.R')
 # BudgetDiagnostic tools
 source('OmexCal_BudgetFunctions.R')
 
+# Update porosity & bottom water conditions
+source('OmexCal_AdaptParsForStation.R')
+
 # Alters the current Porosity profiles and other things according to station info
 #source("OMEXDIA_OG3_AdaptParsForStation.R")
 

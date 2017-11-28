@@ -12,14 +12,14 @@
 ################
 #
 # Description :
-# This functions receives a vector of parameter and returns the correpsonding Steady-State Omexdia model solution
+# This functions receives a vector of parameter and returns the corresponding Steady-State Omexdia model solution
 #
 ################
 
 
 OCALL <- function (p) {
-  parpert<-parSta
-  parpert[c(names(p))]<-as.numeric(p)
+  parpert              <- parSta
+  parpert[c(names(p))] <- as.numeric(p)
   
   ## Update of global variables
   DbGrid               <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
@@ -29,16 +29,34 @@ OCALL <- function (p) {
   AlphIrrGrid         <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
                                         y.0 = parpert["AlphIrr"], y.inf = 0, x.att = 1, 
                                         grid = Grid)
-  #plot(AlphIrrGrid$mid)
+  
   IrrEnhGrid          <<- setup.prop.1D(func = exp.profile  , x.0 = parpert["mixL"],
-                               y.0 = parpert["IrrEnh"], y.inf = 1, x.att = 1, 
-                               grid = Grid)
-  #plot(IrrEnhGrid$mid)
+                                        y.0 = parpert["IrrEnh"], y.inf = 1, x.att = 1, 
+                                        grid = Grid)
   
   Flux            <- parpert["WPOC"]*100
   
-  initpar <- c(parpert[-which(names(parpert) %in% c("WPOC","biot","AlphIrr","IrrEnh","por","porinf","pora","Sal","mixL","NCrref"))],
+  initpar1 <- c(parpert[-which(names(parpert) %in%
+                                c("WPOC","biot","AlphIrr","IrrEnh","portop","porbot","por","porinf","pora","Sal","mixL","NCrref"))], 
                Grid$dx, Grid$dx.aux, porGrid$mid, porGrid$int,DbGrid$int, AlphIrrGrid$mid,IrrEnhGrid$int)
+  
+  initpar <- c(
+    parpert[c("Temp","w","MeanFlux","rFast","rSlow","pFast","pRef", "NCrFdet","NCrSdet",
+              "rSi","SiCdet","EquilSiO","PCrFdet","PCrSdet","rFePdesorp","rFePadsorp","rCaPprod","rCaPdiss","CPrCaP",
+              "PO4ads","Q","pdepo","NH3Ads","rnit","ksO2nitri","rODUox","ksO2oduox","ksO2oxic","ksNO3denit",
+              "kinO2denit","kinNO3anox","kinO2anox","bwO2","bwNH3","bwNO3","bwODU","bwDIC","bwSIO","bwPO4",
+              "DispO2","DispNO3","DispNH3","DispODU","DispDIC","DispSIO","DispPO4")],
+    Grid$dx,
+    Grid$dx.aux,
+    porGrid$mid,
+    porGrid$int,
+    DbGrid$int,
+    AlphIrrGrid$mid,
+    IrrEnhGrid$int)
+  
+  
+  
+  
   IC   <- rep(10,nspec*N)
   nout <- 2221 # express this using N 
   outnames <- c("O2flux" , rep("O2Irrflux",N) , "O2deepflux" ,
@@ -56,8 +74,8 @@ OCALL <- function (p) {
                 rep("FePadsorp",N),rep("FePdesorp",N),rep("CaPprod",N),rep("CaPdiss",N)
   )
   ynames <- svarnames
-
-    DIA  <- steady.1D(y=as.double(IC),
+  
+  DIA  <- steady.1D(y=as.double(IC),
                     func="oomexdia_mod",
                     initfunc="initomexdia",
                     names = ynames,

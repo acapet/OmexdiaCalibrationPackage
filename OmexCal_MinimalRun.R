@@ -30,7 +30,7 @@ source("OmexCal_Load.R")
 parSta<-pars
 
 # OCALL gets the model solution for parameters given in argument
-DIA <-OCALL(pars)
+DIA <-OCALL(parSta)
 
 # Display can be done directly with parameters value
 Simplot(pars)
@@ -52,12 +52,16 @@ if (TRUE){
   cam<-"HE432"
 }
 
+# This loads data the based on info given in the UserDefinitions....R
 source('OmexCal_Load_Data.R')
 
 # We then create "local" dataframes, specific to one station.
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
 localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
 localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
+
+# In addition, some global parameters have to be given a local (station+campagin) value
+parSta    <- OmexCal_AdaptForSta()
 
 ggplot(localdata,
        aes(x=value,y=UpperDepth/2+LowerDepth/2,
@@ -72,26 +76,32 @@ ggplot(localdata,
 
 #  Cost function can be called with a list of profile variables and a list of flux variables
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
- C3 <- OCOST_GEN(pars,Vlist = c("NOx","PO4","NH3"))
- C4 <- OCOST_GEN(pars,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
+ C1$var
 
-# Better to test those display script one by one : 
-Simplot(pars,TRUE)+
+ C2 <- OCOST_GEN(parSta,Vlist = "NH3")
+ C2$var
+ 
+ C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
+ C3$var
+ 
+ C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
+ C4$var
+ 
+# Some result display script, first one by one : 
+Simplot(pars,plotdata=TRUE)+        # The flag TRUE is used to disaply the data along model ouputs
   ggtitle(paste(sta,"0. No Fit"))
 
 partableplot(pars)
+
 fluxtable(pars)$p
 
 # Collect all on the same plot
-pdf(paste(sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
+pdf(paste(plotdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
 grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
              arrangeGrob(partableplot(parSta)),
              arrangeGrob(fluxtable(parSta)$p,
                          fittableplot(C3),ncol=1,heights=c(6,4)),
              ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))
 dev.off()
-
-
-
 
 
