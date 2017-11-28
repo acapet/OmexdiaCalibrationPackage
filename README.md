@@ -4,6 +4,8 @@ This script is part of the OmexdiaCalibration suite (https://github.com/acapet/O
 This toolbox is aimed at facilitating the calibration of the Omexdia diagentic model to user data.
 It exploits essentially codes and methods developped by K. Soetaert (NIOZ).
 
+For introduction here is a [first minimal example of use](OmexCal_MinimalRun.md)
+
 
 
 
