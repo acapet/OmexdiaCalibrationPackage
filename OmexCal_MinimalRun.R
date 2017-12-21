@@ -59,6 +59,7 @@ source('OmexCal_Load_Data.R')
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
 localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
 localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
+localdatamicro <-subset(dfO2micro, Station==sta & Campaign == cam)
 
 # In addition, some global parameters have to be given a local (station+campagin) value
 parSta    <- OmexCal_AdaptForSta()

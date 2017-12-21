@@ -26,9 +26,16 @@
 source("OmexCal_Load.R")  
 
 # load station data
-source('UsersDefinitions_HAMMOND.R')
-stalist <- c("H1","H2")
-camlist <- "Sep89"
+if (TRUE){
+  source('UsersDefinitions_HAMMOND.R')
+  stalist<-c("H1","H2")
+  camlist<-"Sep89"
+} else{
+  source('UsersDefinitions_NOAH.R')
+  stalist<-"C"
+  camlist<-"HE432"
+}
+
 
 source('OmexCal_Load_Data.R') 
 
@@ -45,6 +52,7 @@ for (icamosta in (1:nrow(dsStasub))){
   localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
   localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
   localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
+  localdatamicro <- subset(dfO2micro, Station==sta & Campaign == cam)
   
   
   # Setting the Non-local irrigation framework
