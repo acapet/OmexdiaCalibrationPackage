@@ -196,7 +196,7 @@ G4 <- ggplot(dfO2micro, aes(y=Depth, x=value, color=colordfmicroaffi))+ #colordf
   facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
   ylab(ylabname)+xlab(xlabname)
 
-pdf(paste0(plotdir,"/ProfileData4.pdf"))
+pdf(paste0(plotdir,"/MicroprofileData1.pdf"))
 G4
 dev.off()
 

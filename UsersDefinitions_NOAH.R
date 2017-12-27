@@ -97,7 +97,7 @@ mapping  <- 0 #set to 1 if you want to produce maps
 
 #If yes please define the following variables
 ##Define variables that should be plotted
-plotvars <- c("NH3","DIC","SIO","PO4","TOC","TN","SiDet")
+plotvars <- c("NH3","DIC","SIO","PO4","TOC","TN","SiDet","O2")
 
 ##Define labels and color code affiliation 
 xlabname <- "value [mmol/m^2/d]"

@@ -29,6 +29,7 @@
 dfprvarsstay<-c("Station","Campaign","UpperDepth","LowerDepth","MidDepth") # Entities that should be exluded from the merging to a variable and value cloumn
 dfflvarsstay<-c("Station","Campaign")                                      # Entities that should be exluded from the merging to a variable and value cloumn
 dfstavarsstay<-c("Station","Campaign","Date","Lat","Lon","BottomDepth")
+dfmicrovarsstay<-c("Station","Campaign","Depth","Time")
 
 ###Load necessary packages
 require(reshape2)
@@ -42,6 +43,7 @@ sheet_profiles  <- "Profiles"  # data-file of profile data and depth
 sheet_fluxes    <- "Fluxes"    # data-file of flux data including location of stations (lon,lat)
 sheet_stations  <- "Stations"  # data-file including station data on location, porosity etx
 sheet_variables <- "Variables" # data-file including variable information (e.g unit, relative error)
+sheet_O2micro <- "O2Microprofiles" #data-file of O2-microprofiles
 
 ##Load nutrient data and create dataframe
 dfProfiles  <-read.xls(datafile, sheet_profiles, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
@@ -54,6 +56,9 @@ dfStations  <- read.xls(datafile, sheet_stations, na.strings=c("#"),as.is = TRUE
 
 ##Load variable information and create dataframe
 dfVariables <- read.xls(datafile, sheet_variables, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+
+## Load O2 microprofiles and create dataframe
+dfO2micro <- read.xls(datafile, sheet_O2micro, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 #########################################
 # Completing the profiles dataframe
@@ -113,6 +118,39 @@ for (VAR in unique(dfFluxes$variable)){
 }
 
 rm(dfFluxes_err)
+
+# Completing the Microprofile dataframe
+dfO2micro              <- melt(dfO2micro,id.vars=dfmicrovarsstay)     # converting to long data frame
+dfO2micro_err          <- subset(dfO2micro,grepl("_ERR",dfO2micro$variable))
+dfO2micro_err$variable <- strsplit(as.vector(dfO2micro_err$variable),"_ERR")
+
+dfO2micro              <- subset(dfO2micro,!grepl("_ERR",variable))
+
+# The following might probably be better coded with a "plyr" approach
+for (VAR in unique(dfO2micro$variable)){
+  if(VAR %in% dfO2micro_err$variable ) { # If a column VAR_ERR is present in the .xls file, then it is used for the error.
+    dfO2micro[ which(dfO2micro$variable==VAR) , "err"]  <- dfO2micro_err[ which(dfO2micro_err$variable==VAR) , "value"]
+  } else {
+    # Else, we look for a corresponding relative error in the "Variables" sheet 
+    if(VAR %in% dfVariables$Variable ){
+      dfO2micro[ which(dfO2micro$variable==VAR), "err"] <- 
+        dfO2micro[ which(dfO2micro$variable==VAR), "value"] * dfVariables[which(dfVariables$Variable==VAR),"RelativeError"]
+      
+      dfO2micro[ which( dfO2micro$variable==VAR  &
+                          dfO2micro$err < dfVariables[which(dfVariables$Variable==VAR),"MinError"] ),
+                 "err"] <- dfVariables[which(dfVariables$Variable==VAR),"MinError"]
+    } else {
+      # If no relative error is given in the .xls file we assume 30% error
+      dfO2micro[ which(dfO2micro$variable==VAR), "err"] <-dfO2micro[ which(dfO2micro$variable==VAR), "value"]*0.3
+      
+      dfO2micro[ which( dfO2micro$variable==VAR  &
+                          dfO2micro$err < dfVariables[which(dfVariables$Variable==VAR),"MinError"] ),
+                 "err"] <- dfVariables[which(dfVariables$Variable==VAR),"MinError"]
+    }    
+  } 
+}
+
+rm(dfO2micro_err)
 #########################################
 # Plotting (According to flags in User file)
 
@@ -128,7 +166,8 @@ if (plotting) {
   colordfnuaffi  <- eval(parse(text=coloraffiname),envir = dfProfiles)
   colordfnuaffi2 <- eval(parse(text=coloraffiname),envir = dfProfilesforp) 
   colordfflaffi  <- eval(parse(text=coloraffiname),envir = dfFluxes) 
-
+  colordfmicroaffi<-eval(parse(text=coloraffiname),envir = dfO2micro) 
+  
 ##Plot nutrient data
   G1 <- ggplot(dfProfiles, aes(y=MidDepth, x=value, color=colordfnuaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
     geom_point()+
@@ -165,6 +204,16 @@ if (plotting) {
   print(G3)
   dev.off()
   
+  ##Plot O2microprofile data
+  G4 <- ggplot(dfO2micro, aes(y=Depth, x=value, color=colordfmicroaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
+    geom_point()+
+    geom_errorbarh(aes(xmin=value-err,xmax=value+err))+geom_path()+
+    facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
+    ylab(ylabname)+xlab(xlabname)
+  
+  pdf(paste0(plotdir,"/MicroprofileData1.pdf"))
+  G4
+  dev.off()
 }
 
 ### Mapping Stations

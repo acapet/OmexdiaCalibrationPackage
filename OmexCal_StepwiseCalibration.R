@@ -48,6 +48,8 @@ for (icamosta in (1:nrow(dsStasub))){
   cam<-dsStasub$Campaign[icamosta]
   
   print(sta)
+  print(cam)
+  
   # We then create "local" dataframes, specific to one station/campaign.
   localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
   localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
