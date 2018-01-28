@@ -40,8 +40,8 @@ parsdf<-rbind(
   # abiotic conditions
   data.frame(row.names="Temp"       ,guess=14       ,min=5        ,max=26       ,unit="°C"       ,printfactor=1,printunit=NA    ,  constrain ='Pel. Mod.')      , # Temperature
   data.frame(row.names="Sal"        ,guess=36       ,min=36       ,max=38       ,unit="psu"      ,printfactor=1,printunit=NA     ,  constrain ='Pel. Mod.')       , # Salinity
-  data.frame(row.names="portop"     ,guess=0.65      ,min=0.5      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
-  data.frame(row.names="porbot"     ,guess=0.6     ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
+  data.frame(row.names="portop"     ,guess=0.65     ,min=0.5      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
+  data.frame(row.names="porbot"     ,guess=0.6      ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
   data.frame(row.names="pora"       ,guess=0.5      ,min=0.25     ,max=0.75     ,unit=" "        ,printfactor=1,printunit=NA     ,  constrain ='Fixed Map')   , # porosity decrease
   # Bioturbation
   data.frame(row.names="biot"       ,guess=10/365   ,min=0.01/365 ,max=30/365   ,unit="cm2/d"    ,printfactor=365, printunit="cm2/yr" , constrain ='Biol.') ,     # bioturbation coefficient % range from TROMP1995
@@ -52,7 +52,7 @@ parsdf<-rbind(
   # organic matter dynamics  #
   data.frame(row.names="w"          ,guess=0.16/365 ,min=0.001/365 ,max=2/365   ,unit="cm/d"     ,printfactor=365, printunit="cm/yr"   , constrain ='Fixed Map')  ,     # advection rate
   data.frame(row.names="MeanFlux"   ,guess=3000     ,min=10        ,max=4000    ,unit="nmol/cm2/d",printfactor=1/100, printunit="mmol/m2/d",  constrain ='Pel. Mod.'), # C deposition
-  data.frame(row.names="WPOC"       ,guess=20       ,min=0.2       ,max=100     ,unit="mmol/m2/d",printfactor=1, printunit="mmol/m2/d",  constrain ='Pel. Mod.'), # C deposition
+
   # On 1 Aug 2017, changed for fixed rslow: 1 /yr, instead of guess of 0.1 previously.
   data.frame(row.names="rFast"      ,guess=12/365   ,min=2/365     ,max=80/365  ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Benth. Mod.')      , # decay rate fast decay det.
   data.frame(row.names="rSlow"      ,guess=.1/365    ,min=0.1/365   ,max=2/365   ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Benth. Mod.')      , # decay rate slow decay det.

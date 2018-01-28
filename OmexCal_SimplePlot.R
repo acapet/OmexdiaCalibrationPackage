@@ -23,9 +23,8 @@ Simplot<-function(p, plotdata=FALSE, YL=20) {
   
 DI<-OCALL(p)
 
-
 if (plotdata) {
-  localdata <- subset(localdata,variable %in% svarnames & MidDepth>0 & !is.na(localdata$value+ localdata$err))  
+  localdata <- subset(localdata,variable %in% colnames(DI$y) & MidDepth>0 & !is.na(localdata$value+ localdata$err))  
   b         <- DIA2OBS(DI,localdata,p)
 }
 

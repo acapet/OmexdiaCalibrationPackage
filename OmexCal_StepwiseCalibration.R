@@ -19,8 +19,7 @@
 # Load model and observation data
 ################################################
 
-# ! <Annika : loop problematical for second loop iteration! needs to remove variables before second loop can be started!
-
+# ! <Annika        : loop problematical for second loop iteration! needs to remove variables before second loop can be started!
 
 # load OMXEDIA model
 source("OmexCal_Load.R")  
@@ -28,7 +27,7 @@ source("OmexCal_Load.R")
 # load station data
 if (TRUE){
   source('UsersDefinitions_HAMMOND.R')
-  stalist<-c("H1","H2")
+  stalist<-c("H1","H2","H4","H5","H6")
   camlist<-"Sep89"
 } else{
   source('UsersDefinitions_NOAH.R')
@@ -36,12 +35,12 @@ if (TRUE){
   camlist<-"HE432"
 }
 
-
 source('OmexCal_Load_Data.R') 
 
-#Looping
+# subsetting station list
 dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
 
+#Looping
 for (icamosta in (1:nrow(dsStasub))){
 #  icamosta <- 1
   sta<-dsStasub$Station[icamosta]  
@@ -56,7 +55,6 @@ for (icamosta in (1:nrow(dsStasub))){
   localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
   localdatamicro <- subset(dfO2micro, Station==sta & Campaign == cam)
   
-  
   # Setting the Non-local irrigation framework
   parsdf["AlphIrr","guess"]<-10/365
   parsdf["IrrEnh","guess"]<-1 
@@ -69,7 +67,7 @@ for (icamosta in (1:nrow(dsStasub))){
   
   Simplot(parSta)
   
-  totdir=paste(plotdir,'FITNEW_',sta,sep="")    
+  totdir=paste(plotdir,'FITNEW_',sta,'/',sep="")    
   dir.create(totdir) #create new folder
   
   # Plot 0 : No Fit
@@ -86,10 +84,9 @@ for (icamosta in (1:nrow(dsStasub))){
   parsmin  <- as.numeric(as.matrix(parRange$min)); names(parsmin) <- rownames(parRange); 
   parsmax  <- as.numeric(as.matrix(parRange$max)); names(parsmax) <- rownames(parRange); 
   
-  pseudoNrun<-300   
+  pseudoNrun<-2000   
   
   for (ifit in c(1:length(PLIST))){
-    
     Fit <- modFit(f=OCOST_GEN,
                   p=parSta[PLIST[[ifit]]],
                    Vlist=VLIST[[ifit]],
@@ -142,24 +139,19 @@ for (icamosta in (1:nrow(dsStasub))){
   plot(Sens)
   dev.off()
   
-  pdf(paste(totdir,"_Sens3.pdf",sep=""),width=10,height=10)
   sS<-summary(Sens)
   sS$param<-rownames(sS)
   sS$param <- factor(sS$param, levels = sS$param[order( sS$L1,decreasing = T)])
-  ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
+  
+  pdf(paste(totdir,"_Sens3.pdf",sep=""),width=10,height=10)
+    ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
   dev.off()
-  
-  
-  # Assessing parameters collinearity, based on the sensitivity analysis
+
+    # Assessing parameters collinearity, based on the sensitivity analysis
   cc<-collin(Sens)
   
   plot(cc)
   abline(h = 20, col = "red")
-  
-  # We want to select the parameter subset that 
-  #   1) has a collinearity index below 20
-  #   2) contains at least mixL and AlphIrr
-  #   3) contains the most parameter
   
   c2<-cc[cc[,"collinearity"] < 20 &
            cc[,"mixL"]==1  &
@@ -181,9 +173,7 @@ for (icamosta in (1:nrow(dsStasub))){
                   upper=parsmax[PLISTFinal], 
                   method="Pseudo")
   
-  
   summary(FitFinal)
-  
   Simplot(FitFinal$par,TRUE)
   
   Fit<-FitFinal
@@ -207,8 +197,8 @@ for (icamosta in (1:nrow(dsStasub))){
                       )
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
-  
-  remain<-c("PLIST", "VLIST", "FLIST","icamosta")
-  rm(list=setdiff(ls(), remain))
-  
+
+ # remain<-c("PLIST", "VLIST", "FLIST","icamosta")
+ # rm(list=setdiff(ls(), remain))
+
 }

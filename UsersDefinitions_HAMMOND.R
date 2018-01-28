@@ -53,7 +53,7 @@ varlimod<-c("NH3","DIC","SIO","PO4","TOC","TN","SiDet") # List of variables that
 
 ## 1. calibration step
 # Parameters 
-PLISTC <- c("pFast","WPOC","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
+PLISTC <- c("pFast","MeanFlux","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
 # Observation profiles 
 VLISTC <- c("TOC","TN")
 # Observation fluxes
@@ -109,9 +109,36 @@ camosta<-"Station" #or Campaign #color code affiliation
 Loc_stamen <- c(11.5, 43, 14, 46)
 Loc_google <- c(11, 43, 15, 47)  
 
-
 ##############################
 ## now you can run the script!
 ##############################
 
 # source(OMEXDIA_OG3_StepwiseCalibration.R)
+
+AddDiagnostics <- function (Dy,p) {
+  ###########
+  ## SiDet ##
+  ###########
+  # Converting detrital silicate in %dry weight
+  Dy[,"SiDet"] <- Dy[,"SiDet"]*28*100*1e-9/2.5
+  
+  ###########
+  ##  TOC  ##
+  ###########
+  Dy<-cbind(Dy,TOC=( Dy[,"FDET"]+Dy[,"SDET"]+                                # Slow and Fast OrgC
+                       p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1]))*   # "Refractory", not accounted for by Omexdia, derived from parameters
+              14*100*1e-9/2.5                                         # [nmolC/cm³ ] -> [% of dry weight] ; 2.5 gr/cm³ is the bulk sediment desnity
+  )
+  
+  ########
+  ## TN ##
+  ########
+  Dy<-cbind(Dy,TN=( Dy[,"FDET"]*p["NCrFdet"]+Dy[,"SDET"]*p["NCrSdet"]+
+                      p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1])*p["NCrref"])*
+              14*100*1e-9/2.5
+  )
+  
+  return (Dy)
+}
+
+

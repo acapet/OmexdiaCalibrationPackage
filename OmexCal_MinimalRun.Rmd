@@ -1,5 +1,5 @@
 ---
-title: " OmxediaCalibration Tool Box: Minimal Example"
+title: " OmexdiaCalibration Tool Box: Minimal Example"
 author: "Arthur Capet"
 date: "Nov, 2017"
 output: 
@@ -56,12 +56,16 @@ User-specific options (eg. filepahts, etc ..) are to be given in a file like (Us
 
 ```{r}
 source('UsersDefinitions_HAMMOND.R')
+sta<-"H2"
+cam<-"Sep89"
+
+#source('UsersDefinitions_NOAH.R')
+#sta<-"C"
+#cam<-"HE432"
 
 # This loads data the based on info given in the UserDefinitions....R
 source('OmexCal_Load_Data.R')
 
-sta<-"H2"
-cam<-"Sep89"
 
 # We then create "local" dataframes, specific to one station.
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)

@@ -22,23 +22,19 @@ OCALL <- function (p) {
   parpert[c(names(p))] <- as.numeric(p)
   
   ## Update of global variables
-  DbGrid               <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
+  DbGrid          <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
                                          y.0 = parpert["biot"], y.inf = 0, x.att = 1, 
                                          grid = Grid)
   
-  AlphIrrGrid         <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
+  AlphIrrGrid     <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
                                         y.0 = parpert["AlphIrr"], y.inf = 0, x.att = 1, 
                                         grid = Grid)
   
-  IrrEnhGrid          <<- setup.prop.1D(func = exp.profile  , x.0 = parpert["mixL"],
+  IrrEnhGrid      <<- setup.prop.1D(func = exp.profile  , x.0 = parpert["mixL"],
                                         y.0 = parpert["IrrEnh"], y.inf = 1, x.att = 1, 
                                         grid = Grid)
   
-  Flux            <- parpert["WPOC"]*100
-  
-  initpar1 <- c(parpert[-which(names(parpert) %in%
-                                c("WPOC","biot","AlphIrr","IrrEnh","portop","porbot","por","porinf","pora","Sal","mixL","NCrref"))], 
-               Grid$dx, Grid$dx.aux, porGrid$mid, porGrid$int,DbGrid$int, AlphIrrGrid$mid,IrrEnhGrid$int)
+  Flux            <- parpert["MeanFlux"]
   
   initpar <- c(
     parpert[c("Temp","w","MeanFlux","rFast","rSlow","pFast","pRef", "NCrFdet","NCrSdet",
@@ -54,11 +50,10 @@ OCALL <- function (p) {
     AlphIrrGrid$mid,
     IrrEnhGrid$int)
   
-  
-  
-  
   IC   <- rep(10,nspec*N)
+  
   nout <- 2221 # express this using N 
+  
   outnames <- c("O2flux" , rep("O2Irrflux",N) , "O2deepflux" ,
                 "NO3flux", rep("NO3Irrflux",N), "NO3deepflux",
                 "NH3flux", rep("NH3Irrflux",N), "NH3deepflux",
@@ -87,15 +82,8 @@ OCALL <- function (p) {
                     nout=nout,
                     outnames = outnames,
                     positive=TRUE)
-  
-  DIA$y[,"SiDet"]<-DIA$y[,"SiDet"]*28*100*1e-9/2.5
-  
-  DIA$y<-cbind(DIA$y,TOC=DIA$TOC)
-  DIA$y<-cbind(DIA$y,TN=(DIA$y[,"FDET"]*initpar["NCrFdet"]+
-                           DIA$y[,"SDET"]*initpar["NCrSdet"]+
-                           Flux*initpar["pRef"]/initpar["w"]/(1-porGrid$int[N+1])*parpert["NCrref"])*14*100*1e-9/2.5)
-  
-  
+
+  DIA$y <- AddDiagnostics(DIA$y,parpert)  
   
   return (DIA)
 }

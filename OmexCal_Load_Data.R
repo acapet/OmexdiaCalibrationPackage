@@ -43,7 +43,7 @@ sheet_profiles  <- "Profiles"  # data-file of profile data and depth
 sheet_fluxes    <- "Fluxes"    # data-file of flux data including location of stations (lon,lat)
 sheet_stations  <- "Stations"  # data-file including station data on location, porosity etx
 sheet_variables <- "Variables" # data-file including variable information (e.g unit, relative error)
-sheet_O2micro <- "O2Microprofiles" #data-file of O2-microprofiles
+sheet_O2micro   <- "O2Microprofiles" #data-file of O2-microprofiles
 
 ##Load nutrient data and create dataframe
 dfProfiles  <-read.xls(datafile, sheet_profiles, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
@@ -58,7 +58,7 @@ dfStations  <- read.xls(datafile, sheet_stations, na.strings=c("#"),as.is = TRUE
 dfVariables <- read.xls(datafile, sheet_variables, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 ## Load O2 microprofiles and create dataframe
-dfO2micro <- read.xls(datafile, sheet_O2micro, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+dfO2micro   <- read.xls(datafile, sheet_O2micro, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 #########################################
 # Completing the profiles dataframe

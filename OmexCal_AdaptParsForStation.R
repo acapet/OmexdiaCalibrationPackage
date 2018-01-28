@@ -64,13 +64,13 @@ OmexCal_AdaptForSta <- function (p=pars) {
     # porbot : Porosity at depth (considred as asymptotic value for great depth)
     # pora   : Exponential decrease rate for the porosity profile
 
-      if (!is.null(localdatasta$portop)){# & !is.na(localdatasta$portop)){
-        warning(paste0(c('Using local portop value for ',sta,' ',cam)))
-        portop <- localdatasta$portop
-      }else{
-        warning(paste0(c('Using global portop value for ',sta,' ',cam)))
-        portop <- p['portop']
-      }
+    if (!is.null(localdatasta$portop)){# & !is.na(localdatasta$portop)){
+      warning(paste0(c('Using local portop value for ',sta,' ',cam)))
+      portop <- localdatasta$portop
+    }else{
+      warning(paste0(c('Using global portop value for ',sta,' ',cam)))
+      portop <- p['portop']
+    }
     
     if (!is.null(localdatasta$porbot)){# & !is.na(localdatasta$porbot)){
       warning(paste0(c('Using local porbot value for ',sta,' ',cam)))
@@ -114,10 +114,16 @@ OmexCal_AdaptForSta <- function (p=pars) {
   parsl[names(bwlocal)]<-as.numeric(bwlocal)
   
   # The following gives sediment advection at depth in cm/d
-  warning(paste0("Assuming Accumulation given in ", datafile, " are gr/cm²/yr and a dry sediment density of 2.5 gr/cm³.
+  
+  if (!is.null(localdatasta$Accumulation)){# & !is.na(localdatasta$pora)){
+    warning(paste0(c('Using local \'w\' value for ',sta,' ',cam)))
+    warning(paste0("Assuming Accumulation given in ", datafile,
+                   " are gr/cm²/yr and a dry sediment density of 2.5 gr/cm³.
           Consider adapting OmexCal_AdaptParsForStation if needed (or, better, convert your data)"))
-  
-  parsl["w"]<-as.numeric(localdatasta["Accumulation"]/2.5/365  )
-  
+    
+    parsl["w"]<-as.numeric(localdatasta["Accumulation"]/2.5/365 )
+  }else{
+    warning(paste0(c('Using default \'w\' value for ',sta,' ',cam)))
+  }
   return(parsl)
 }

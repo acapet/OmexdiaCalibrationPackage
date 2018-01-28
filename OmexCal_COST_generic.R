@@ -3,11 +3,11 @@
 # This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
 # This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
 #
-# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+# Arthur Capet (acapet@uliege.be), Oct 2017.
 #
 ################
 # Contributors : 
-# A. Capet   , acapet@ulg.ac.be 
+# A. Capet   , acapet@uliege.be 
 # A. Eiesele ,  
 ################
 #
