@@ -28,9 +28,11 @@ Simplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
 ```
 
 # Fluxes
-
-.. coming soon
-
+```{r, echo=FALSE, warning=FALSE, fig.height=4}
+rn<-c("Guess",stepNames,"Final")
+runnames<-factor(rn,levels=rn,ordered=T)
+Fluxplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
+```
 
 # MicroProfiles
 

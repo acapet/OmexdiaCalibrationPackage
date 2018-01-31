@@ -14,8 +14,7 @@
 # This functions provides a table with observed and simulated fluxes and a summary of integrated diagnostics
 #
 ################
-
-fluxtable<-function(p1) {
+fluxtable<-function(p1, tableoutput=TRUE) {
   
   treatp<-function (p){
     if ("deSolve" %in% class(p))
@@ -95,25 +94,31 @@ fluxtable<-function(p1) {
   pout1<-treatp(p1)
   d<-melt(pout1)
   
-  dforp<-subset(d,select=value)
-  rownames(dforp)<-d$variable
-  
-  p1<-qplot(1:10, 1:10, geom = "blank")+theme_bw()+
-    theme(line = element_blank(),text = element_blank())+
-    annotation_custom(grob = tableGrob(format(dforp,digits = 3,nsmall=0,scientific=F,drop0trailing=T))) 
-  
-  if (exists("localdatafl")){
-    
-    localdatafl$variable<-paste0(substr(localdatafl$variable,2,50),"flux")
-    
-    dforp[as.character(localdatafl$variable),"Meas."]<-localdatafl$value
-    fpdf<-format(dforp,digits = 3,nsmall=0,scientific=F,drop0trailing=T)
-    fpdf[ grep("NA",fpdf[,2]),2]<-""
+  if (tableoutput) {
+    dforp<-subset(d,select=value)
+    rownames(dforp)<-d$variable
     
     p1<-qplot(1:10, 1:10, geom = "blank")+theme_bw()+
       theme(line = element_blank(),text = element_blank())+
-      annotation_custom(grob = tableGrob(fpdf)) 
-  }
+      annotation_custom(grob = tableGrob(format(dforp,digits = 3,nsmall=0,scientific=F,drop0trailing=T))) 
+    
+    if (exists("localdatafl")){
+      
+      localdatafl$variable<-paste0(substr(localdatafl$variable,2,50),"flux")
+      
+      dforp[as.character(localdatafl$variable),"Meas."]<-localdatafl$value
+      fpdf<-format(dforp,digits = 3,nsmall=0,scientific=F,drop0trailing=T)
+      fpdf[ grep("NA",fpdf[,2]),2]<-""
+      
+      p1<-qplot(1:10, 1:10, geom = "blank")+theme_bw()+
+        theme(line = element_blank(),text = element_blank())+
+        annotation_custom(grob = tableGrob(fpdf)) 
+    }
+  } 
   
-  return(list(p=p1,d=fpdf))
+  if (tableoutput){
+    return(list(p=p1,d=d))
+  }else{
+    return(d=d)
+  }
 }
