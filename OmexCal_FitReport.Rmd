@@ -1,0 +1,59 @@
+---
+output: pdf_document
+params:
+  Parlist   : NA
+  Costlist  : NA
+  userfile  : NA
+  case  : NA
+---
+
+---
+title: `r paste0("Calibration Report for ", params$case)`
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+source("OmexCal_Load.R")
+source(params$userfile)
+```
+
+# Profiles
+
+```{r, echo=FALSE, warning=FALSE, fig.height=9}
+rn<-c("Guess",stepNames,"Final")
+runnames=factor(rn,levels=rn,ordered=T)
+Simplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
+```
+
+# Fluxes
+
+.. coming soon
+
+
+# MicroProfiles
+
+.. coming soon
+
+
+# Paramters
+
+.. coming soon
+
+
+# Costs
+
+```{r, echo=FALSE}
+
+dfSSR<-do.call(cbind,lapply(Costlist, function(d){d[,"SSR"]}))
+colnames(dfSSR)<-runnames
+rownames(dfSSR)<-Costlist[[1]][,"name"]
+
+kable(dfSSR)
+```
+
+```{r, echo=FALSE}
+kable(fluxtable(parSta)$d)
+```
+
