@@ -19,27 +19,44 @@
 #
 ################
 
-Simplot<-function(p, plotdata=FALSE, YL=20) {
+Simplot<-function(p, plotdata=FALSE, YL=20, runnames=NULL) {
   
-DI<-OCALL(p)
+   if (is.list(p)){
+    DIs<-lapply(p,OCALL)
+  }else{
+    DI<-OCALL(p)
+    DIs<-list(DI)
+  }
+  
+  # Setting names if not provided
+  if (is.null(runnames)){runnames<-as.character(seq(1,length(DIs))) }
+  
 
-if (plotdata) {
-  localdata <- subset(localdata,variable %in% colnames(DI$y) & MidDepth>0 & !is.na(localdata$value+ localdata$err))  
-  b         <- DIA2OBS(DI,localdata,p)
-}
-
-dfvarplot <- as.data.frame(cbind(DI$y,grid=Grid$x.mid,por=porGrid$mid))
-
-p1<-ggplot(  melt(dfvarplot,id.vars = "grid") , aes(y=grid,x=value))+
-  geom_path(color='red')+facet_wrap(~variable,nrow=5,ncol=3,scales="free")+theme_light()+
-  ylim(YL,0)+ylab(label="depth, cm")
-
-if (plotdata) {
-  p1 <- p1 +
-  geom_errorbar(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='black',size=2)+
-  geom_errorbar(data=b,aes(x=modval,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='red',size=2)+
-  geom_errorbarh(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,xmin=value-err,xmax=value+err),color='black')
-}
-
-return(p1)
+  bo<-lapply(DIs, function(DI){
+    as.data.frame(cbind(DI$y,grid=Grid$x.mid,por=porGrid$mid))
+  })
+  
+  for (i in 1:length(bo)){
+    bo[[i]]$runname<-runnames[i]
+  }
+  
+  bos<-do.call(rbind,bo)
+  
+  if (plotdata) {
+    localdata <- subset(localdata,variable %in% colnames(DIs[[1]]$y) & MidDepth>0 & !is.na(localdata$value+ localdata$err))  
+     b         <- DIA2OBS(DIs[[1]],localdata,p)
+  }
+  
+  p1<-ggplot( melt(bos,id.vars = c("grid","runname")) , aes(y=grid,x=value,color=runname))+
+    geom_path()+facet_wrap(~variable,nrow=5,ncol=3,scales="free")+theme_light()+
+    ylim(YL,0)+ylab(label="depth, cm")+scale_color_brewer(palette = "RdYlGn")
+  
+  if (plotdata) {
+    p1 <- p1 +
+      geom_errorbar(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='black',size=2)+
+      # geom_errorbar(data=b,aes(x=modval,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='red',size=2)+
+      geom_errorbarh(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,xmin=value-err,xmax=value+err),color='black')
+  }
+  
+  return(p1)
 }

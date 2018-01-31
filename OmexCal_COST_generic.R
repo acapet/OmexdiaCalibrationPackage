@@ -37,12 +37,6 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
   
   Mp <- dcast(llocaldata,slice~variable,value.var="modval")
   Op <- llocaldata[,c("variable","slice","value","err")]
-  
-  ########### To BE corrected ##############
-  DIA$NOxdeepflux <- DIA$NO3deepflux
-  DIA$NOxflux     <- DIA$NO3flux
-  DIA$NOxIrrflux  <- DIA$NOxIrrflux
-  ############################################
 
   # Shaping Fluxes Data 
   if(!is.null(Flist) )

@@ -16,11 +16,11 @@ IntegratedRateSolid <- function(rate, depth = NULL) {  #                     sol
 }  
 
 Nbudget <- function(out) {
-  SurfDiffflux  <- out$NO3flux + out$NH3flux 
-  SurfIrrflux   <- IntegratedRate(out$NO3Irrflux) + IntegratedRate(out$NH3Irrflux)
+  SurfDiffflux  <- out$NOxflux + out$NH3flux 
+  SurfIrrflux   <- IntegratedRate(out$NOxIrrflux) + IntegratedRate(out$NH3Irrflux)
   SurfOrgflux   <- out$Norgflux
   Surfflux      <- SurfDiffflux + SurfIrrflux + SurfOrgflux
-  Deepflux      <- out$NO3deepflux + out$NH3deepflux + out$Norgdeepflux
+  Deepflux      <- out$NOxdeepflux + out$NH3deepflux + out$Norgdeepflux
   NlossDenit    <- IntegratedRate(out$Denitrific)*0.8
   Nitrif        <- IntegratedRate(out$Nitri)
   Nadsorp       <- IntegratedRate(out$NH3adsorption)

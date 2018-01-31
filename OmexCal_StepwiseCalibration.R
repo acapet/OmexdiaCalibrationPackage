@@ -26,15 +26,17 @@ source("OmexCal_Load.R")
 
 # load station data
 if (TRUE){
-  source('UsersDefinitions_HAMMOND.R')
-  stalist<-c("H1","H2","H4","H5","H6")
-  camlist<-"Sep89"
+  userfile   <- 'UsersDefinitions_HAMMOND.R'
+  stalist    <- c("H1","H2","H4","H6","H7")
+  camlist    <- "Sep89"
+  pseudoNrun <- 2000
 } else{
-  source('UsersDefinitions_NOAH.R')
-  stalist<-"C"
-  camlist<-"HE432"
+  userfile <- 'UsersDefinitions_NOAH.R'
+  stalist  <- "C"
+  camlist  <- c("HE432")
 }
 
+source(userfile)
 source('OmexCal_Load_Data.R') 
 
 # subsetting station list
@@ -42,93 +44,82 @@ dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
 
 #Looping
 for (icamosta in (1:nrow(dsStasub))){
-#  icamosta <- 1
+  #  icamosta <- 1
   sta<-dsStasub$Station[icamosta]  
   cam<-dsStasub$Campaign[icamosta]
   
-  print(sta)
-  print(cam)
-  
-  # We then create "local" dataframes, specific to one station/campaign.
+  # Create "local" dataframes, specific to one station/campaign.
   localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
   localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
   localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
   localdatamicro <- subset(dfO2micro, Station==sta & Campaign == cam)
   
-  # Setting the Non-local irrigation framework
+  # Set the non-local irrigation framework
   parsdf["AlphIrr","guess"]<-10/365
   parsdf["IrrEnh","guess"]<-1 
-
+  
   # Load parameters
   parRange    <- parsdf[,c("guess","min","max","unit","printfactor","printunit")]
-
-  # Update parameters with local value (+ background update of the global porosity grid )
-  parSta    <- OmexCal_AdaptForSta(pars)
   
-  Simplot(parSta)
+  # Update parameters with local value (+ update of the global porosity grid )
+  parSta    <<- OmexCal_AdaptForSta(pars)
   
-  totdir=paste(plotdir,'FITNEW_',sta,'/',sep="")    
-  dir.create(totdir) #create new folder
+  # Create new folder
+  totdir <- paste(plotdir,'FITNEW_',sta,'/',sep="")    
+  dir.create(totdir) 
   
-  # Plot 0 : No Fit
-  pdf(paste(totdir,"_Fit0.pdf",sep=""),width=5*(3+1)+2+5,height=15)
-  grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"_",cam,"0. No Fit")),
-               arrangeGrob(partableplot(parSta)),
-               arrangeGrob(fluxtable(parSta)$p),
-               ncol = 3,nrow=1, widths=c(5*3,7,5), heights = c(12))
-  dev.off()
-
   # Defining the list of parameters that may be calibrated in one of the calibration steps
   parRange <- parRange[which(rownames(parRange) %in% unlist(PLIST)),] 
-  parsvect <- as.numeric(as.matrix(parRange$guess)); names(parsvect) <- rownames(parRange); 
   parsmin  <- as.numeric(as.matrix(parRange$min)); names(parsmin) <- rownames(parRange); 
   parsmax  <- as.numeric(as.matrix(parRange$max)); names(parsmax) <- rownames(parRange); 
   
-  pseudoNrun<-2000   
+  Fitlist  <- list()
+  Parlist  <- list()
+  Costlist <- list()
+    
+  # The first step is 
+  Parlist[[1]]<-parSta
+  
+  Costlist[[1]] <-OCOST_GEN(parSta,
+                  Vlist=unique(unlist(VLIST)),
+                  Flist=unique(unlist(FLIST)))$var
   
   for (ifit in c(1:length(PLIST))){
+    #ifit<-1
     Fit <- modFit(f=OCOST_GEN,
                   p=parSta[PLIST[[ifit]]],
-                   Vlist=VLIST[[ifit]],
-                   Flist=FLIST[[ifit]],
-                   control=list(numiter=pseudoNrun),
-                   lower=parsmin[PLIST[[ifit]]],
-                   upper=parsmax[PLIST[[ifit]]], 
+                  Vlist=VLIST[[ifit]],
+                  Flist=FLIST[[ifit]],
+                  control=list(numiter=pseudoNrun),
+                  lower=parsmin[PLIST[[ifit]]],
+                  upper=parsmax[PLIST[[ifit]]], 
                   method="Pseudo")
-    
-    Simplot(Fit$par)
     paste("Fit", ifit, "done")
     
-    Fit$ssr
+    #Updating the value of parSta with calibrated values 
+    parSta[c(names(Fit$par))] <- as.numeric(Fit$par)
     
-    #Updating the value of parsvect and parSta with calibrated values 
-    parsvect[c(names(Fit$par))]<-as.numeric(Fit$par)
-    parSta[c(names(Fit$par))]<-as.numeric(Fit$par)
-    
-    pdf(paste(totdir,"_Fit",ifit,".pdf",sep=""),width=5*(3+1)+2,height=15)
-    grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"_",cam,"1. Pseudo")),
-                 arrangeGrob(partableplot(parSta)),
-                 arrangeGrob(fluxtable(parSta)$p,
-                             fittableplot(Fit),ncol=1,heights=c(6,4)),
-                 ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))
-    dev.off()
+    Parlist [[ifit+1]] <- parSta
+    Fitlist [[ifit]]   <- Fit
+    Costlist[[ifit+1]] <- OCOST_GEN(parSta,
+                              Vlist=unique(unlist(VLIST)),
+                              Flist=unique(unlist(FLIST)))$var
     
     save(list = 'Fit', file = paste(totdir,"_Fit",ifit,".RData",sep=""))
     save(list = 'parSta', file = paste(totdir,"_Fit",ifit,"_pSta.RData",sep=""))
     print(parSta)
   }
-    
+  
   ##########################
   ## Collinearity + Refit ##
   ##########################
   
   # Assessing parameters sensitivity
   Sens <- sensFun(func=OCOST_GEN,
-                  parms=parsvect,
+                  parms=parSta[unique(unlist(PLIST))],
                   Vlist=unique(unlist(VLIST)),
                   Flist=unique(unlist(FLIST))
-                  )
-  
+  )
   
   # Some Sensitivity Plots
   pdf(paste(totdir,"_Sens.pdf",sep=""),width=10,height=10)
@@ -143,14 +134,18 @@ for (icamosta in (1:nrow(dsStasub))){
   sS$param<-rownames(sS)
   sS$param <- factor(sS$param, levels = sS$param[order( sS$L1,decreasing = T)])
   
+  g1<-ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
   pdf(paste(totdir,"_Sens3.pdf",sep=""),width=10,height=10)
-    ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
+  print(g1)
   dev.off()
-
-    # Assessing parameters collinearity, based on the sensitivity analysis
+  
+  ## <Arthur 2901018
+  ##  Should include a warning there if some parameters show a sensitivity of 0 
+  
+  # Assessing parameters collinearity, based on the sensitivity analysis
   cc<-collin(Sens)
   
-  plot(cc)
+  plot(cc, ylim=c(0,100))
   abline(h = 20, col = "red")
   
   c2<-cc[cc[,"collinearity"] < 20 &
@@ -165,40 +160,35 @@ for (icamosta in (1:nrow(dsStasub))){
   PLISTFinal<-names(parsvect)[cbest==1]
   
   FitFinal <- modFit(f=OCOST_GEN,
-                  p=parsvect[PLISTFinal],
-                  Vlist=unique(unlist(VLIST)),
-                  Flist=unique(unlist(FLIST)),
-                  control=list(numiter=pseudoNrun),
-                  lower=parsmin[PLISTFinal],
-                  upper=parsmax[PLISTFinal], 
-                  method="Pseudo")
+                     p=parSta[PLISTFinal],
+                     Vlist=unique(unlist(VLIST)),
+                     Flist=unique(unlist(FLIST)),
+                     control=list(numiter=pseudoNrun),
+                     lower=parsmin[PLISTFinal],
+                     upper=parsmax[PLISTFinal], 
+                     method="Pseudo")
   
-  summary(FitFinal)
-  Simplot(FitFinal$par,TRUE)
-  
-  Fit<-FitFinal
-  parsvect[c(names(Fit$par))]<-as.numeric(Fit$par)
+
   parSta[c(names(Fit$par))]<-as.numeric(Fit$par)
+
+  Fitlist[[length(PLIST)+1]]<-FitFinal
+  Parlist[[length(PLIST)+2]]<-parSta
   
-  pdf(paste(totdir,"_FitFinal.pdf",sep=""),width=5*(3+1)+2,height=15)
-  grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"_",cam,"Final")),
-               arrangeGrob(partableplot(parSta)),
-               arrangeGrob(fluxtable(parSta)$p,
-                           fittableplot(Fit),
-                           ncol=1,heights=c(6,4)),
-               ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(15))
-  dev.off()
   save(list = 'Fit', file = paste(totdir,"_FitFinal.RData",sep=""))
   save(list = 'parSta', file = paste(totdir,"_FitFinal_pSta.RData",sep=""))
   
-  Cost<-OCOST_GEN(parSta,
-                      Vlist=unique(unlist(VLIST)),
-                      Flist=unique(unlist(FLIST))
-                      )
+  Costlist[[length(PLIST)+2]] <- OCOST_GEN(parSta,
+                  Vlist=unique(unlist(VLIST)),
+                  Flist=unique(unlist(FLIST)))$var
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
-
- # remain<-c("PLIST", "VLIST", "FLIST","icamosta")
- # rm(list=setdiff(ls(), remain))
-
+  
+  Simplot(Parlist,T)
+  ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"",cam))
+  
+  # remain<-c("PLIST", "VLIST", "FLIST","icamosta")
+  # rm(list=setdiff(ls(), remain))
+  
 }
+
+

@@ -45,7 +45,7 @@ parsdf<-rbind(
   data.frame(row.names="pora"       ,guess=0.5      ,min=0.25     ,max=0.75     ,unit=" "        ,printfactor=1,printunit=NA     ,  constrain ='Fixed Map')   , # porosity decrease
   # Bioturbation
   data.frame(row.names="biot"       ,guess=10/365   ,min=0.01/365 ,max=30/365   ,unit="cm2/d"    ,printfactor=365, printunit="cm2/yr" , constrain ='Biol.') ,     # bioturbation coefficient % range from TROMP1995
-  data.frame(row.names="mixL"       ,guess=12       ,min=5        ,max=30       ,unit="cm"       ,printfactor=1,printunit=NA          , constrain ='Biol.')  ,     # depth of mixed layer
+  data.frame(row.names="mixL"       ,guess=15       ,min=5        ,max=30       ,unit="cm"       ,printfactor=1,printunit=NA          , constrain ='Biol.')  ,     # depth of mixed layer
   data.frame(row.names="AlphIrr"    ,guess=91/365   ,min=0/365    ,max=180/365  ,unit="/d"       ,printfactor=1, printunit="cm2/d"    , constrain ='Biol.')    ,     # depth of mixed layer
   data.frame(row.names="IrrEnh"     ,guess=1        ,min=1        ,max=18       ,unit="-"        ,printfactor=1, printunit=NA         , constrain ='Stat. Calib.')      ,     # depth of mixed layer
   
@@ -83,15 +83,15 @@ parsdf<-rbind(
   data.frame(row.names="rODUox"     ,guess=50.     ,min=1        ,max=300      ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max rate oxidation of ODU
   data.frame(row.names="ksO2oduox"  ,guess=1.      ,min=.5       ,max=21       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 in oxidation of ODU
   data.frame(row.names="ksO2oxic"   ,guess=3.      ,min=1        ,max=5        ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 in oxic mineralis
-  data.frame(row.names="ksNO3denit" ,guess=30.     ,min=10       ,max=50       ,unit="mmolNO3/m3",printfactor=1,printunit=NA   , constrain ='Stat. Calib.'), # half-sat NO3 in denitrif
+  data.frame(row.names="ksNOxdenit" ,guess=30.     ,min=10       ,max=50       ,unit="mmolNOx/m3",printfactor=1,printunit=NA   , constrain ='Stat. Calib.'), # half-sat NOx in denitrif
   data.frame(row.names="kinO2denit" ,guess=10      ,min=1        ,max=20       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 inhib denitrif
-  data.frame(row.names="kinNO3anox" ,guess=10      ,min=.5       ,max=20       ,unit="mmolNO3/m3",printfactor=1,printunit=NA   , constrain ='Stat. Calib.'), # half-sat NO3 inhib anoxic min
+  data.frame(row.names="kinNOxanox" ,guess=10      ,min=.5       ,max=20       ,unit="mmolNOx/m3",printfactor=1,printunit=NA   , constrain ='Stat. Calib.'), # half-sat NOx inhib anoxic min
   data.frame(row.names="kinO2anox"  ,guess=8       ,min=.5       ,max=20       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 inhib anoxic min
  
    # Nutrient bottom water conditions
   data.frame(row.names="bwO2"       ,guess=300     ,min=0        ,max=500      ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water O2 Concentration
   data.frame(row.names="bwNH3"      ,guess=2       ,min=1        ,max=10       ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water NH3 Concentration
-  data.frame(row.names="bwNO3"      ,guess=2       ,min=0        ,max=30       ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water NO3 Concentration
+  data.frame(row.names="bwNOx"      ,guess=2       ,min=0        ,max=30       ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water NOx Concentration
   data.frame(row.names="bwODU"      ,guess=0       ,min=0        ,max=0.2      ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water ODU Concentration
   data.frame(row.names="bwDIC"      ,guess=2800    ,min=2400     ,max=3500     ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),    # Bottom Water DIC Concentration
   data.frame(row.names="bwSIO"      ,guess=15      ,min=1        ,max=25       ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Pel. Mod.'),     # Bottom Water SiO Concentration
@@ -138,7 +138,7 @@ IrrEnhGrid  <- setup.prop.1D(func = exp.profile  , x.0 = pars["mixL"],
 DiffCoeffs  <- diffcoeff(S = pars["Sal"], t=pars["Temp"])*3600*24*1e4 # from m2/s -> cm2/d
 
 pars["DispO2"]     <- as.numeric(DiffCoeffs["O2"])  
-pars["DispNO3"]    <- as.numeric(DiffCoeffs["NO3"] )
+pars["DispNOx"]    <- mean(as.numeric(DiffCoeffs[c("NO3","NO2")] ))
 pars["DispNH3"]    <- as.numeric(DiffCoeffs["NH3"] )
 pars["DispODU"]    <- as.numeric(DiffCoeffs["HSO4"])
 pars["DispDIC"]    <- mean(as.numeric(DiffCoeffs[c("CO2","HCO3","CO3")]))
@@ -167,4 +167,25 @@ pars["DispPO4"]    <- as.numeric(DiffCoeffs["PO4"])
   porGridSolid$int <- 1-porGrid$int
 }
 
+  
+  AddDiagnostics <- function (Dy,p) {
 
+    ###########
+    ##  TOC  ##
+    ###########
+    Dy<-cbind(Dy,TOC=( Dy[,"FDET"]+Dy[,"SDET"]+                                # Slow and Fast OrgC
+                         p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1]))*   # "Refractory", not accounted for by Omexdia, derived from parameters
+                14*100*1e-9/2.5                                         # [nmolC/cm³ ] -> [% of dry weight] ; 2.5 gr/cm³ is the bulk sediment desnity
+    )
+    
+    ########
+    ## TN ##
+    ########
+    Dy<-cbind(Dy,TN=( Dy[,"FDET"]*p["NCrFdet"]+Dy[,"SDET"]*p["NCrSdet"]+
+                        p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1])*p["NCrref"])*
+                14*100*1e-9/2.5
+    )
+    
+    return (Dy)
+  }
+  

@@ -34,7 +34,7 @@ source("OmexCal_Load.R")
 The global variable `parSta` is used inside auxiliary functions.
 It contains the full parameter list as given in "OMEXDIA_OG3_BasicSetup.R"
 
-```{r}
+```{r, Model Run}
 # local copy of the global parameter vector
 parSta<-pars
 
@@ -54,7 +54,7 @@ Simplot(pars)
 User data are to be stored in a .xls file, respecitng the [user data file structure](datastructure.md).
 User-specific options (eg. filepahts, etc ..) are to be given in a file like (UsersDefinitions_HAMMOND.R)[UsersDefinitions_HAMMOND.R]
 
-```{r}
+```{r, Load Data}
 source('UsersDefinitions_HAMMOND.R')
 sta<-"H2"
 cam<-"Sep89"

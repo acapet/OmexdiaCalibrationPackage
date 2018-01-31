@@ -26,10 +26,10 @@ partableplot<-function(p) {
   parsdfl<-parsdf
   
 #   [c("Temp","biot","mixL","AlphIrr","IrrEnh","w","MeanFlux","rFast","rSlow","pFast","pRef",
-#                           "NCrFdet","NCrSdet","pdepo","NH3Ads","rnit","bwO2","bwNH3","bwNO3","bwODU","bwDIC"),]
+#                           "NCrFdet","NCrSdet","pdepo","NH3Ads","rnit","bwO2","bwNH3","bwNOx","bwODU","bwDIC"),]
 #   
   parsdfl[names(parSta),"guess"]<-as.numeric(parSta)
-  parsdfl[c("Temp","bwO2","bwNH3","bwNO3","bwODU","bwDIC","DispO2","DispNO3","DispNH3","DispDIC","DispODU","Flux"),"origin"]<-"sta"
+  parsdfl[c("Temp","bwO2","bwNH3","bwNOx","bwODU","bwDIC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"origin"]<-"sta"
  #parsdfl[names(p),"guess"]<-as.numeric(p)
  #parsdfl[names(p),"origin"]<-"CALIB"
   parsdfl[names(p),"guess"]<-NA
@@ -39,14 +39,14 @@ partableplot<-function(p) {
   
   #parsdfl["WPOC","printunit"]<-"m/d"
   parsdfl["DispO2","printunit"]<-"cm2/d"
-  parsdfl["DispNO3","printunit"]<-"cm2/d"
+  parsdfl["DispNOx","printunit"]<-"cm2/d"
   parsdfl["DispNH3","printunit"]<-"cm2/d"
   parsdfl["DispODU","printunit"]<-"cm2/d"
   parsdfl["DispDIC","printunit"]<-"cm2/d"
   parsdfl["Flux","printunit"]<-"mmol C/m3"
   
-  #parsdfl[c("WPOC","DispO2","DispNO3","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
-  parsdfl[c("DispO2","DispNO3","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
+  #parsdfl[c("WPOC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
+  parsdfl[c("DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
   
 #parsdfforprint<-subset(parsdfl,select = c("guess","unit","origin"))#,"min","max"
 parsdfforprint<-subset(parsdfl,select = c("guess","printunit","origin","Cal."))#,"min","max"
@@ -69,12 +69,12 @@ parsdfforprint$unit<-parsdfl$printunit
 parsdfforprint<-parsdfforprint[c("Temp","biot","mixL","AlphIrr",
                                  "IrrEnh","w","Flux","rFast","rSlow","pFast","pRef",
                                  "NCrFdet","NCrSdet","pdepo","NH3Ads","rnit","bwO2",
-                                 "bwNH3","bwNO3","bwODU","bwDIC","MeanFlux",
-                                 "DispO2","DispNO3","DispNH3","DispDIC","DispODU"),]
+                                 "bwNH3","bwNOx","bwODU","bwDIC","MeanFlux",
+                                 "DispO2","DispNOx","DispNH3","DispDIC","DispODU"),]
 
 t<-qplot(1:10, 1:10, geom = "blank")+theme_bw()+
   theme(line = element_blank(),text = element_blank())+
   annotation_custom( grob = tableGrob(fpdf  )  ) 
 
-return(t)
+return(list(t=t, df=fpdf))
 }

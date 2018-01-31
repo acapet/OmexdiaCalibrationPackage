@@ -60,14 +60,14 @@ fluxtable<-function(p1) {
     
     return ( data.frame(DICflux       = - (DI$DICflux+IntegratedRate(DI$DICIrrflux))/1e6*1e4,                            # from nmol/cm2/d -> mmol/m2/d
                         O2flux        = - (DI$O2flux +IntegratedRate(DI$O2Irrflux ))/1e6*1e4,                            # from nmol/cm2/d -> mmol/m2/d
-                        NO3flux       = - (DI$NO3flux+IntegratedRate(DI$NO3Irrflux))/1e6*1e4,                            # from nmol/cm2/d -> mmol/m2/d
+                        NOxflux       = - (DI$NOxflux+IntegratedRate(DI$NOxIrrflux))/1e6*1e4,                            # from nmol/cm2/d -> mmol/m2/d
                         NH3flux       = - (DI$NH3flux+IntegratedRate(DI$NH3Irrflux))/1e6*1e4,                            # from nmol/cm2/d -> mmol/m2/d
                         ODUflux       = - (DI$ODUflux+IntegratedRate(DI$ODUIrrflux))/1e6*1e4,                            # from nmol/cm2/d -> mmol/m2/d
                         SIOflux       = - (DI$SIOflux+IntegratedRate(DI$SIOIrrflux))/1e6*1e4,  
                         PO4flux       = - (DI$PO4flux+IntegratedRate(DI$PO4Irrflux))/1e6*1e4,  
                         # Pirr_DIC      =IntegratedRate(DI$DICIrrflux)/(DI$DICflux+IntegratedRate(DI$DICIrrflux))*100, # Contribution of irrigation to DIC fluxes
                         # Pirr_O2       =IntegratedRate(DI$O2Irrflux)/(DI$O2flux+IntegratedRate(DI$O2Irrflux))*100, # Contribution of irrigation to O2 fluxes
-                        # Pirr_NO3      =IntegratedRate(DI$NO3Irrflux)/(DI$NO3flux+IntegratedRate(DI$NO3Irrflux))*100, # Contribution of irrigation to NO3 fluxes
+                        # Pirr_NOx      =IntegratedRate(DI$NOxIrrflux)/(DI$NOxflux+IntegratedRate(DI$NOxIrrflux))*100, # Contribution of irrigation to NOx fluxes
                         # Pirr_NH3      =IntegratedRate(DI$NH3Irrflux)/(DI$NH3flux+IntegratedRate(DI$NH3Irrflux))*100, # Contribution of irrigation to NH3 fluxes
                         # Pirr_ODU      =IntegratedRate(DI$ODUIrrflux)/(DI$ODUflux+IntegratedRate(DI$ODUIrrflux))*100, # Contribution of irrigation to ODU fluxes
                         # logdeltC      =Cb$logdelta,
@@ -115,5 +115,5 @@ fluxtable<-function(p1) {
       annotation_custom(grob = tableGrob(fpdf)) 
   }
   
-  return(list(p=p1,d=d))
+  return(list(p=p1,d=fpdf))
 }

@@ -42,46 +42,43 @@
 ##Define Excel-File
 datafile<-"HAMMOND_Data.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
-##Define variables that should be considered in the calibration procedure
-varlimod<-c("NH3","DIC","SIO","PO4","TOC","TN","SiDet") # List of variables that should be used for the calibration procedure
-
 #########################
 # Calibration Procedure #
 #########################
 
 # Here follows the definition of the calibration steps
+PLIST<-list()
+VLIST<-list()
+FLIST<-list()
+MLIST<-list()
 
 ## 1. calibration step
 # Parameters 
-PLISTC <- c("pFast","MeanFlux","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
+PLIST[[1]] <- c("pFast","MeanFlux","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
 # Observation profiles 
-VLISTC <- c("TOC","TN")
+VLIST[[1]] <- c("TOC","TN")
 # Observation fluxes
-FLISTC <- c("DIC")
+FLIST[[1]] <- c("DIC")
+# Observation Microprofiles
+MLIST[[1]] <- c()
 
 ## 2. calibration step
-PLISTN <- c("NCrSdet","mixL","biot","AlphIrr") 
-VLISTN <- c("TOC","DIC","NH3","TN")
-FLISTN <- c("DIC","NH3","NO3","O2")
+PLIST[[2]] <- c("NCrSdet","mixL","biot","AlphIrr") 
+VLIST[[2]] <- c("TOC","DIC","NH3","TN")
+FLIST[[2]] <- c("DIC","NH3","NOx","O2")
+MLIST[[2]] <- c()
 
 ## 3. calibration step
-PLISTSIO <- c("rSi","SiCdet","EquilSiO")
-VLISTSIO <- c("SIO") #"SiDet"
-FLISTSIO <- c("SIO")
+PLIST[[3]] <- c("rSi","SiCdet","EquilSiO")
+VLIST[[3]] <- c("SIO","SiDet") #
+FLIST[[3]] <- c("SIO")
 
 ## 4. calibration step
-PLISTPO4 <- c("PCrSdet","rCaPprod")
-VLISTPO4 <- c("PO4")
-FLISTPO4 <- c("PO4")
+PLIST[[4]] <- c("PCrSdet","rCaPprod")
+VLIST[[4]] <- c("PO4")
+FLIST[[4]] <- c("PO4")
 
-
-# added by A.Eisele 24.10.2017 
-#generalized list for automatical calibration procedure on desired fitting steps
-
-#Define which calibration steps should be included in the calibration procedure
-PLIST<-list(PLISTC,PLISTN,PLISTSIO,PLISTPO4)
-VLIST<-list(VLISTC,VLISTN,VLISTSIO,VLISTPO4)
-FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
+stepNames <-c("Fit C","Fit N","Fit Si","Fit PO")
 
 #####################
 #Plotting and Mapping
@@ -114,6 +111,12 @@ Loc_google <- c(11, 43, 15, 47)
 ##############################
 
 # source(OMEXDIA_OG3_StepwiseCalibration.R)
+
+##########################################
+## Adaptation for model/obs comparison!
+# Changes in units
+# Diagnostic from the model state variable
+##########################################
 
 AddDiagnostics <- function (Dy,p) {
   ###########

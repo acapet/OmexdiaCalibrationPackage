@@ -1,4 +1,4 @@
-OmxediaCalibration Tool Box: Minimal Example
+OmexdiaCalibration Tool Box: Minimal Example
 ================
 Arthur Capet
 Nov, 2017
@@ -45,12 +45,16 @@ User data are to be stored in a .xls file, respecitng the [user data file struct
 
 ``` r
 source('UsersDefinitions_HAMMOND.R')
+sta<-"H2"
+cam<-"Sep89"
+
+#source('UsersDefinitions_NOAH.R')
+#sta<-"C"
+#cam<-"HE432"
 
 # This loads data the based on info given in the UserDefinitions....R
 source('OmexCal_Load_Data.R')
 
-sta<-"H2"
-cam<-"Sep89"
 
 # We then create "local" dataframes, specific to one station.
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
@@ -87,8 +91,8 @@ Once data are loaded, the generic cost function can be used while specifying whi
  C1$var
 ```
 
-    ##   name     scale N SSR.unweighted SSR.unscaled     SSR
-    ## 1  NH3 0.1428571 7       12887.47      1793.37 36.5994
+    ##   name     scale N SSR.unweighted SSR.unscaled      SSR
+    ## 1  NH3 0.1428571 7       6820.193     1119.105 22.83888
 
 ``` r
  C2 <- OCOST_GEN(parSta,Vlist = "NH3")
@@ -96,7 +100,7 @@ Once data are loaded, the generic cost function can be used while specifying whi
 ```
 
     ##   name     scale N SSR.unweighted SSR.unscaled      SSR
-    ## 1  NH3 0.1428571 7       9017.879     1161.281 23.69961
+    ## 1  NH3 0.1428571 7       4714.522     710.8764 14.50768
 
 ``` r
  C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
@@ -104,19 +108,20 @@ Once data are loaded, the generic cost function can be used while specifying whi
 ```
 
     ##   name     scale N SSR.unweighted SSR.unscaled       SSR
-    ## 1  NH3 0.1428571 7     9017.87943     1161.281  23.69961
-    ## 2  PO4 0.1428571 7       75.55162     5217.510 106.47979
+    ## 1  NH3 0.1428571 7      4714.5219     710.8764  14.50768
+    ## 2  PO4 0.1428571 7       134.9338    6501.4381 132.68241
 
 ``` r
  C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
  C4$var
 ```
 
-    ##      name     scale N SSR.unweighted SSR.unscaled        SSR
-    ## 1     DIC 0.1666667 6   1.031588e+06    239.07792   6.641053
-    ## 2     NH3 0.1428571 7   9.017879e+03   1161.28102  23.699613
-    ## 3 SIOflux 1.0000000 1   7.504223e+00     20.84506  20.845063
-    ## 4 NH3flux 1.0000000 1   3.946040e-01    109.61222 109.612222
+    ##      name     scale N SSR.unweighted SSR.unscaled         SSR
+    ## 1     DIC 0.1666667 6   1.301674e+06 103.32603984  2.87016777
+    ## 2     NH3 0.1428571 7   4.714522e+03 710.87640967 14.50768183
+    ## 3 SIOflux 1.0000000 1   4.810232e+00  13.36175439 13.36175439
+    ## 4 NH3flux 1.0000000 1   9.309408e-05   0.02585947  0.02585947
+    ## 5 NOxflux 1.0000000 1   1.082128e-02   3.00591053  3.00591053
 
 Display
 =======

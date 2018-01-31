@@ -51,6 +51,7 @@ source('OmexCal_COST_generic.R')
 
 # BudgetDiagnostic tools
 source('OmexCal_BudgetFunctions.R')
+#source("OmexCal_AddDiagnostics.R")
 
 # Update porosity & bottom water conditions
 source('OmexCal_AdaptParsForStation.R')
@@ -72,3 +73,4 @@ if (.Platform$OS.type == "unix"){
 }else {
   dyn.load("omexdia_OG3.dll")  
 }
+

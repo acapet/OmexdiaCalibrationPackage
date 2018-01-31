@@ -39,9 +39,9 @@ OCALL <- function (p) {
   initpar <- c(
     parpert[c("Temp","w","MeanFlux","rFast","rSlow","pFast","pRef", "NCrFdet","NCrSdet",
               "rSi","SiCdet","EquilSiO","PCrFdet","PCrSdet","rFePdesorp","rFePadsorp","rCaPprod","rCaPdiss","CPrCaP",
-              "PO4ads","Q","pdepo","NH3Ads","rnit","ksO2nitri","rODUox","ksO2oduox","ksO2oxic","ksNO3denit",
-              "kinO2denit","kinNO3anox","kinO2anox","bwO2","bwNH3","bwNO3","bwODU","bwDIC","bwSIO","bwPO4",
-              "DispO2","DispNO3","DispNH3","DispODU","DispDIC","DispSIO","DispPO4")],
+              "PO4ads","Q","pdepo","NH3Ads","rnit","ksO2nitri","rODUox","ksO2oduox","ksO2oxic","ksNOxdenit",
+              "kinO2denit","kinNOxanox","kinO2anox","bwO2","bwNH3","bwNOx","bwODU","bwDIC","bwSIO","bwPO4",
+              "DispO2","DispNOx","DispNH3","DispODU","DispDIC","DispSIO","DispPO4")],
     Grid$dx,
     Grid$dx.aux,
     porGrid$mid,
@@ -55,7 +55,7 @@ OCALL <- function (p) {
   nout <- 2221 # express this using N 
   
   outnames <- c("O2flux" , rep("O2Irrflux",N) , "O2deepflux" ,
-                "NO3flux", rep("NO3Irrflux",N), "NO3deepflux",
+                "NOxflux", rep("NOxIrrflux",N), "NOxdeepflux",
                 "NH3flux", rep("NH3Irrflux",N), "NH3deepflux",
                 "ODUflux", rep("ODUIrrflux",N), "ODUdeepflux",
                 "DICflux", rep("DICIrrflux",N), "DICdeepflux",

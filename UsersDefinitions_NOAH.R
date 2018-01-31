@@ -42,47 +42,36 @@
 ##Define Excel-File
 datafile<-"NOAH_C.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
-##Define variables that should be considered in the calibration procedure
-varlimod<-c("NH3","DIC","SIO","PO4","TOC","TN","SiDet") # List of variables that should be used for the calibration procedure
-
-
 #########################
 # Calibration Procedure #
 #########################
 
 # Here follows the definition of the calibration steps
+PLIST<-list()
+VLIST<-list()
+FLIST<-list()
+MLIST<-list()
 
 ## 1. calibration step
 # Parameters 
-PLISTC <- c("pFast","WPOC","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
+PLIST[[1]] <- c("pFast","MeanFlux","pRef","biot","NCrSdet","mixL","biot","AlphIrr")
 # Observation profiles 
-VLISTC <- c("TOC","TN")
+VLIST[[1]] <- c("NOx")
 # Observation fluxes
-FLISTC <- c("DIC")
+FLIST[[1]] <- c("O2","NOx")
+MLIST[[1]] <- c()
 
 ## 2. calibration step
-PLISTN <- c("NCrSdet","mixL","biot","AlphIrr") 
-VLISTN <- c("TOC","DIC","NH3","TN")
-FLISTN <- c("DIC","NH3","NO3","O2")
+PLIST[[2]] <- c("rSi","SiCdet","EquilSiO") 
+VLIST[[2]] <- c("SIO")
+FLIST[[2]] <- c("SIO")
+MLIST[[2]] <- c()
 
 ## 3. calibration step
-PLISTSIO <- c("rSi","SiCdet","EquilSiO")
-VLISTSIO <- c("SIO") #"SiDet"
-FLISTSIO <- c("SIO")
-
-## 4. calibration step
-PLISTPO4 <- c("PCrSdet","rCaPprod")
-VLISTPO4 <- c("PO4")
-FLISTPO4 <- c("PO4")
-
-
-# added by A.Eisele 24.10.2017 
-#generalized list for automatical calibration procedure on desired fitting steps
-
-#Define which calibration steps should be included in the calibration procedure
-PLIST<-list(PLISTC,PLISTN,PLISTSIO,PLISTPO4)
-VLIST<-list(VLISTC,VLISTN,VLISTSIO,VLISTPO4)
-FLIST<-list(FLISTC,FLISTN,FLISTSIO,FLISTPO4)
+PLIST[[3]] <- c("PCrSdet","rCaPprod")
+VLIST[[3]] <- c("PO4") #"SiDet"
+FLIST[[3]] <- c("PO4")
+MLIST[[3]] <- c()
 
 #####################
 #Plotting and Mapping
@@ -115,3 +104,35 @@ Loc_google <- c(11, 43, 15, 47)
 ## now you can run the script!
 ##############################
 #source(OMEXDIA_OG3_StepwiseCalibration.R)
+
+##########################################
+## Adaptation for model/obs comparison!
+# Changes in units
+# Diagnostic from the model state variable
+##########################################
+
+AddDiagnostics <- function (Dy,p) {
+  ###########
+  ## SiDet ##
+  ###########
+  # Converting detrital silicate in %dry weight
+  Dy[,"SiDet"] <- Dy[,"SiDet"]*28*100*1e-9/2.5
+  
+  ###########
+  ##  TOC  ##
+  ###########
+  Dy<-cbind(Dy,TOC=( Dy[,"FDET"]+Dy[,"SDET"]+                                # Slow and Fast OrgC
+                       p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1]))*   # "Refractory", not accounted for by Omexdia, derived from parameters
+              14*100*1e-9/2.5                                         # [nmolC/cm³ ] -> [% of dry weight] ; 2.5 gr/cm³ is the bulk sediment desnity
+  )
+  
+  ########
+  ## TN ##
+  ########
+  Dy<-cbind(Dy,TN=( Dy[,"FDET"]*p["NCrFdet"]+Dy[,"SDET"]*p["NCrSdet"]+
+                      p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1])*p["NCrref"])*
+              14*100*1e-9/2.5
+  )
+  
+  return (Dy)
+}

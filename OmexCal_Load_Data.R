@@ -205,6 +205,7 @@ if (plotting) {
   dev.off()
   
   ##Plot O2microprofile data
+  if (nrow(dfO2micro)>1){
   G4 <- ggplot(dfO2micro, aes(y=Depth, x=value, color=colordfmicroaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
     geom_point()+
     geom_errorbarh(aes(xmin=value-err,xmax=value+err))+geom_path()+
@@ -212,8 +213,9 @@ if (plotting) {
     ylab(ylabname)+xlab(xlabname)
   
   pdf(paste0(plotdir,"/MicroprofileData1.pdf"))
-  G4
+  print(G4)
   dev.off()
+  }
 }
 
 ### Mapping Stations

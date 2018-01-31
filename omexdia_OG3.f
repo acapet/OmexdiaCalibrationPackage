@@ -62,9 +62,9 @@
       DOUBLE PRECISION  :: tort(N+1)
 !      DOUBLE PRECISION  :: PSI(N)
       
-      DOUBLE PRECISION  :: Fdet(N),Sdet(N),O2(N),NO3(N),NH3(N),ODU(N),          &
+      DOUBLE PRECISION  :: Fdet(N),Sdet(N),O2(N),NOx(N),NH3(N),ODU(N),          &
      &                     DIC(N),Sidet(N),SiO(N),PO4(N),FeP(N),CaP(N)
-      DOUBLE PRECISION  :: dFdet(N),dSdet(N),dO2(N),dNO3(N),                    &
+      DOUBLE PRECISION  :: dFdet(N),dSdet(N),dO2(N),dNOx(N),                    &
      &                     dNH3(N),dODU(N),dDIC(N),dSidet(N),dSiO(N),           &
      &                     dPO4(N),dFeP(N),dCaP(N)
 
@@ -85,8 +85,8 @@
      & PCrFdet,PCrSdet,rFePdesorp,rFePadsorp,rCaPprod,rCaPdiss,CPrCaP,          &
      & PO4ads,                                                                  &
      & Q,pdepo,NH3Ads,rnit,ksO2nitri,rODUox,ksO2oduox,                          &
-     & ksO2oxic,ksNO3denit,kinO2denit,kinNO3anox,kinO2anox,bwO2,bwNH3,          &
-     & bwNO3,bwODU,bwDIC,bwSiO,bwPO4,DispO2,DispNO3,DispNH3,DispODU,            &
+     & ksO2oxic,ksNOxdenit,kinO2denit,kinNOxanox,kinO2anox,bwO2,bwNH3,          &
+     & bwNOx,bwODU,bwDIC,bwSiO,bwPO4,DispO2,DispNOx,DispNH3,DispODU,            &
      & DispDIC, DispSiO,DispPO4
       
       COMMON /myparms     /Temp,w,MeanFlux,rFast,rSlow,pFast,pref,              &
@@ -95,9 +95,9 @@
      & PCrFdet,PCrSdet,rFePdesorp,rFePadsorp,rCaPprod,rCaPdiss,CPrCaP,          &
      & PO4ads,                                                                  &
      & Q,pdepo,NH3Ads,rnit,ksO2nitri,rODUox,ksO2oduox,                          &
-     & ksO2oxic,ksNO3denit,kinO2denit,kinNO3anox,kinO2anox,bwO2,bwNH3,          &
-     & bwNO3,bwODU,bwDIC,bwSiO,bwPO4,                                           &
-     & DispO2,DispNO3,DispNH3,DispODU,DispDIC, DispSiO,DispPO4,                 &
+     & ksO2oxic,ksNOxdenit,kinO2denit,kinNOxanox,kinO2anox,bwO2,bwNH3,          &
+     & bwNOx,bwODU,bwDIC,bwSiO,bwPO4,                                           &
+     & DispO2,DispNOx,DispNH3,DispODU,DispDIC, DispSiO,DispPO4,                 &
      & dx,dxint,por,intpor,Db,AlphIrr,IrrEnh
       
       DOUBLE PRECISION CarbonFlux
@@ -105,7 +105,7 @@
 
 ! output variables
       DOUBLE PRECISION  :: O2flux,  O2Irrflux(N),  O2deepflux
-      DOUBLE PRECISION  :: NO3flux, NO3Irrflux(N), NO3deepflux
+      DOUBLE PRECISION  :: NOxflux, NOxIrrflux(N), NOxdeepflux
       DOUBLE PRECISION  :: NH3flux, NH3Irrflux(N), NH3deepflux
       DOUBLE PRECISION  :: ODUflux, ODUIrrflux(N), ODUdeepflux
       DOUBLE PRECISION  :: DICflux, DICIrrflux(N), DICdeepflux
@@ -117,8 +117,8 @@
       DOUBLE PRECISION  :: TotDenitrific, TotOxicMin, TotAnoxicMin,             &
      &  TotNitri, TotOduOx 
       DOUBLE PRECISION  :: NH3adsorption(N), PO4adsorption(N)
-      COMMON /myout       /O2flux, O2Irrflux,O2deepflux,NO3flux,                &
-     & NO3Irrflux,NO3deepflux,NH3flux,NH3Irrflux,NH3deepflux,ODUflux,           &
+      COMMON /myout       /O2flux, O2Irrflux,O2deepflux,NOxflux,                &
+     & NOxIrrflux,NOxdeepflux,NH3flux,NH3Irrflux,NH3deepflux,ODUflux,           &
      & ODUIrrflux,ODUdeepflux,DICflux,DICIrrflux,DICdeepflux,                   &
      & SIOflux,SIOIrrflux,SIOdeepflux,                                          &  
      & PO4flux,PO4Irrflux,PO4deepflux,                                          &  
@@ -148,7 +148,7 @@ c      write(*,*) " MeanFlux", MeanFlux
         Fdet(I) = Conc(I)
         Sdet(I) = Conc(N+I)
         O2(I)   = Conc(2*N+I)
-        NO3(I)  = Conc(3*N+I)
+        NOx(I)  = Conc(3*N+I)
         NH3(I)  = Conc(4*N+I)
         ODU(I)  = Conc(5*N+I)
         DIC(I)  = Conc(6*N+I)
@@ -166,7 +166,7 @@ c      write(*,*) " ### Start ###   "
 c      write(*,*) " sum(dFdet)   ", sum(dFdet)
 c      write(*,*) " sum(dSdet)   ", sum(dSdet)
 c      write(*,*) " sum(dO2)     ", sum(dO2)
-c      write(*,*) " sum(dNO3)    ", sum(dNO3)
+c      write(*,*) " sum(dNOx)    ", sum(dNOx)
 c      write(*,*) " sum(dNH3)    ", sum(dNH3)
 c      write(*,*) " sum(dODU)    ", sum(dODU)
 c      write(*,*) " sum(dDIC)   ", sum(dDIC)
@@ -220,14 +220,14 @@ c      write(*,*) "               "
       O2Irrflux  = dCIrr
       dO2        = dO2+dCIrr
       
-      Ds = dispNO3/tort*IrrEnh+ Db 
-      CALL diffadv1D (N, NO3 ,bwNO3 ,0.d0, 0.d0, 0.d0, 0.d0, 0.d0,              &
-     & 2,  3, Ds, w,intpor,por, dx,dxint, Flux, dNO3)     
-      NO3flux     = Flux(1)
-      NO3deepflux = Flux(N+1)
-      CALL BioIrrigation1D (N, NO3, bwNO3, AlphIrr*dispNO3, dCIrr)
-      NO3Irrflux  = dCIrr
-      dNO3        = dNO3+dCIrr
+      Ds = dispNOx/tort*IrrEnh+ Db 
+      CALL diffadv1D (N, NOx ,bwNOx ,0.d0, 0.d0, 0.d0, 0.d0, 0.d0,              &
+     & 2,  3, Ds, w,intpor,por, dx,dxint, Flux, dNOx)     
+      NOxflux     = Flux(1)
+      NOxdeepflux = Flux(N+1)
+      CALL BioIrrigation1D (N, NOx, bwNOx, AlphIrr*dispNOx, dCIrr)
+      NOxIrrflux  = dCIrr
+      dNOx        = dNOx+dCIrr
       
       ! In the case of adsoprtion, diffusion coef for liquids only , irrigation coef and reaction rates
       ! are affected (divided by 1+K). In case of adsorption AND advection AND depth-varying porosity
@@ -241,7 +241,7 @@ c      write(*,*) "               "
      & 2,  3, Ds, w,intpor,por, dx,dxint, Flux, dNH3)     
       NH3flux     = Flux(1)*(1.d0+NH3Ads)
       NH3deepflux = Flux(N+1)*(1.d0+NH3Ads)
-      CALL BioIrrigation1D (N, NH3, bwNH3, AlphIrr*dispNO3/(1.d0+NH3ads)&
+      CALL BioIrrigation1D (N, NH3, bwNH3, AlphIrr*dispNOx/(1.d0+NH3ads)&
      & , dCIrr)
       dNH3        = dNH3+dCIrr
       NH3Irrflux  = dCIrr*(1.d0+NH3Ads)
@@ -321,8 +321,8 @@ c      write(*,*) "               "
 
 ! first the limitation terms
       Oxicminlim = O2/(O2+ksO2oxic)                ! limitation terms
-      Denitrilim = (1.d0-O2/(O2+kinO2denit)) * NO3/(NO3+ksNO3denit)
-      Anoxiclim  = (1.d0-O2/(O2+kinO2anox))*(1.d0-NO3/(NO3+kinNO3anox))
+      Denitrilim = (1.d0-O2/(O2+kinO2denit)) * NOx/(NOx+ksNOxdenit)
+      Anoxiclim  = (1.d0-O2/(O2+kinO2anox))*(1.d0-NOx/(NOx+kinNOxanox))
       Rescale    = 1.d0/(Oxicminlim+Denitrilim+Anoxiclim)
 
 ! then the mineralisation rates
@@ -345,7 +345,7 @@ c      write(*,*) "               "
       dSDET = dSDET - SCmin
       dO2   = dO2   - OxicMin          -2.d0* Nitri -      OduOx
       dNH3  = dNH3  + (Nprod                - Nitri) / (1.d0+NH3Ads)
-      dNO3  = dNO3  - 0.8d0*Denitrific      + Nitri 
+      dNOx  = dNOx  - 0.8d0*Denitrific      + Nitri 
       dODU  = dODU  + AnoxicMin                  - OduOx - OduDepo
       dDIC  = dDIC  + Cprod + CPrCaP*(CaPdiss *(1.d0-por)/por-CaPprod)
       dSiDET = dSiDET  - SiDiss
@@ -371,7 +371,7 @@ c      write(*,*) "               "
          dConc(I)      =  dFdet(I)
          dConc(N+I)    =  dSdet(I) 
          dConc(2*N+I)  =  dO2(I)  
-         dConc(3*N+I)  =  dNO3(I) 
+         dConc(3*N+I)  =  dNOx(I) 
          dConc(4*N+I)  =  dNH3(I) 
          dConc(5*N+I)  =  dODU(I) 
          dConc(6*N+I)  =  dDIC(I)
