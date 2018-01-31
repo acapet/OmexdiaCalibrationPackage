@@ -72,6 +72,7 @@ PLIST[[3]] <- c("PCrSdet","rCaPprod")
 VLIST[[3]] <- c("PO4") #"SiDet"
 FLIST[[3]] <- c("PO4")
 MLIST[[3]] <- c()
+stepNames <-c("Fit 1","Fit Si","Fit PO")
 
 #####################
 #Plotting and Mapping

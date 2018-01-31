@@ -25,15 +25,16 @@
 source("OmexCal_Load.R")  
 
 # load station data
-if (TRUE){
+if (FALSE){
   userfile   <- 'UsersDefinitions_HAMMOND.R'
   stalist    <- c("H1","H2","H4","H6","H7")
   camlist    <- "Sep89"
-  pseudoNrun <- 2000
+  pseudoNrun <- 5000
 } else{
   userfile <- 'UsersDefinitions_NOAH.R'
   stalist  <- "C"
   camlist  <- c("HE432")
+  pseudoNrun <- 5000
 }
 
 source(userfile)
@@ -157,7 +158,7 @@ for (icamosta in (1:nrow(dsStasub))){
   cbest<-c2[which.min(c2$collinearity),]
   cbest
   
-  PLISTFinal<-names(parsvect)[cbest==1]
+  PLISTFinal<-names(parSta[unique(unlist(PLIST))])[cbest==1]
   
   FitFinal <- modFit(f=OCOST_GEN,
                      p=parSta[PLISTFinal],
@@ -182,8 +183,6 @@ for (icamosta in (1:nrow(dsStasub))){
                   Flist=unique(unlist(FLIST)))$var
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
-  
-  Simplot(Parlist,T)
   ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"",cam))
   
   # remain<-c("PLIST", "VLIST", "FLIST","icamosta")

@@ -56,14 +56,12 @@ source('OmexCal_BudgetFunctions.R')
 # Update porosity & bottom water conditions
 source('OmexCal_AdaptParsForStation.R')
 
-# Alters the current Porosity profiles and other things according to station info
-#source("OMEXDIA_OG3_AdaptParsForStation.R")
-
 # Utilities for result display 
 source("OmexCal_SimplePlot.R")
 source("OmexCal_ParTablePlot.R")
 source("OmexCal_FluxTable.R")
 source("OmexCal_FitTablePlot.R")
+source("OmexCal_ReportGen.R")
 
 # load the Fortran OMEXDIA model 
 system("R CMD SHLIB omexdia_OG3.f")
