@@ -51,7 +51,7 @@ parsdf<-rbind(
   
   # organic matter dynamics  #
   data.frame(row.names="w"          ,guess=0.16/365 ,min=0.001/365 ,max=2/365   ,unit="cm/d"     ,printfactor=365, printunit="cm/yr"   , constrain ='Fixed Map')  ,     # advection rate
-  data.frame(row.names="MeanFlux"   ,guess=3000     ,min=10        ,max=4000    ,unit="nmol/cm2/d",printfactor=1/100, printunit="mmol/m2/d",  constrain ='Pel. Mod.'), # C deposition
+  data.frame(row.names="MeanFlux"   ,guess=3000     ,min=10        ,max=8000    ,unit="nmol/cm2/d",printfactor=1/100, printunit="mmol/m2/d",  constrain ='Pel. Mod.'), # C deposition
 
   # On 1 Aug 2017, changed for fixed rslow: 1 /yr, instead of guess of 0.1 previously.
   data.frame(row.names="rFast"      ,guess=12/365   ,min=2/365     ,max=80/365  ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Benth. Mod.')      , # decay rate fast decay det.
@@ -65,7 +65,7 @@ parsdf<-rbind(
   data.frame(row.names="SiCdet"     ,guess=1/15     ,min=1/60      ,max=1/2     ,unit="-",printfactor=1,printunit=NA            , constrain ='Pel. Mod.'), # Sinking SiDet Flux
   data.frame(row.names="EquilSiO"   ,guess=400      ,min=150       ,max=900     ,unit="mmol/m3",printfactor=1,printunit=NA      , constrain ='Stat. Calib.'),    # Equilibrium concentration with Opaline dissolution @ 20°C
   data.frame(row.names="PCrFdet"    ,guess=1/106    ,min=1/400     ,max=1/50    ,unit="molP/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.'),    #
-  data.frame(row.names="PCrSdet"    ,guess=1/400    ,min=1/800     ,max=1/50    ,unit="molP/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.'),    #
+  data.frame(row.names="PCrSdet"    ,guess=1/800    ,min=1/800     ,max=1/50    ,unit="molP/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.'),    #
   data.frame(row.names="rFePdesorp" ,guess=105/365  ,min=1/365     ,max=200/365 ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Stat. Calib.'), # 
   data.frame(row.names="rFePadsorp" ,guess=77/365   ,min=.2        ,max=2.5     ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Stat. Calib.'), # 
   data.frame(row.names="rCaPprod"   ,guess=0.001/365 ,min=0.0001/365  ,max=10/365  ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Stat. Calib.'), # 

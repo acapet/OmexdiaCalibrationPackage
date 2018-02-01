@@ -186,10 +186,7 @@ for (icamosta in (1:nrow(dsStasub))){
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
   ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"_",cam))
-  
-  # remain<-c("PLIST", "VLIST", "FLIST","icamosta")
-  # rm(list=setdiff(ls(), remain))
-  
+
 }
 
 

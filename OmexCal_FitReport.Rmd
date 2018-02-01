@@ -144,7 +144,7 @@ $$\mathcal{C}=\sum\limits_{j=1}^{n_{var}}\frac{\mathcal{C}_j}{n_{obs,j}}$$
 Here the total height of each bar indicate the model cost, while colored fraction of the bar indicate the contribution of each type of observations in the model cost.
 
 
-```{r, echo=FALSE, fig.height=2}
+```{r, echo=FALSE, fig.height=4}
 dfModCost <- do.call(cbind,lapply(Costlist, function(d){ d[,"SSR"]*d[,"scale"]  }))
 colnames(dfModCost)<-runnames
 rownames(dfModCost)<-Costlist[[1]][,"name"]
