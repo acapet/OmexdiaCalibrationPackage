@@ -60,6 +60,7 @@ source('OmexCal_AdaptParsForStation.R')
 source("OmexCal_SimplePlot.R")
 source("OmexCal_ParTablePlot.R")
 source("OmexCal_FluxTable.R")
+source("OmexCal_FluxPlot.R")
 source("OmexCal_FitTablePlot.R")
 source("OmexCal_ReportGen.R")
 

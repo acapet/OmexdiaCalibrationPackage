@@ -40,7 +40,12 @@ Fluxplot<-function(p, plotdata=FALSE, YL=20, runnames=NULL) {
   }
   
   p1<-ggplot( bos,aes(y=value,color=runname))+
-    geom_point(aes(x = runname))+facet_wrap(~variable,scales="free")+theme_light()+scale_color_brewer(palette = "RdYlGn")+ylab("mmol/m²/d")
+    geom_point(aes(x = runname))+
+    facet_wrap(~variable,scales="free")+
+    theme_bw()+
+    theme(legend.position = "none")+
+    scale_color_brewer(palette = "RdYlGn", name="Calibration Steps")+
+    ylab("mmol/m²/d")+xlab("")
   
   if (plotdata) {
     localdata$variable <- paste0(substring(as.vector(localdata$variable),2),"flux")

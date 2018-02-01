@@ -21,7 +21,7 @@
 # * t : a ggplot table object.  
 ################
 
-partableplot<-function(p) {
+partableplot<-function(p, tableoutput=TRUE) {
   
   parsdfl<-parsdf
   
@@ -29,7 +29,7 @@ partableplot<-function(p) {
 #                           "NCrFdet","NCrSdet","pdepo","NH3Ads","rnit","bwO2","bwNH3","bwNOx","bwODU","bwDIC"),]
 #   
   parsdfl[names(parSta),"guess"]<-as.numeric(parSta)
-  parsdfl[c("Temp","bwO2","bwNH3","bwNOx","bwODU","bwDIC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"origin"]<-"sta"
+  parsdfl[c("Temp","bwO2","bwNH3","bwNOx","bwODU","bwDIC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","DispSIO","DispPO4"),"origin"]<-"sta"
  #parsdfl[names(p),"guess"]<-as.numeric(p)
  #parsdfl[names(p),"origin"]<-"CALIB"
   parsdfl[names(p),"guess"]<-NA
@@ -37,13 +37,14 @@ partableplot<-function(p) {
   parsdfl[names(p),"origin"]<-"CALIB"
   parsdfl[which(is.na(parsdfl$origin)),"origin"]<-""
   
-  #parsdfl["WPOC","printunit"]<-"m/d"
   parsdfl["DispO2","printunit"]<-"cm2/d"
   parsdfl["DispNOx","printunit"]<-"cm2/d"
   parsdfl["DispNH3","printunit"]<-"cm2/d"
   parsdfl["DispODU","printunit"]<-"cm2/d"
   parsdfl["DispDIC","printunit"]<-"cm2/d"
-  parsdfl["Flux","printunit"]<-"mmol C/m3"
+  parsdfl["DispSIO","printunit"]<-"cm2/d"
+  parsdfl["DispPO4","printunit"]<-"cm2/d"
+  
   
   #parsdfl[c("WPOC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
   parsdfl[c("DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
@@ -72,9 +73,18 @@ parsdfforprint<-parsdfforprint[c("Temp","biot","mixL","AlphIrr",
                                  "bwNH3","bwNOx","bwODU","bwDIC","MeanFlux",
                                  "DispO2","DispNOx","DispNH3","DispDIC","DispODU"),]
 
+if(tableoutput){
 t<-qplot(1:10, 1:10, geom = "blank")+theme_bw()+
   theme(line = element_blank(),text = element_blank())+
   annotation_custom( grob = tableGrob(fpdf  )  ) 
+}
 
+if(tableoutput){
 return(list(t=t, df=fpdf))
+}else{
+  return(df=fpdf)
+}
+
+
+
 }

@@ -53,7 +53,7 @@ Simplot<-function(p, plotdata=FALSE, YL=20, runnames=NULL) {
   
   if (plotdata) {
     p1 <- p1 +
-      geom_errorbar(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='black',size=2)+
+      geom_errorbar(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='black')+
       # geom_errorbar(data=b,aes(x=modval,y=(LowerDepth+UpperDepth)/2,ymin=LowerDepth,ymax=UpperDepth),color='red',size=2)+
       geom_errorbarh(data=b,aes(x=value,y=(LowerDepth+UpperDepth)/2,xmin=value-err,xmax=value+err),color='black')
   }

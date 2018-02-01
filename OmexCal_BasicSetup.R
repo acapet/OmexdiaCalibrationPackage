@@ -59,7 +59,7 @@ parsdf<-rbind(
   data.frame(row.names="pFast"      ,guess=0.27     ,min=0.05      ,max=0.95    ,unit="-",printfactor=1,printunit=NA            , constrain ='Benth. Mod.')         , # fraction fast det. in flux
   data.frame(row.names="pRef"       ,guess=0.018    ,min=0.001     ,max=0.25    ,unit="-",printfactor=1,printunit=NA            , constrain ='Benth. Mod.')         , # fraction fast det. in flux
   data.frame(row.names="NCrFdet"    ,guess=1/6.625  ,min=1/25      ,max=1/3     ,unit="molN/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.') , # NC ratio fast decay det.
-  data.frame(row.names="NCrSdet"    ,guess=1/25     ,min=1/50      ,max=1/6     ,unit="molN/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.') , # NC ratio Slow decay det.
+  data.frame(row.names="NCrSdet"    ,guess=1/25     ,min=1/100      ,max=1/6     ,unit="molN/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.') , # NC ratio Slow decay det.
   data.frame(row.names="NCrref"     ,guess=1/25     ,min=1/50      ,max=1/6     ,unit="molN/molC",printfactor=1,printunit=NA    , constrain ='Pel. Mod.') , # NC ratio "Slow decay"ref" det.
   data.frame(row.names="rSi"        ,guess=.02/365  ,min=0.01/365  ,max=10/365  ,unit="/d" ,printfactor=365, printunit="/yr"    , constrain ='Benth. Mod.'),         # Dissolution rate for SiDET
   data.frame(row.names="SiCdet"     ,guess=1/15     ,min=1/60      ,max=1/2     ,unit="-",printfactor=1,printunit=NA            , constrain ='Pel. Mod.'), # Sinking SiDet Flux
@@ -78,7 +78,7 @@ parsdf<-rbind(
   
   # Nutrient parameters
   data.frame(row.names="NH3Ads"     ,guess=1.3     ,min=0        ,max=2        ,unit="-",printfactor=1,printunit=NA            , constrain ='Stat. Calib.'), # Adsorption coeff ammonium
-  data.frame(row.names="rnit"       ,guess=20      ,min=1        ,max=30       ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max nitrification rate
+  data.frame(row.names="rnit"       ,guess=20      ,min=1        ,max=50       ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max nitrification rate
   data.frame(row.names="ksO2nitri"  ,guess=10.     ,min=.5       ,max=2        ,unit="umolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 in nitrification
   data.frame(row.names="rODUox"     ,guess=50.     ,min=1        ,max=300      ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max rate oxidation of ODU
   data.frame(row.names="ksO2oduox"  ,guess=1.      ,min=.5       ,max=21       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 in oxidation of ODU

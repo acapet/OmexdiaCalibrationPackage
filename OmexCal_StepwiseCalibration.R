@@ -27,7 +27,7 @@ source("OmexCal_Load.R")
 # load station data
 if (FALSE){
   userfile   <- 'UsersDefinitions_HAMMOND.R'
-  stalist    <- c("H1","H2","H4","H6","H7")
+  stalist    <- c("H1") #,"H2","H4","H6","H7"
   camlist    <- "Sep89"
   pseudoNrun <- 5000
 } else{
@@ -178,12 +178,14 @@ for (icamosta in (1:nrow(dsStasub))){
   save(list = 'Fit', file = paste(totdir,"_FitFinal.RData",sep=""))
   save(list = 'parSta', file = paste(totdir,"_FitFinal_pSta.RData",sep=""))
   
-  Costlist[[length(PLIST)+2]] <- OCOST_GEN(parSta,
+  Cost <- OCOST_GEN(parSta,
                   Vlist=unique(unlist(VLIST)),
                   Flist=unique(unlist(FLIST)))$var
   
+  Costlist[[length(PLIST)+2]] <- Cost
+  
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
-  ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"",cam))
+  ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"_",cam))
   
   # remain<-c("PLIST", "VLIST", "FLIST","icamosta")
   # rm(list=setdiff(ls(), remain))

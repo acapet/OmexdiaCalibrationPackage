@@ -1,50 +1,124 @@
 ---
-output: pdf_document
+output:
+  pdf_document:
+    toc : true
 params:
   Parlist   : NA
   Costlist  : NA
   userfile  : NA
-  case  : NA
+  camsta  : NA
+
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+
 ---
 
 ---
-title: `r paste0("Calibration Report for ", params$case)`
+title: `r paste0("Calibration Report for ", params$camsta)`
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
+options(knitr.table.format = "latex")
+library(kableExtra)
 source("OmexCal_Load.R")
 source(params$userfile)
 ```
+# Stepwise calibration
 
-# Profiles
+## Profiles
 
-```{r, echo=FALSE, warning=FALSE, fig.height=9}
+```{r, echo=FALSE, warning=FALSE, fig.height=6}
 rn<-c("Guess",stepNames,"Final")
 runnames=factor(rn,levels=rn,ordered=T)
 Simplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
 ```
 
-# Fluxes
-```{r, echo=FALSE, warning=FALSE, fig.height=4}
-rn<-c("Guess",stepNames,"Final")
-runnames<-factor(rn,levels=rn,ordered=T)
+\pagebreak
+
+## Fluxes
+
+Fluxes at the sediment-water interface (positive upwards). Available observations are indicate as ranges on the plots.
+
+```{r, echo=FALSE, warning=FALSE, fig.height=5}
 Fluxplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
 ```
 
-# MicroProfiles
+\pagebreak
+
+## MicroProfiles
 
 .. coming soon
 
+\pagebreak
 
-# Paramters
+## Parameters
 
-.. coming soon
+*"* in the table means that the parameter is same as in the previous column. 
+
+Highlighted in red are parameter values that are close to the minimum/maximum, indicating that the calibration procedure is somehow "blocked" by the ranges imposed on those parameters.
+
+```{r, echo=FALSE, warning=FALSE, fig.height=5}
+bo<-lapply(Parlist, function (p){
+  pdf<-subset(partableplot(p, tableoutput = FALSE), select="Cal.")
+})
+
+for (i in 1:length(bo)){
+    colnames(bo[[i]])<-runnames[i]
+}
 
 
-# Costs
+allpdfs<-do.call(cbind,bo)
+allpdfs$units<-"-"
+allpdfs$min<-"-"
+allpdfs$max<-"-"
+
+
+allpdfs[ intersect(rownames(allpdfs),rownames(parsdfforprint)),c("units","min","max")]<-
+  format(parsdfforprint[intersect(rownames(allpdfs),rownames(parsdfforprint)), c("unit","min","max")], digits = 3,nsmall=0,scientific=F,drop0trailing=T)
+
+for (ir in (length(stepNames)+2):2     ) {
+  for (jr in (1:nrow(allpdfs))){
+    if (allpdfs[jr,ir]==allpdfs[jr,ir-1]) {allpdfs[jr,ir]=" \" "}
+    if ((rownames(allpdfs)[jr]%in% unlist(PLIST)) &( allpdfs[jr,ir]!=" \" ")){
+      if (abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"min"]))
+          /( .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"min"])))<0.02){
+        allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
+        #allpdfs[jr,"min"] <- cell_spec( allpdfs[jr,"min"] ,"latex", color ="red")
+        } 
+      else if (abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"max"]))/(
+        .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"max"])))<0.02){
+        allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
+        #allpdfs[jr,"max"] <- cell_spec( allpdfs[jr,"max"] ,"latex", color ="red")
+      }
+    }
+    
+  }
+}
+
+kable(allpdfs,booktabs=T,longtable=T, escape=F) %>% 
+  kable_styling(latex_options = "striped")
+ 
+```
+
+\pagebreak
+
+## Misfits
+
+The variables costs ares estimated as the sum of squared weighted residuals for each: 
+
+$$\mathcal{C}_j=\sum\limits_{i=1}^{n_{obs,j}} \frac{Model_i- Obs_i}{Err_i}$$
 
 ```{r, echo=FALSE}
 
@@ -52,10 +126,38 @@ dfSSR<-do.call(cbind,lapply(Costlist, function(d){d[,"SSR"]}))
 colnames(dfSSR)<-runnames
 rownames(dfSSR)<-Costlist[[1]][,"name"]
 
-kable(dfSSR)
+ggplot(melt(dfSSR), aes(x=Var2, y=value, color=Var2))+
+  geom_point(size=2)+
+  facet_wrap(~Var1, scales = "free")+
+  ylab("Variables Costs")+
+  xlab("Calibration Steps")+
+  scale_color_brewer(palette = "RdYlGn", name="Calibration Steps")+
+  theme_bw()+theme(legend.position = "none")
+
+#kable(dfSSR)
 ```
 
-```{r, echo=FALSE}
-kable(fluxtable(parSta)$d)
+The model cost is the scaled sum of variable costs: 
+
+$$\mathcal{C}=\sum\limits_{j=1}^{n_{var}}\frac{\mathcal{C}_j}{n_{obs,j}}$$
+
+Here the total height of each bar indicate the model cost, while colored fraction of the bar indicate the contribution of each type of observations in the model cost.
+
+
+```{r, echo=FALSE, fig.height=2}
+dfModCost <- do.call(cbind,lapply(Costlist, function(d){ d[,"SSR"]*d[,"scale"]  }))
+colnames(dfModCost)<-runnames
+rownames(dfModCost)<-Costlist[[1]][,"name"]
+
+ggplot(melt(dfModCost), aes(x=Var2, y=value,fill=Var1))+
+  geom_bar( stat="identity")+
+  ylab("Model Cost")+
+  xlab("Calibration Steps")+
+  theme_bw()+scale_fill_discrete(name="Var. Costs")
+
+#kable(dfModCost)
+# We could consider to add color to the cells 
 ```
+
+
 
