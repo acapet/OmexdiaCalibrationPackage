@@ -66,7 +66,7 @@ MLIST[[1]] <- c()
 PLIST[[2]] <- c("NCrSdet","mixL","biot","AlphIrr") 
 VLIST[[2]] <- c("TOC","DIC","NH3","TN")
 FLIST[[2]] <- c("DIC","NH3","NOx","O2")
-MLIST[[2]] <- c()
+MLIST[[2]] <- c("O2micro")
 
 ## 3. calibration step
 PLIST[[3]] <- c("rSi","SiCdet","EquilSiO")

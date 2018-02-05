@@ -8,7 +8,7 @@
 ################
 # Contributors : 
 # A. Capet   , acapet@uliege.be 
-# A. Eiesele ,  
+# A. Eisele ,  
 ################
 #
 # Description :
@@ -60,7 +60,7 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
   
   
   
-  # Shaping MicroProfiler Data 
+  # Shaping Oxygen MicroProfile Data 
   
   if(!is.null(Mlist))
   { 
