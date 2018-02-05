@@ -82,34 +82,32 @@ for (i in 1:length(bo)){
     colnames(bo[[i]])<-runnames[i]
 }
 
-
 allpdfs<-do.call(cbind,bo)
 allpdfs$units<-"-"
 allpdfs$min<-"-"
 allpdfs$max<-"-"
 
-
 allpdfs[ intersect(rownames(allpdfs),rownames(parsdfforprint)),c("units","min","max")]<-
   format(parsdfforprint[intersect(rownames(allpdfs),rownames(parsdfforprint)), c("unit","min","max")], digits = 3,nsmall=0,scientific=F,drop0trailing=T)
 
-for (ir in (length(stepNames)+2):2     ) {
+for (ir in (length(stepNames)+2):2) {
   for (jr in (1:nrow(allpdfs))){
     if (allpdfs[jr,ir]==allpdfs[jr,ir-1]) {allpdfs[jr,ir]=" \" "}
-    if ((rownames(allpdfs)[jr]%in% unlist(PLIST)) &( allpdfs[jr,ir]!=" \" ")){
-      if (abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"min"]))
-          /( .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"min"])))<0.02){
+    if ((rownames(allpdfs)[jr]%in% unlist(PLIST)) && ( allpdfs[jr,ir]!=" \" ")){
+      if ((abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"min"]))
+          /( .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"min"]))+1e-14)<0.02)|(
+            abs(as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"max"]))/
+              (.5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"max"])))<0.02))
+      {
         allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
-        #allpdfs[jr,"min"] <- cell_spec( allpdfs[jr,"min"] ,"latex", color ="red")
-        } 
-      else if (abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"max"]))/(
-        .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"max"])))<0.02){
-        allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
-        #allpdfs[jr,"max"] <- cell_spec( allpdfs[jr,"max"] ,"latex", color ="red")
-      }
+          }
     }
     
   }
 }
+
+
+
 
 kable(allpdfs,booktabs=T,longtable=T, escape=F) %>% 
   kable_styling(latex_options = "striped")

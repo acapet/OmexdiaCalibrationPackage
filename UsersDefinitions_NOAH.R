@@ -54,7 +54,7 @@ MLIST<-list()
 
 ## 1. calibration step
 # Parameters 
-PLIST[[1]] <- c("pFast","MeanFlux","biot","NCrSdet","NCrFdet","mixL","biot","AlphIrr",'rnit')
+PLIST[[1]] <- c("pFast","MeanFlux","biot","NCrSdet","NCrFdet","mixL","biot","AlphIrr",'rnit',"w")
 # Observation profiles 
 VLIST[[1]] <- c("NOx","NH3")
 # Observation fluxes

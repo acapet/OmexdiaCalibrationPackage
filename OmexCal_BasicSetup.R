@@ -78,7 +78,7 @@ parsdf<-rbind(
   
   # Nutrient parameters
   data.frame(row.names="NH3Ads"     ,guess=1.3     ,min=0        ,max=2        ,unit="-",printfactor=1,printunit=NA            , constrain ='Stat. Calib.'), # Adsorption coeff ammonium
-  data.frame(row.names="rnit"       ,guess=20      ,min=1        ,max=100       ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max nitrification rate
+  data.frame(row.names="rnit"       ,guess=20      ,min=1        ,max=500       ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max nitrification rate
   data.frame(row.names="ksO2nitri"  ,guess=10.     ,min=.5       ,max=2        ,unit="umolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 in nitrification
   data.frame(row.names="rODUox"     ,guess=50.     ,min=1        ,max=300      ,unit="/d",printfactor=1,printunit=NA           , constrain ='Stat. Calib.'), # Max rate oxidation of ODU
   data.frame(row.names="ksO2oduox"  ,guess=1.      ,min=.5       ,max=21       ,unit="mmolO2/m3",printfactor=1,printunit=NA    , constrain ='Stat. Calib.'), # half-sat O2 in oxidation of ODU

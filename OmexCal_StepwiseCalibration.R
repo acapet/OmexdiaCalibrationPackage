@@ -34,7 +34,7 @@ if (FALSE){
   userfile <- 'UsersDefinitions_NOAH.R'
   stalist  <- "C"
   camlist  <- c("HE432")
-  pseudoNrun <- 2000
+  pseudoNrun <- 5000
 }
 
 source(userfile)
@@ -175,19 +175,7 @@ for (icamosta in (1:nrow(dsStasub))){
                      upper=parsmax[PLISTFinal], 
                      method="Pseudo")
   
-  
-  FitFinal <- modFit(f=OCOST_GEN,
-                     p=FitFinal$par,
-                     Vlist=unique(unlist(VLIST)),
-                     Flist=unique(unlist(FLIST)),
-                     Mlist=unique(unlist(MLIST)),
-                     control=list(numiter=pseudoNrun),
-                     lower=parsmin[PLISTFinal],
-                     upper=parsmax[PLISTFinal], 
-                     method="Marq")
-  
-  
-  
+
 
   parSta[c(names(FitFinal$par))]<-as.numeric(FitFinal$par)
 

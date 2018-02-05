@@ -1,4 +1,4 @@
-ReportGen <- function (userfile,Parlist, Costlist, doctitle,camsta) {
+ReportGen <- function (userfile,Parlist, Costlist, totdir,camsta) {
   
   rmarkdown::render("OmexCal_FitReport.Rmd", params = list(
     Parlist   = Parlist  ,
