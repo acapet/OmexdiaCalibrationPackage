@@ -17,7 +17,7 @@
 #
 ################
 
-OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
+OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
   
   # Vlist: Profile variables to be considered for Cost computation (here all those variables are given at the same depths) 
   # Flist: Fluxes to be considered in the Mod Cost
@@ -37,7 +37,7 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
   
   Mp <- dcast(llocaldata,slice~variable,value.var="modval")
   Op <- llocaldata[,c("variable","slice","value","err")]
-
+  
   # Shaping Fluxes Data 
   if(!is.null(Flist) )
   {  flist<-lapply(Flist,function(Fi){
@@ -58,6 +58,29 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
   
   Of<-llocaldatafl[,c("variable","value","err")]
   
+  
+  
+  # Shaping MicroProfiler Data 
+  
+  if(!is.null(Mlist))
+  { 
+    
+    #flist<-lapply(gsub('micro','',Mlist),function(Fi){
+    #print(Fi)
+    
+    Fi<-"O2"
+    
+    obsMicro<-subset(localdatamicro,(variable==Fi), select=c("variable","Depth","value","err"))
+    Mmicro  <- cbind(Grid$x.mid,DIA$y[,Fi])
+    
+    colnames(Mmicro)<-c('Depth',Fi)
+    # llocaldata <- DIA2OBS(DIA,llocaldata,p)
+  #}
+  #)
+
+}
+
+  
   CostF<-modCost(model = Mf,
                  obs   = Of,
                  x=NULL,
@@ -72,6 +95,15 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL){
                 err= "err",
                 scaleVar = TRUE,
                 cost = CostF)
+  
+  Cost<-modCost(model = Mmicro,
+                obs=obsMicro,
+                x="Depth",
+                y="value",
+                err = "err",
+                scaleVar=TRUE, 
+                cost = Cost)
+  
   
   } else { 
     # If only profiles are considered and no fluxes

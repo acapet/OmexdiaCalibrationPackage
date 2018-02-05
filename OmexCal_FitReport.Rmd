@@ -59,6 +59,10 @@ Fluxplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
 
 ## MicroProfiles
 
+```{r, echo=FALSE, warning=FALSE, fig.height=6}
+SimplotMicro( Parlist, TRUE, YL=1, runnames = runnames) + ggtitle(paste(sta,"_",cam,"1"))
+```
+
 .. coming soon
 
 \pagebreak

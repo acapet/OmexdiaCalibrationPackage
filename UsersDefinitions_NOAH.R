@@ -59,19 +59,20 @@ PLIST[[1]] <- c("pFast","MeanFlux","biot","NCrSdet","NCrFdet","mixL","biot","Alp
 VLIST[[1]] <- c("NOx","NH3")
 # Observation fluxes
 FLIST[[1]] <- c("O2","NOx","NH3")
-MLIST[[1]] <- c()
+#Observation O2 microprofiles
+MLIST[[1]] <- c("O2micro")
 
 ## 2. calibration step
 PLIST[[2]] <- c("rSi","SiCdet","EquilSiO") 
 VLIST[[2]] <- c("SIO")
 FLIST[[2]] <- c("SIO")
-MLIST[[2]] <- c()
+MLIST[[2]] <- c("")
 
 ## 3. calibration step
 PLIST[[3]] <- c("PCrSdet","rCaPprod")
 VLIST[[3]] <- c("PO4") #"SiDet"
 FLIST[[3]] <- c("PO4")
-MLIST[[3]] <- c()
+MLIST[[3]] <- c("")
 stepNames <-c("Fit 1","Fit Si","Fit PO")
 
 #####################

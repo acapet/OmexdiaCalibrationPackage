@@ -30,7 +30,7 @@ if (FALSE){
   stalist    <- c("H1") #,"H2","H4","H6","H7"
   camlist    <- "Sep89"
   pseudoNrun <- 5000
-} else{
+} else {
   userfile <- 'UsersDefinitions_NOAH.R'
   stalist  <- "C"
   camlist  <- c("HE432")
@@ -83,14 +83,16 @@ for (icamosta in (1:nrow(dsStasub))){
   
   Costlist[[1]] <-OCOST_GEN(parSta,
                   Vlist=unique(unlist(VLIST)),
-                  Flist=unique(unlist(FLIST)))$var
+                  Flist=unique(unlist(FLIST)),
+                  Mlist=unique(unlist(MLIST)))$var
   
   for (ifit in c(1:length(PLIST))){
     #ifit<-1
     Fit <- modFit(f=OCOST_GEN,
                   p=parSta[PLIST[[ifit]]],
-                  Vlist=VLIST[[ifit]],
-                  Flist=FLIST[[ifit]],
+                  Vlist=tryCatch(VLIST[[ifit]], error = function (e) NULL),
+                  Flist=tryCatch(FLIST[[ifit]], error = function (e) NULL),
+                  Mlist=tryCatch(MLIST[[ifit]], error = function (e) NULL),
                   control=list(numiter=pseudoNrun),
                   lower=parsmin[PLIST[[ifit]]],
                   upper=parsmax[PLIST[[ifit]]], 
@@ -104,7 +106,8 @@ for (icamosta in (1:nrow(dsStasub))){
     Fitlist [[ifit]]   <- Fit
     Costlist[[ifit+1]] <- OCOST_GEN(parSta,
                               Vlist=unique(unlist(VLIST)),
-                              Flist=unique(unlist(FLIST)))$var
+                              Flist=unique(unlist(FLIST)),
+                              Mlist=unique(unlist(MLIST)))$var
     
     save(list = 'Fit', file = paste(totdir,"_Fit",ifit,".RData",sep=""))
     save(list = 'parSta', file = paste(totdir,"_Fit",ifit,"_pSta.RData",sep=""))
@@ -119,7 +122,9 @@ for (icamosta in (1:nrow(dsStasub))){
   Sens <- sensFun(func=OCOST_GEN,
                   parms=parSta[unique(unlist(PLIST))],
                   Vlist=unique(unlist(VLIST)),
-                  Flist=unique(unlist(FLIST))
+                  Flist=unique(unlist(FLIST)),
+                  Mlist=unique(unlist(MLIST))
+                  
   )
   
   # Some Sensitivity Plots
@@ -164,6 +169,7 @@ for (icamosta in (1:nrow(dsStasub))){
                      p=parSta[PLISTFinal],
                      Vlist=unique(unlist(VLIST)),
                      Flist=unique(unlist(FLIST)),
+                     Mlist=unique(unlist(MLIST)),
                      control=list(numiter=pseudoNrun),
                      lower=parsmin[PLISTFinal],
                      upper=parsmax[PLISTFinal], 
@@ -180,8 +186,9 @@ for (icamosta in (1:nrow(dsStasub))){
   
   Cost <- OCOST_GEN(parSta,
                   Vlist=unique(unlist(VLIST)),
-                  Flist=unique(unlist(FLIST)))$var
-  
+                  Flist=unique(unlist(FLIST)),
+                  Mlist=unique(unlist(MLIST)))$var
+
   Costlist[[length(PLIST)+2]] <- Cost
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))

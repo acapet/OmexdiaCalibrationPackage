@@ -58,6 +58,7 @@ source('OmexCal_AdaptParsForStation.R')
 
 # Utilities for result display 
 source("OmexCal_SimplePlot.R")
+source("OmexCal_SimplePlotMicro.R")
 source("OmexCal_ParTablePlot.R")
 source("OmexCal_FluxTable.R")
 source("OmexCal_FluxPlot.R")
