@@ -34,7 +34,7 @@ if (FALSE){
   userfile <- 'UsersDefinitions_NOAH.R'
   stalist  <- "C"
   camlist  <- c("HE432")
-  pseudoNrun <- 2000
+  pseudoNrun <- 200
 }
 
 source(userfile)
@@ -124,8 +124,7 @@ for (icamosta in (1:nrow(dsStasub))){
                   Vlist=unique(unlist(VLIST)),
                   Flist=unique(unlist(FLIST)),
                   Mlist=unique(unlist(MLIST))
-                  
-  )
+                  )
   
   # Some Sensitivity Plots
   pdf(paste(totdir,"_Sens.pdf",sep=""),width=10,height=10)
@@ -200,7 +199,8 @@ for (icamosta in (1:nrow(dsStasub))){
   Cost <- OCOST_GEN(parSta,
                   Vlist=unique(unlist(VLIST)),
                   Flist=unique(unlist(FLIST)),
-                  Mlist=unique(unlist(MLIST)))$var
+                  Mlist=unique(unlist(MLIST))
+                  )$var
 
   Costlist[[length(PLIST)+2]] <- Cost
   
