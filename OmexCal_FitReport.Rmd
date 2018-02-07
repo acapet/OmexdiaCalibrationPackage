@@ -102,7 +102,6 @@ for (ir in (length(stepNames)+2):2) {
         allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
           }
     }
-    
   }
 }
 
