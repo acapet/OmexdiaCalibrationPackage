@@ -43,16 +43,12 @@ SimplotMicro<-function(p, plotdata=FALSE, YL=2, runnames=NULL) {
   
   bos<-do.call(rbind,bo)
   
-  if (plotdata) {
-    localdata <- subset(localdatamicro,variable %in% c("O2") & Depth>0 & !is.na(localdatamicro$value+ localdatamicro$err))  
-     #b         <- DIA2OBS(DIs[[1]],localdata,p)
-  }
-  
   p1 <- ggplot( melt(bos,id.vars = c("grid","runname")) , aes(y=grid,x=value,color=runname))+
     geom_path()+facet_wrap(~variable,nrow=5,ncol=3,scales="free")+theme_light()+
     ylim(YL,0)+ylab(label="depth, cm")+scale_color_brewer(palette = "RdYlGn")
   
   if (plotdata) {
+    localdata <- subset(localdatamicro,variable %in% c("O2") & Depth>0 & !is.na(localdatamicro$value+ localdatamicro$err))  
     p1 <- p1 +
         geom_errorbarh(data=localdata,aes(x=value,y=(Depth)/2,xmin=value-err,xmax=value+err),color='black')+
       geom_point(data=localdata,aes(x=value,y=(Depth)/2),color='black')

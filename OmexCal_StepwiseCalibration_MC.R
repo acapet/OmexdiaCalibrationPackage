@@ -219,6 +219,10 @@ for (icamosta in (1:nrow(dsStasub))){
                  var0=svar0  )
   
   
+  save(list = 'MCMC', file = paste(totdir,"_Fit","_MCMC.RData",sep=""))
+  
+  MC_ReportGen(userfile,MCMC, totdir,paste0(sta,"_",cam))
+  
   
 }
 

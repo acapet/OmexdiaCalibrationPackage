@@ -64,6 +64,10 @@ source("OmexCal_FluxTable.R")
 source("OmexCal_FluxPlot.R")
 source("OmexCal_FitTablePlot.R")
 source("OmexCal_ReportGen.R")
+source("OmexCal_MCReportGen.R")
+source("OmexCal_MCParsPlot.R")
+source("OmexCal_MCProfPlot.R")
+source("OmexCal_MCFluxPlot.R")
 
 # load the Fortran OMEXDIA model 
 system("R CMD SHLIB omexdia_OG3.f")

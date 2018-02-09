@@ -1,0 +1,82 @@
+---
+output:
+  pdf_document:
+    toc : true
+params:
+  MCMC  : NA
+  userfile  : NA
+  camsta  : NA
+
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+
+---
+
+---
+title: `r paste0("Calibration Report for ", params$camsta)`
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+options(knitr.table.format = "latex")
+library(kableExtra)
+source("OmexCal_Load.R")
+source(params$userfile)
+```
+# MCMC
+
+## Profiles
+
+```{r, echo=FALSE, warning=FALSE, fig.height=6}
+
+pProfs<-MCProfPlot(MCMC, TRUE)
+
+print(pProfs)
+```
+
+\pagebreak
+
+## Fluxes
+
+Fluxes at the sediment-water interface (positive upwards). Available observations are indicate as ranges on the plots.
+
+```{r, echo=FALSE, warning=FALSE, fig.height=5}
+pl<-MCFluxPlot(MCMC, TRUE)
+print(pl[[1]])
+```
+
+\pagebreak
+
+## MicroProfiles
+
+```{r, echo=FALSE, warning=FALSE, fig.height=6}
+print(pl[[2]])
+```
+
+
+\pagebreak
+
+## Parameters
+
+!! Parameters values are not converted to "print" value for now .. 
+```{r, echo=FALSE, warning=FALSE, fig.height=5}
+pl<-MCParsPlot(MCMC, TRUE)
+print(pl)
+```
+
+\pagebreak
+
+## Misfits
+
+...
