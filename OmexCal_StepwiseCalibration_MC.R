@@ -203,7 +203,7 @@ for (icamosta in (1:nrow(dsStasub))){
   
   FitFinal$ssr
   
-  NitMC <- 60000
+  NitMC <- 40000
   
   MCMC<- modMCMC(f=OCOST_GEN,
                  p=FitFinal$par,

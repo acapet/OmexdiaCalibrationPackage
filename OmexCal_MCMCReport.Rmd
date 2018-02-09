@@ -50,10 +50,11 @@ print(pProfs)
 ## Fluxes
 
 Fluxes at the sediment-water interface (positive upwards). Available observations are indicate as ranges on the plots.
+The curve indicates the probability density of Fluxes inferred from the MCMC procedure.
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=5}
 pl<-MCFluxPlot(MCMC, TRUE)
-print(pl[[1]])
+pl
 ```
 
 \pagebreak
@@ -61,7 +62,7 @@ print(pl[[1]])
 ## MicroProfiles
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=6}
-print(pl[[2]])
+pl[[2]]
 ```
 
 
@@ -70,9 +71,11 @@ print(pl[[2]])
 ## Parameters
 
 !! Parameters values are not converted to "print" value for now .. 
+
+
 ```{r, echo=FALSE, warning=FALSE, fig.height=5}
 pl<-MCParsPlot(MCMC, TRUE)
-print(pl)
+pl
 ```
 
 \pagebreak
