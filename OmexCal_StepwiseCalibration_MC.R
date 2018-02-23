@@ -32,9 +32,9 @@ if (FALSE){
   pseudoNrun <- 5000
 } else {
   userfile <- 'UsersDefinitions_NOAH.R'
-  stalist  <- "C"
-  camlist  <- c("HE432")
-  pseudoNrun <- 5000
+  stalist  <- c("C")
+  camlist  <- c("HE432","HE447")
+  pseudoNrun <- 500
 }
 
 source(userfile)
@@ -45,7 +45,8 @@ dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
 
 #Looping
 for (icamosta in (1:nrow(dsStasub))){
-  #  icamosta <- 1
+  
+icamosta<-1
   sta<-dsStasub$Station[icamosta]  
   cam<-dsStasub$Campaign[icamosta]
   
@@ -145,7 +146,7 @@ for (icamosta in (1:nrow(dsStasub))){
   print(g1)
   dev.off()
   
-  ## <Arthur 2901018
+  ## <Arthur 29012018
   ##  Should include a warning there if some parameters show a sensitivity of 0 
   
   # Assessing parameters collinearity, based on the sensitivity analysis

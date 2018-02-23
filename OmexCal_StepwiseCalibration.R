@@ -34,7 +34,7 @@ if (FALSE){
   userfile <- 'UsersDefinitions_NOAH.R'
   stalist  <- "C"
   camlist  <- c("HE432")
-  pseudoNrun <- 5000
+  pseudoNrun <- 200
 }
 
 source(userfile)

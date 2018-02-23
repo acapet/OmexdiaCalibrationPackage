@@ -29,10 +29,6 @@
 # Futhermore you can define if you wish that your locations of the observation stations are mapped
 # Define the usage and you can run the script without further editing
 # The Input "datafile" should be in the general setup defined and described at OMEXDIACalibrationPackage
-# Remeber: R is case-sensitive, so check for letters in your Excel-Files and defined variables!
-
-##!Set working directory to corresponding file directory before running the script!
-# rm(list=ls()) #clears the environment
 
 
 #################
@@ -54,7 +50,7 @@ MLIST<-list()
 
 ## 1. calibration step
 # Parameters 
-PLIST[[1]] <- c("pFast","MeanFlux","biot","NCrSdet","NCrFdet","mixL","biot","AlphIrr",'rnit',"w")
+PLIST[[1]] <- c("pFast","MeanFlux","biot","mixL","AlphIrr")  # "NCrSdet","NCrFdet",'rnit',"w"
 # Observation profiles 
 VLIST[[1]] <- c("NOx","NH3")
 # Observation fluxes
@@ -94,7 +90,6 @@ plotvars <- c("NH3","DIC","SIO","PO4","TOC","TN","SiDet","O2")
 xlabname <- "value [mmol/m^2/d]"
 ylabname <- "Depth [cm]"
 camosta  <- "Station" #or Campaign #color code affiliation
-camosta  <- "Campaign" #or Campaign #color code affiliation
 
 ##Location of Stations
 #mydata_Loc<- c(12.52, 43.84, 13.25 ,44.25)

@@ -53,8 +53,10 @@ Fluxes at the sediment-water interface (positive upwards). Available observation
 The curve indicates the probability density of Fluxes inferred from the MCMC procedure.
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=5}
+
 pl<-MCFluxPlot(MCMC, TRUE)
 pl
+
 ```
 
 \pagebreak
@@ -62,7 +64,9 @@ pl
 ## MicroProfiles
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=6}
+
 pl[[2]]
+
 ```
 
 
@@ -74,8 +78,10 @@ pl[[2]]
 
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=5}
+
 pl<-MCParsPlot(MCMC, TRUE)
 pl
+
 ```
 
 \pagebreak

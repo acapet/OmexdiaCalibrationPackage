@@ -38,7 +38,7 @@ library(readxl)
 require(plyr)
 library(ggmap)
 
-### Loading data
+### Loading data from Excel-Sheets
 sheet_profiles  <- "Profiles"  # data-file of profile data and depth
 sheet_fluxes    <- "Fluxes"    # data-file of flux data including location of stations (lon,lat)
 sheet_stations  <- "Stations"  # data-file including station data on location, porosity etx
@@ -71,9 +71,9 @@ dfProfiles  <- cbind(dfProfiles,MidDepth=(dfProfiles$LowerDepth+dfProfiles$Upper
 #     1) provided as an extra column VAR_ERR
 #     2) computed from variable relative error (given in the .xls file in the Sheet "Variables")
 
-dfProfiles              <- melt(dfProfiles,id.vars=dfprvarsstay)     # converting to long data frame
-dfProfiles_err          <- subset(dfProfiles,grepl("_ERR",dfProfiles$variable))
-dfProfiles_err$variable <- strsplit(as.vector(dfProfiles_err$variable),"_ERR")
+dfProfiles              <- melt(dfProfiles,id.vars=dfprvarsstay)     # converting to a data frame
+dfProfiles_err          <- subset(dfProfiles,grepl("_ERR",dfProfiles$variable)) # data frame subset with the assumed error for variables
+dfProfiles_err$variable <- strsplit(as.vector(dfProfiles_err$variable),"_ERR") 
 
 dfProfiles              <- subset(dfProfiles,!grepl("_ERR",variable))
 
