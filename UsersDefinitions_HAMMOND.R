@@ -40,7 +40,7 @@
 ################
 
 ##Define Excel-File
-datafile<-"HAMMOND_Data.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
+datafile<-"Datas/HAMMOND_Data.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
 #########################
 # Calibration Procedure #

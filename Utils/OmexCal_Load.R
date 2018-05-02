@@ -38,43 +38,42 @@ require(gridExtra)
 require(reshape2)
 
 # Parameters and grid information 
-source("OmexCal_BasicSetup.R")
+source("Utils/OmexCal_BasicSetup.R")
 
 # Convert model outputs to observation-equivalent
-source("OmexCal_DIA2OBS.R")
+source("Utils/OmexCal_DIA2OBS.R")
 
 # Runs the model for a given subset of parameters and returns the model ouptut
-source("OmexCal_OCALL_SS.R")
+source("Utils/OmexCal_OCALL_SS.R")
 
 # Generic cost function
-source('OmexCal_COST_generic.R')
+source('Utils/OmexCal_COST_generic.R')
 
 # BudgetDiagnostic tools
-source('OmexCal_BudgetFunctions.R')
-#source("OmexCal_AddDiagnostics.R")
+source('Utils/OmexCal_BudgetFunctions.R')
 
 # Update porosity & bottom water conditions
-source('OmexCal_AdaptParsForStation.R')
+source('Utils/OmexCal_AdaptParsForStation.R')
 
 # Utilities for result display 
-source("OmexCal_SimplePlot.R")
-source("OmexCal_SimplePlotMicro.R")
-source("OmexCal_ParTablePlot.R")
-source("OmexCal_FluxTable.R")
-source("OmexCal_FluxPlot.R")
-source("OmexCal_FitTablePlot.R")
-source("OmexCal_ReportGen.R")
-source("OmexCal_MCReportGen.R")
-source("OmexCal_MCParsPlot.R")
-source("OmexCal_MCProfPlot.R")
-source("OmexCal_MCFluxPlot.R")
+source("Utils/OmexCal_SimplePlot.R")
+source("Utils/OmexCal_SimplePlotMicro.R")
+source("Utils/OmexCal_ParTablePlot.R")
+source("Utils/OmexCal_FluxTable.R")
+source("Utils/OmexCal_FluxPlot.R")
+source("Utils/OmexCal_FitTablePlot.R")
+source("Utils/OmexCal_ReportGen.R")
+source("Utils/OmexCal_MCReportGen.R")
+source("Utils/OmexCal_MCParsPlot.R")
+source("Utils/OmexCal_MCProfPlot.R")
+source("Utils/OmexCal_MCFluxPlot.R")
 
 # load the Fortran OMEXDIA model 
-system("R CMD SHLIB omexdia_OG3.f")
+system("R CMD SHLIB Fortran/omexdia_OG3.f")
 
 if (.Platform$OS.type == "unix"){
-  dyn.load("omexdia_OG3.so")
+  dyn.load("Fortran/omexdia_OG3.so")
 }else {
-  dyn.load("omexdia_OG3.dll")  
+  dyn.load("Fortran/omexdia_OG3.dll")  
 }
 

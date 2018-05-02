@@ -18,7 +18,7 @@
 #
 ################
 
-source("OmexCal_Load.R")
+source("Utils/OmexCal_Load.R")
 
 ############################
 #      EXAMPLE OF USE      #
@@ -34,9 +34,6 @@ DIA <-OCALL(parSta)
 
 # Display can be done directly with parameters value
 Simplot(pars)
-
-# .. or with model outputs -> TO UPDATE
-# Simplot(DIA)
 
 ################
 ##  USER DATA ##
@@ -55,7 +52,7 @@ if (TRUE){
 }
 
 # This loads data the based on info given in the UserDefinitions....R
-source('OmexCal_Load_Data.R')
+source('Utils/OmexCal_Load_Data.R')
 
 # We then create "local" dataframes, specific to one station.
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
