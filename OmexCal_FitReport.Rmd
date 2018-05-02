@@ -60,15 +60,16 @@ Fluxplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
 ## MicroProfiles
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=6}
+if (!is.null( unlist(MLIST) )) { 
 SimplotMicro( Parlist, TRUE, YL=1, runnames = runnames) + ggtitle(paste(sta,"_",cam,"1"))
+}
 ```
-
-
 
 \pagebreak
 
 ## Parameters
 
+### Values
 *"* in the table means that the parameter is same as in the previous column. 
 
 Highlighted in red are parameter values that are close to the minimum/maximum, indicating that the calibration procedure is somehow "blocked" by the ranges imposed on those parameters.
@@ -111,6 +112,30 @@ for (ir in (length(stepNames)+2):2) {
 kable(allpdfs,booktabs=T,longtable=T, escape=F) %>% 
   kable_styling(latex_options = "striped")
  
+```
+
+### Sensitivity
+
+The next figure represents the model cost's sensitivity to perturbation of the parameters around their final calibrated value. 
+In short the highest the metric, the most this parameter is having a high impact on the overall model misfit metric.
+
+```{recho=FALSE, warning=FALSE}
+
+  parSta<-Parlist[[length(Parlist)]]
+
+  Sens <- sensFun(func=OCOST_GEN,
+                  parms=parSta[unique(unlist(PLIST))],
+                  Vlist=unique(unlist(VLIST)),
+                  Flist=unique(unlist(FLIST)),
+                  Mlist=unique(unlist(MLIST))
+                  )
+
+  sS<-summary(Sens)
+  sS$param<-rownames(sS)
+  sS$param <- factor(sS$param, levels = sS$param[order( sS$L1,decreasing = T)])
+  
+  g1<-ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
+  print(g1)
 ```
 
 \pagebreak
