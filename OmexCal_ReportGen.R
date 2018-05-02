@@ -1,3 +1,19 @@
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/MAST-ULiege/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
+#
+################
+# Contributors : 
+# A. Capet , acapet@ulg.ac.be 
+################
+#
+# Description :
+# This functions serves as a transfer function to generate a pdf report for a stepwise calibration procedure
+################
+
 ReportGen <- function (userfile,Parlist, Costlist, totdir,camsta) {
   
   rmarkdown::render("OmexCal_FitReport.Rmd", params = list(

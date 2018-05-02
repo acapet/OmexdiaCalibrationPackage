@@ -9,12 +9,12 @@
 
 #This is a script to define the usage of your data-model calibration procedure using the toolbox OMEXDIACalibrationPackage
 
-#When you run the script your observation data is automatically loaded and converted to a data frame in R 
-#for further processing and running the StepwiseCalibration script.
-#Futhermore you can define if you wish that your locations of the observation stations are mapped
-#Define the usage and you can run the script without further editing
-#The Input "datafile" should be in the general setup defined and described at OMEXDIACalibrationPackage
-#Remeber: R is case-sensitive, so check for letters in your Excel-Files and defined variables!
+# When you run the script your observation data is automatically loaded and converted to a data frame in R 
+# for further processing and running the StepwiseCalibration script.
+# Futhermore you can define if you wish that your locations of the observation stations are mapped
+# Define the usage and you can run the script without further editing
+# The Input "datafile" should be in the general setup defined and described at OMEXDIACalibrationPackage
+# Remeber: R is case-sensitive, so check for letters in your Excel-Files and defined variables!
 
 ##!Set working directory to corresponding file directory before running the script!
 rm(list=ls()) #clears the environment

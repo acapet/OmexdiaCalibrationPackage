@@ -1,6 +1,6 @@
 ################
 #
-# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This script is part of the OmexdiaCalibration suite (https://github.com/MAST-ULiege/OmexdiaCalibrationPackage) 
 # This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
 #
 # Arthur Capet (acapet@ulg.ac.be), Oct 2017.
@@ -43,6 +43,8 @@ Simplot(pars)
 ################
 
 if (TRUE){
+  # The Hammond dataset is used for example and provided in the package. 
+  # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
   source('UsersDefinitions_HAMMOND.R')
   sta<-"H2"
   cam<-"Sep89"
@@ -79,17 +81,14 @@ ggplot(localdata,
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
  C1$var
 
- C2 <- OCOST_GEN(parSta,Vlist = "NH3")
+ C2 <- OCOST_GEN(parSta,Vlist = c("PO4","NH3"))
  C2$var
  
- C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
+ C3 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
  C3$var
  
- C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
- C4$var
- 
-# Some result display script, first one by one : 
-Simplot(pars,plotdata=TRUE)+        # The flag TRUE is used to disaply the data along model ouputs
+# Some script to display results , first one by one : 
+Simplot(pars,plotdata=TRUE)+     # The flag TRUE is used to disaply the data along model ouputs
   ggtitle(paste(sta,"0. No Fit"))
 
 partableplot(pars)
@@ -99,7 +98,7 @@ fluxtable(pars)$p
 # Collect all on the same plot
 pdf(paste(plotdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
 grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
-             arrangeGrob(partableplot(parSta)),
+             arrangeGrob(partableplot(parSta)$t),
              arrangeGrob(fluxtable(parSta)$p,
                          fittableplot(C3),ncol=1,heights=c(6,4)),
              ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))

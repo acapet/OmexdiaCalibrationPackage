@@ -1,6 +1,6 @@
 ################################################################################################################
 #
-# This script is part of the OmexdiaCalibration suite (https://github.com/acapet/OmexdiaCalibrationPackage) 
+# This script is part of the OmexdiaCalibration suite (https://github.com/MAST-ULiege/OmexdiaCalibrationPackage) 
 # This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
 #
 # Arthur Capet (acapet@ulg.ac.be), Oct 2017.
@@ -25,11 +25,11 @@
 source("OmexCal_Load.R")  
 
 # load station data
-if (FALSE){
+if (TRUE){
   userfile   <- 'UsersDefinitions_HAMMOND.R'
-  stalist    <- c("H1") #,"H2","H4","H6","H7"
+  stalist    <- c("H2","H4","H6","H7")
   camlist    <- "Sep89"
-  pseudoNrun <- 5000
+  pseudoNrun <- 4000
 } else {
   userfile <- 'UsersDefinitions_NOAH.R'
   stalist  <- "C"
