@@ -45,6 +45,7 @@ User data are to be stored in a .xls file, respecitng the [user data file struct
 
 ``` r
 
+<<<<<<< HEAD
 if (TRUE){
   # The Hammond dataset is used as example and is provided in the package. 
   # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
@@ -58,6 +59,8 @@ if (TRUE){
   sta<-"Station_example"
   cam<-"Campaign_example"
 }
+=======
+>>>>>>> 068bc590cb7a04e1e1d04a7984e244109193885e
 
 # This loads data the based on info given in the UserDefinitions....R
 source('Utils/OmexCal_Load_Data.R')
