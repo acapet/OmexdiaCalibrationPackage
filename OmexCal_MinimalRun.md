@@ -12,7 +12,7 @@ This script loads all the auxiliary functions, and runs + display a first simula
 
 ``` r
 # Loading OmexCal functions
-source("OmexCal_Load.R")
+source("Utils/OmexCal_Load.R")
 ```
 
 Example of use
@@ -44,13 +44,7 @@ User Data
 User data are to be stored in a .xls file, respecitng the [user data file structure](datastructure.md). User-specific options (eg. filepahts, etc ..) are to be given in a file like (UsersDefinitions\_HAMMOND.R)\[UsersDefinitions\_HAMMOND.R\]
 
 ``` r
-source('UsersDefinitions_HAMMOND.R')
-sta<-"H2"
-cam<-"Sep89"
 
-#source('UsersDefinitions_NOAH.R')
-#sta<-"C"
-#cam<-"HE432"
 
 # This loads data the based on info given in the UserDefinitions....R
 source('OmexCal_Load_Data.R')
