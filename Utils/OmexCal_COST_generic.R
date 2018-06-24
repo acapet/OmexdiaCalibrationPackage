@@ -8,20 +8,20 @@
 ################
 # Contributors : 
 # A. Capet  , acapet@uliege.be 
-# A. Eisele ,  
+# A. Eisele , annika.eisele@hzg.de
 ################
 #
 # Description :
-# This functions receives a vector of parameter and the list of observations variable names (profiles and fluxes) 
+# This functions receives a vector of parameters and the list of observations variable names (profiles and fluxes) 
 # It returns a model cost object (see ?modCost ) that quantifies the model skill in reproducing selected observations
 #
 ################
 
 OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
   
-  # Vlist: Profile variables to be considered for Cost computation (here all those variables are given at the same depths) 
-  # Flist: Fluxes to be considered in the Mod Cost
-  # To consider microprofiling, we may need to complete this function ... maybe with a Mlist ..
+  # Vlist: Profile variables to be considered for the Mod Cost computation (here all those variables are given at the same depths) 
+  # Flist: Fluxes to be considered in the Mod Cost computation
+  # Mlist: Oxygenmicroprofiles to be considered in the Mod Cost computation
   
   # Simulation
   DIA<-OCALL (p)
@@ -93,7 +93,8 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
                   scaleVar = TRUE, 
                   cost = Cost) 
   }
-  
+
+  # Considering Microprofiles  
   if(!is.null(Mlist) ) { 
     Cost<-modCost(model = Mmicro,
                   obs=obsMicro,

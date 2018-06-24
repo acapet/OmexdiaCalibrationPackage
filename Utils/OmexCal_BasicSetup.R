@@ -13,7 +13,7 @@
 #
 # Description :
 # This script : 
-# * defines essential objects for OMEXIDA simulaitons (grids, etc ..)
+# * defines essential objects for OMEXIDA simulations (grids, etc ..)
 # * Provide guess value and bounds for parameters
 # 
 # This is a script, not a function, so variables defined here are global.
@@ -35,14 +35,16 @@ exp.profile <- function(x, x.0, y.0, y.inf, x.att)
 
 # reference 
 
-## Parameters value are here updated according to calibrated Stations (Hammond) 
+## Parameters value are here updated according to calibrated Stations (Example: Hammond) 
 parsdf<-rbind(
+  
   # abiotic conditions
   data.frame(row.names="Temp"       ,guess=14       ,min=5        ,max=26       ,unit="°C"       ,printfactor=1,printunit=NA    ,  constrain ='Pel. Mod.')      , # Temperature
   data.frame(row.names="Sal"        ,guess=36       ,min=36       ,max=38       ,unit="psu"      ,printfactor=1,printunit=NA     ,  constrain ='Pel. Mod.')       , # Salinity
   data.frame(row.names="portop"     ,guess=0.65     ,min=0.5      ,max=0.95     ,unit="W. Cont." ,printfactor=1,printunit=NA      ,  constrain ='Fixed Map')    , # surface porosity
   data.frame(row.names="porbot"     ,guess=0.6      ,min=0.4      ,max=0.7      ,unit="W. Cont." ,printfactor=1,printunit=NA    ,  constrain ='Fixed Map')   , # porosity  at depth
   data.frame(row.names="pora"       ,guess=0.5      ,min=0.25     ,max=0.75     ,unit=" "        ,printfactor=1,printunit=NA     ,  constrain ='Fixed Map')   , # porosity decrease
+  
   # Bioturbation
   data.frame(row.names="biot"       ,guess=10/365   ,min=0.01/365 ,max=30/365   ,unit="cm2/d"    ,printfactor=365, printunit="cm2/yr" , constrain ='Biol.') ,     # bioturbation coefficient % range from TROMP1995
   data.frame(row.names="mixL"       ,guess=15       ,min=5        ,max=30       ,unit="cm"       ,printfactor=1,printunit=NA          , constrain ='Biol.')  ,     # depth of mixed layer
@@ -72,7 +74,8 @@ parsdf<-rbind(
   data.frame(row.names="rCaPdiss"   ,guess=0*0.000001/365  ,min=0.1/365   ,max=50/365  ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Stat. Calib.'), # 
   data.frame(row.names="CPrCaP"     ,guess=1.32/4.6 ,min=1/4.6     ,max=4/4.6   ,unit="/d",printfactor=365, printunit="/yr"     , constrain ='Stat. Calib.'), # 
   data.frame(row.names="PO4ads"     ,guess=2        ,min=1        ,max=400     ,unit="",printfactor=1,printunit=NA             , constrain ='Stat. Calib.'), #
-  # in Slomp et al two values for P Eq adsorption : 200 in zone I and 2 in zone II ....Difficiult to let this be fitted
+  
+  # in Slomp et al two values for P Eq adsorption : 200 in zone I and 2 in zone II ....Difficult to let this be fitted
   data.frame(row.names="Q"          ,guess=2        ,min=1.5       ,max=2.5     ,unit="-",printfactor=1,printunit=NA            , constrain ='Stat. Calib.'), # Q10 for mineralisation (both slow and fast)
   data.frame(row.names="pdepo"      ,guess=0.3      ,min=0.08      ,max=0.3     ,unit="-",printfactor=1,printunit=NA            , constrain ='Stat. Calib.'), # Q10 for mineralisation (both slow and fast)
   
@@ -99,7 +102,7 @@ parsdf<-rbind(
 )
 
 # To limit the number of variable parameter some relationships can be used
-# most found in the litterature use w, or bottom Depth, for instance
+# most found in the literature use w, or bottom depth, for instance
 #pDepo      <- min(1,0.233*(pars["w"]*365)**0.336 )
 
 parsdf$unit<-as.character(parsdf$unit)

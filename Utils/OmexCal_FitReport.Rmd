@@ -28,11 +28,11 @@ title: `r paste0("Calibration Report for ", params$camsta)`
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
 options(knitr.table.format = "latex")
 library(kableExtra)
-source("OmexCal_Load.R")
+source("Utils/OmexCal_Load.R")
 source(params$userfile)
 ```
 # Stepwise calibration
@@ -117,7 +117,7 @@ kable(allpdfs,booktabs=T,longtable=T, escape=F) %>%
 ### Sensitivity
 
 The next figure represents the model cost's sensitivity to perturbation of the parameters around their final calibrated value. 
-In short the highest the metric, the most this parameter is having a high impact on the overall model misfit metric.
+In short the higher the metric, the most this parameter is having a high impact on the overall model misfit metric.
 
 ```{recho=FALSE, warning=FALSE}
 
@@ -142,7 +142,7 @@ In short the highest the metric, the most this parameter is having a high impact
 
 ## Misfits
 
-The variables costs ares estimated as the sum of squared weighted residuals for each: 
+The variables cost are estimated as the sum of squared weighted residuals for each: 
 
 $$\mathcal{C}_j=\sum\limits_{i=1}^{n_{obs,j}} \frac{Model_i- Obs_i}{Err_i}$$
 

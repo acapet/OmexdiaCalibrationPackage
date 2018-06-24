@@ -12,7 +12,7 @@
 ################
 #
 # Description :
-# This function provides a table summarizing mode cost functions qunatifying the model skills in reproducing observations
+# This function provides a table summarizing model cost functions qunatifying the model skills in reproducing observations
 # Both variable-specific and all-variables metrics are provided. 
 #
 # Argument : 

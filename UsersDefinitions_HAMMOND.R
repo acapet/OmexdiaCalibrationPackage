@@ -29,11 +29,7 @@
 # Futhermore you can define if you wish that your locations of the observation stations are mapped
 # Define the usage and you can run the script without further editing
 # The Input "datafile" should be in the general setup defined and described at OMEXDIACalibrationPackage
-# Remeber: R is case-sensitive, so check for letters in your Excel-Files and defined variables!
 
-##!Set working directory to corresponding file directory before running the script!
-# ART 06112017 not sure why you want to clean the environment here ?
-# rm(list=ls()) #clears the environment
 
 #################
 # Define usage #
@@ -60,7 +56,7 @@ VLIST[[1]] <- c("TOC","TN")
 # Observation fluxes
 FLIST[[1]] <- c("DIC")
 # Observation Microprofiles
-MLIST[[1]] <- c()
+MLIST[[1]] <- c() #c("O2micro")
 
 ## 2. calibration step
 PLIST[[2]] <- c("NCrSdet","mixL","biot","AlphIrr") 
@@ -108,11 +104,6 @@ camosta<-"Station" #or Campaign #color code affiliation
 Loc_stamen <- c(11.5, 43, 14, 46)
 Loc_google <- c(11, 43, 15, 47)  
 
-##############################
-## now you can run the script!
-##############################
-
-# source(OMEXDIA_OG3_StepwiseCalibration.R)
 
 ##########################################
 ## Adaptation for model/obs comparison!
@@ -147,3 +138,8 @@ AddDiagnostics <- function (Dy,p) {
 }
 
 
+##############################
+## now you can run the script!
+##############################
+
+# source(OmexCal_StepwiseCalibration_MC.R)

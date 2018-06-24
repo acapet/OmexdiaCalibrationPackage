@@ -74,7 +74,7 @@ pl[[2]]
 
 ## Parameters
 
-!! Parameters values are not converted to "print" value for now .. 
+!! Parameter values are not converted to "print" value for now .. 
 
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=5}

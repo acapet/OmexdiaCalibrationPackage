@@ -24,7 +24,6 @@
 #Define the usage and you can run the script without further editing
 #Input "datafile" should contain at least data on Station, MidDepth, UpperDepth, LowerDepth, date and each variable columnwise
 #Input "datafluxfile" should contain at least data on station, lon, lat, date, depth and variable fluxes columnwise
-#Remeber: R is case-sensitive, so check for letters in your Excel-Files and define variables!
 
 dfprvarsstay<-c("Station","Campaign","UpperDepth","LowerDepth","MidDepth") # Entities that should be exluded from the merging to a variable and value cloumn
 dfflvarsstay<-c("Station","Campaign")                                      # Entities that should be exluded from the merging to a variable and value cloumn

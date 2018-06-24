@@ -8,7 +8,7 @@
 ################
 # Contributors : 
 # A. Capet   , acapet@ulg.ac.be 
-# A. Eiesele ,  
+# A. Eisele ,  2017, annika.eisele@hzg.de
 ################
 #
 # Description :
@@ -61,7 +61,7 @@ OmexCal_AdaptForSta <- function (p=pars) {
   } else {
     ## Second option: Info for set up porosity profile are present in the "Station" sheet of the input .xls file.
     # portop : Porosity below the SWI (considered to be given at)
-    # porbot : Porosity at depth (considred as asymptotic value for great depth)
+    # porbot : Porosity at depth (considered as asymptotic value for great depth)
     # pora   : Exponential decrease rate for the porosity profile
 
     if (!is.null(localdatasta$portop)){# & !is.na(localdatasta$portop)){

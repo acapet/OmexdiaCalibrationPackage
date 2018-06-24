@@ -14,7 +14,7 @@
 # Description :
 # This script loads all the auxiliary functions, and runs + display a first simulation.
 # It then provides an example of how to load data, compute model misfits for specific variables, 
-# and display the comparison with model ouptuts
+# and display the comparison with model outputs
 #
 ################
 
@@ -24,41 +24,53 @@ source("Utils/OmexCal_Load.R")
 #      EXAMPLE OF USE      #
 ############################
 
-# The variable global parSta is used inside auxiliary functions
-# It consists in the full parameter list, adapted for the station 
-# Here we just copy the general parameters value as given in "OMEXDIA_OG3_BasicSetup.R"
+# The global variable  parSta is used inside auxiliary functions
+# It contains the full parameter list as given in "OMEXDIA_OG3_BasicSetup.R"
+# local copy of the global parameter vector
 parSta<-pars
 
 # OCALL gets the model solution for parameters given in argument
 DIA <-OCALL(parSta)
 
-# Display can be done directly with parameters value
+# Display can be done directly with parameter values
 Simplot(pars)
+
+# .. or with model outputs -> TO UPDATE
+# Simplot(DIA)
 
 ################
 ##  USER DATA ##
 ################
 
+# User data are to be stored in a .xls file, respecitng the [user data file structure](datastructure.md).
+# User-specific options (eg. filepahts, etc ..) are to be given in a file like (UsersDefinitions_HAMMOND.R)[UsersDefinitions_HAMMOND.R]
+
 if (TRUE){
-  # The Hammond dataset is used for example and provided in the package. 
+  # The Hammond dataset is used as example and is provided in the package. 
   # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
   source('UsersDefinitions_HAMMOND.R')
-  sta<-"H2"
+  sta<-"H2" 
   cam<-"Sep89"
 } else{
-  source('UsersDefinitions_NOAH.R')
-  sta<-"C"
-  cam<-"HE432"
+  # Upload your own data set and use the package for calibrating OMEXDIA to your data
+  source('UsersDefinitions_OwnData.R') 
+  # for the minimal run: specify a station and cruise
+  sta<-"Station_example"
+  cam<-"Campaign_example"
 }
 
-# This loads data the based on info given in the UserDefinitions....R
+# This loads data based on informations given in the UserDefinitions....R
 source('Utils/OmexCal_Load_Data.R')
 
-# We then create "local" dataframes, specific to one station.
+# We then create "local" dataframes, specific to one station in one campaign.
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
 localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
 localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
 localdatamicro <-subset(dfO2micro, Station==sta & Campaign == cam)
+
+# Some parameters are general, some have to be adapted for each station/campaign.
+# This is the case, for instance, for the porosity grid and bottom water concentration for nutrients.
+
 
 # In addition, some global parameters have to be given a local (station+campagin) value
 parSta    <- OmexCal_AdaptForSta()
@@ -72,20 +84,32 @@ ggplot(localdata,
   geom_point(size=2)+
   facet_wrap(~variable,scales = "free")+ylim(c(30,0))
 
-# parSta<-AdaptParsForStation_SS(sta)
+
+# Modal-Data metrics
+
+# Once data are loaded, the generic cost function can be used 
+# while specifying which data should be used to asess the model skills.
 
 #  Cost function can be called with a list of profile variables and a list of flux variables
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
  C1$var
 
- C2 <- OCOST_GEN(parSta,Vlist = c("PO4","NH3"))
+ C2 <- OCOST_GEN(parSta,Vlist = "NH3")
  C2$var
  
- C3 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
+ C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
  C3$var
  
-# Some script to display results , first one by one : 
-Simplot(pars,plotdata=TRUE)+     # The flag TRUE is used to disaply the data along model ouputs
+ C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
+ C4$var
+
+
+# Display
+ 
+# The toolbox then contains a number of functions to display model outputs and useful summary tables.
+ 
+# Some result display scripts, first one by one : 
+Simplot(pars,plotdata=TRUE)+     # The flag TRUE is used to disaply the data along model outputs
   ggtitle(paste(sta,"0. No Fit"))
 
 partableplot(pars)
@@ -93,12 +117,12 @@ partableplot(pars)
 fluxtable(pars)$p
 
 # Collect all on the same plot
-pdf(paste(plotdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
+# pdf(paste(plotdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
 grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
              arrangeGrob(partableplot(parSta)$t),
              arrangeGrob(fluxtable(parSta)$p,
                          fittableplot(C3),ncol=1,heights=c(6,4)),
              ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))
-dev.off()
+# dev.off()
 
 

@@ -12,7 +12,7 @@
 ################
 #
 # Description :
-# This function  provides a table summarizing Parameters value
+# This function  provides a table summarizing parameter values
 #
 # Argument : 
 # * p : parameter vector

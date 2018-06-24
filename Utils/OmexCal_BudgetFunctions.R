@@ -1,3 +1,11 @@
+################
+#
+# This script is part of the OmexdiaCalibration suite (https://github.com/MAST-ULiege/OmexdiaCalibrationPackage) 
+# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+#
+# Arthur Capet (acapet@uliege.be), Oct 2017.
+#
+################
 
 IntegratedRate <- function(rate, depth = NULL)  {      # integrated rate for liquids
   # print(paste0(" IntegratedRate porGrid$mid(end) :  " ,toString(porGrid$mid[length(porGrid$mid)])))

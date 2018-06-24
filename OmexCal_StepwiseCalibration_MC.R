@@ -19,34 +19,30 @@
 # Load model and observation data
 ################################################
 
-# ! <Annika        : loop problematical for second loop iteration! needs to remove variables before second loop can be started!
-
 # load OMXEDIA model
-source("OmexCal_Load.R")  
+source("Utils/OmexCal_Load.R")
 
 # load station data
 if (FALSE){
   userfile   <- 'UsersDefinitions_HAMMOND.R'
-  stalist    <- c("H1") #,"H2","H4","H6","H7"
-  camlist    <- "Sep89"
-  pseudoNrun <- 5000
+  stalist    <- c("H2","H4","H6","H7")
+  camlist    <- c("Sep89")
+  pseudoNrun <- 20000
 } else {
-  userfile <- 'UsersDefinitions_NOAH.R'
-  stalist  <- c("C")
-  camlist  <- c("HE432","HE447")
-  pseudoNrun <- 500
+  userfile <- 'UsersDefinitions_OwnData.R'
+  stalist  <- c("Station_A","Station_B","Station_C")
+  camlist  <- c("Campaign_1")
+  pseudoNrun <- 20000
 }
 
 source(userfile)
-source('OmexCal_Load_Data.R') 
+source("Utils/OmexCal_Load_Data.R") 
 
 # subsetting station list
 dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
 
 #Looping
 for (icamosta in (1:nrow(dsStasub))){
-  
-icamosta<-1
   sta<-dsStasub$Station[icamosta]  
   cam<-dsStasub$Campaign[icamosta]
   
@@ -88,7 +84,6 @@ icamosta<-1
                   Mlist=unique(unlist(MLIST)))$var
   
   for (ifit in c(1:length(PLIST))){
-    #ifit<-1
     Fit <- modFit(f=OCOST_GEN,
                   p=parSta[PLIST[[ifit]]],
                   Vlist=tryCatch(VLIST[[ifit]], error = function (e) NULL),
@@ -192,8 +187,9 @@ icamosta<-1
   Costlist[[length(PLIST)+2]] <- Cost
   
   save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
+  
   ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"_",cam))
-
+  
    # # # # # # 
    # MCMCM   #
    # # # # # #

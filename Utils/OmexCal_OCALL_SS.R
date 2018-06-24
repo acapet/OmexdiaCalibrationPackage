@@ -12,7 +12,7 @@
 ################
 #
 # Description :
-# This functions receives a vector of parameter and returns the corresponding Steady-State Omexdia model solution
+# This function receives a vector of parameter and returns the corresponding Steady-State Omexdia model solution
 #
 ################
 

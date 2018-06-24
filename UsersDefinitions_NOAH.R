@@ -36,7 +36,7 @@
 ################
 
 ##Define Excel-File
-datafile<-"NOAH_C.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
+datafile<-"Datas/NOAH_C.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
 #########################
 # Calibration Procedure #
