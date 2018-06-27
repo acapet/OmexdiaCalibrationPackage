@@ -21,7 +21,7 @@ opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
 
 This example script runs and display a first simulation of OMEXDIA (local version).
 It then provides an example of how to load data, compute model misfits for specific variables, 
-and display the comparison with model outputs
+and display the comparison with model outputs.
 
 ```{r}
 # Loading OmexCal functions and the Omexdia model dynamic library

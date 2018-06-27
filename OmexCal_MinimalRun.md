@@ -9,7 +9,7 @@ Nov, 2017
 -   [Display](#display)
 -   [Calibration](#calibration)
 
-This example script runs and display a first simulation of OMEXDIA (local version). It then provides an example of how to load data, compute model misfits for specific variables, and display the comparison with model outputs
+This example script runs and display a first simulation of OMEXDIA (local version). It then provides an example of how to load data, compute model misfits for specific variables, and display the comparison with model outputs.
 
 ``` r
 # Loading OmexCal functions and the Omexdia model dynamic library
@@ -224,4 +224,4 @@ kable(fluxtable(pars)$d)
 Calibration
 ===========
 
-We haven't mentioned calibration so far. The general calibration approach is applied in (OmexCal\_StepwiseCalibration.R)\[OmexCal\_StepwiseCalibration.R\]. The Monte Carlo Markov Chain approach to calibration can be applied using (OmexCal\_StepwiseCalibration.R)\[OmexCal\_StepwiseCalibration.R\].
+We haven't mentioned calibration so far. The general calibration approach is applied in [OmexCal\_StepwiseCalibration.R](OmexCal_StepwiseCalibration.R). The Monte Carlo Markov Chain approach to calibration can be applied using [OmexCal\_StepwiseCalibration\_MC.R](OmexCal_StepwiseCalibration_MC.R).
