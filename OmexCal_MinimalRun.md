@@ -19,7 +19,7 @@ source("Utils/OmexCal_Load.R")
 Example of use
 ==============
 
-In this example we consider steady-state model simulations. Since the model is deterministic, one set of value for parameters (which includes boundary conditions), provides a unique model solution. The global variable `parSta` has to be defined, since it is used inside auxiliary functions. It contains the full parameter list given in [Utils/OmexCal\_BasicSetup.R](Utils/OmexCal_BasicSetup.R). Later on, during calibration procedure, the value in [Utils/OmexCal\_BasicSetup.R](Utils/OmexCal_BasicSetup.R) will be use as starting point value for teh calibration of individual parameters.
+In this example we consider steady-state model simulations. Since the model is deterministic, one set of value for parameters (which includes boundary conditions), provides a unique model solution. The global variable `parSta` has to be defined, since it is used inside auxiliary functions. It contains the full parameter list given in [Utils/OmexCal\_BasicSetup.R](Utils/OmexCal_BasicSetup.R). Later on, during calibration procedure, the values given in [Utils/OmexCal\_BasicSetup.R](Utils/OmexCal_BasicSetup.R) will be used as starting points for the calibration of individual parameters.
 
 ``` r
 # local copy of the global parameter vector
