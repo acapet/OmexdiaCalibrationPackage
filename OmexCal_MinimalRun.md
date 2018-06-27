@@ -37,7 +37,7 @@ Simplot(pars)
 User Data
 =========
 
-User data are to be stored in a .xls file, respecting the [user data file structure](datastructure.md). User-specific options (eg. filepaths, etc ..) are to be given in a file like [UsersDefinitions\_HAMMOND.R](UsersDefinitions_HAMMOND.R). The script [source('Utils/OmexCal\_Load\_Data.R')](Utils/OmexCal_Load_Data.R) interpret the data, following soe informations providing in the user file. By default, when loading the data, plot and maps are generated in a dedicated directory.
+User data are be stored in a .xls file, respecting the [user data file structure](wiki/Data-Preparation). User-specific options (eg. filepaths, etc ..) are to be given in a [user file](wiki/User-Definitions-File), just like the example [UsersDefinitions\_HAMMOND.R](UsersDefinitions_HAMMOND.R). The script [OmexCal\_Load\_Data.R](Utils/OmexCal_Load_Data.R) interprets the data, following some informations providing in the user file. By default, when loading the data, plot and maps are generated in a dedicated directory (the map generation may take some time, tho disable this option switch off the `mapping` flag in the user file).
 
 ``` r
 # The Hammond dataset is used as example and is provided in the package. 
@@ -88,40 +88,44 @@ Once data are loaded, the generic cost function can be used while specifying whi
 ``` r
 #  Cost function can be called with a list of profile variables and a list of flux variables
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
- C1$var
+kable( as.data.frame(C1$var))
 ```
 
-    ##   name     scale N SSR.unweighted SSR.unscaled      SSR
-    ## 1  NH3 0.1428571 7       6820.193     1119.105 22.83888
+| name |      scale|    N|  SSR.unweighted|  SSR.unscaled|       SSR|
+|:-----|----------:|----:|---------------:|-------------:|---------:|
+| NH3  |  0.1428571|    7|        6820.193|      1119.105|  22.83888|
 
 ``` r
  C2 <- OCOST_GEN(parSta,Vlist = "NH3")
- C2$var
+ kable( as.data.frame(C2$var))
 ```
 
-    ##   name     scale N SSR.unweighted SSR.unscaled      SSR
-    ## 1  NH3 0.1428571 7       4714.522     710.8764 14.50768
+| name |      scale|    N|  SSR.unweighted|  SSR.unscaled|       SSR|
+|:-----|----------:|----:|---------------:|-------------:|---------:|
+| NH3  |  0.1428571|    7|        4714.522|      710.8764|  14.50768|
 
 ``` r
  C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
- C3$var
+ kable( as.data.frame(C3$var))
 ```
 
-    ##   name     scale N SSR.unweighted SSR.unscaled      SSR
-    ## 1  NH3 0.1428571 7     4714.52192     710.8764 14.50768
-    ## 2  PO4 0.1428571 7       56.01756    2425.1543 49.49295
+| name |      scale|    N|  SSR.unweighted|  SSR.unscaled|       SSR|
+|:-----|----------:|----:|---------------:|-------------:|---------:|
+| NH3  |  0.1428571|    7|      4714.52192|      710.8764|  14.50768|
+| PO4  |  0.1428571|    7|        56.01756|     2425.1543|  49.49295|
 
 ``` r
  C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
- C4$var
+ kable( as.data.frame(C4$var))
 ```
 
-    ##      name     scale N SSR.unweighted SSR.unscaled         SSR
-    ## 1 SIOflux 1.0000000 1   4.810232e+00  13.36175439 13.36175439
-    ## 2 NH3flux 1.0000000 1   9.309408e-05   0.02585947  0.02585947
-    ## 3 NOxflux 1.0000000 1   1.082128e-02   3.00591053  3.00591053
-    ## 4     DIC 0.1666667 6   1.301674e+06 103.32604534  2.87016793
-    ## 5     NH3 0.1428571 7   4.714522e+03 710.87640967 14.50768183
+| name    |      scale|    N|  SSR.unweighted|  SSR.unscaled|         SSR|
+|:--------|----------:|----:|---------------:|-------------:|-----------:|
+| SIOflux |  1.0000000|    1|    4.810232e+00|    13.3617544|  13.3617544|
+| NH3flux |  1.0000000|    1|    9.310000e-05|     0.0258595|   0.0258595|
+| NOxflux |  1.0000000|    1|    1.082130e-02|     3.0059105|   3.0059105|
+| DIC     |  0.1666667|    6|    1.301674e+06|   103.3260453|   2.8701679|
+| NH3     |  0.1428571|    7|    4.714522e+03|   710.8764097|  14.5076818|
 
 Display
 =======

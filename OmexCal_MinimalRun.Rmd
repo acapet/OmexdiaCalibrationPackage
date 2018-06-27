@@ -49,10 +49,10 @@ Simplot(pars)
 
 #  User Data
 
-User data are to be stored in a .xls file, respecting the [user data file structure](datastructure.md).
-User-specific options (eg. filepaths, etc ..) are to be given in a file like [UsersDefinitions_HAMMOND.R](UsersDefinitions_HAMMOND.R).
-The script [source('Utils/OmexCal_Load_Data.R')](Utils/OmexCal_Load_Data.R) interpret the data, following soe informations providing in the user file. 
-By default, when loading the data, plot and maps are generated in a dedicated directory. 
+User data are be stored in a .xls file, respecting the [user data file structure](wiki/Data-Preparation).
+User-specific options (eg. filepaths, etc ..) are to be given in a [user file](wiki/User-Definitions-File), just like the example [UsersDefinitions_HAMMOND.R](UsersDefinitions_HAMMOND.R).
+The script [OmexCal_Load_Data.R](Utils/OmexCal_Load_Data.R) interprets the data, following some informations providing in the user file. 
+By default, when loading the data, plot and maps are generated in a dedicated directory (the map generation may take some time, tho disable this option switch off the `mapping` flag in the user file).
 
 ```{r, Load Data}
 
@@ -81,7 +81,7 @@ localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
 Some parameters are general, some have to be adapted for each station/campaign.
 This is the case, for instance, for the porosity grid and bottom water concentration for nutrients.
 
-```{r}
+```{r , warning=FALSE}
 # In addition, some global parameters have to be given a local (station+campaign) value
 parSta    <- OmexCal_AdaptForSta()
 
@@ -102,16 +102,16 @@ Once data are loaded, the generic cost function can be used while specifying whi
 ```{r}
 #  Cost function can be called with a list of profile variables and a list of flux variables
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
- C1$var
+kable( as.data.frame(C1$var))
 
  C2 <- OCOST_GEN(parSta,Vlist = "NH3")
- C2$var
+ kable( as.data.frame(C2$var))
  
  C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
- C3$var
+ kable( as.data.frame(C3$var))
  
  C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
- C4$var
+ kable( as.data.frame(C4$var))
 
 ```
 
@@ -124,13 +124,13 @@ Simplot(pars,plotdata=TRUE)+        # The flag TRUE is used to display the data 
   ggtitle(paste(sta,"0. No Fit"))
 
 kable(partableplot(pars)$df )
-
 kable(fluxtable(pars)$d)
+
 ```
 
 
 # Calibration
 
 We haven't mentioned calibration so far.
-The general calibration approach is applied in (OmexCal_StepwiseCalibration.R)[OmexCal_StepwiseCalibration.R].
-The Monte Carlo Markov Chain approach to calibration can be applied using (OmexCal_StepwiseCalibration.R)[OmexCal_StepwiseCalibration.R].
+The general calibration approach is applied in [OmexCal_StepwiseCalibration.R](OmexCal_StepwiseCalibration.R).
+The Monte Carlo Markov Chain approach to calibration can be applied using [OmexCal_StepwiseCalibration_MC.R](OmexCal_StepwiseCalibration_MC.R).

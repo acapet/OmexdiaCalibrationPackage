@@ -85,9 +85,9 @@ stepNames <-c("Fit C","Fit N","Fit Si","Fit PO")
 plotdir  <- paste0(getwd(),"/Plots_HAM/")
 
 #Define if you wish to plot your observation data before the calibration procedure
-plotting<-1 #set to 1 if you want to produce plots of your observation data
+plotting<-0 #set to 1 if you want to produce plots of your observation data
 #Define if you wish to map the locations of your observational stations
-mapping<-1 #set to 1 if you want to produce maps
+mapping<-0 #set to 1 if you want to produce maps
 
 
 #If yes please define the following variables

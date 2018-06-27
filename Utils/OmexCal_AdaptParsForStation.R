@@ -24,8 +24,8 @@
 # * Bottom water concentrations :
 #
 # Input : 
-#   * p is a parameter vector. The global parameter vectors set-up by OmexCal_BasicSetup.R is used by default.
-#
+#   * [p]    : parameter vector. The global parameter vectors set-up (pars) by OmexCal_BasicSetup.R is used by default.
+#   * [station]  : station name, 
 # Output : 
 #   * A modified parameter vector. 
 #   * ! In addition global values are modified ! This concerns
@@ -34,10 +34,19 @@
 #       -
 # Potential updates : 
 #   Consider local Temp and Sal to update chemical diffusion coefficients
-
+# Oxygen codes for generting help file
+#' Adapt global parameter vector with local values for a give station
+#' 
+#' @param p An omexdia parameter vector. The global parameter vector (pars) set up by OmexCal_BasicSetup.R is used by default.
+#' @param station A station name corresponding to an entry in the data file.
+#' @param campaign A campaign name corresponding to an entry in the data file.
+#' @return adapted p vector, where accumulation rate and bottom concetration have been updated on the basis of the user data-file.
+#'  Note that global porosity parameter are modified when this function is called.
+#' @examples
+#' source('OmexCal_MinimumExmaple.R')
 ################
 
-OmexCal_AdaptForSta <- function (p=pars) {
+OmexCal_AdaptForSta <- function (p=pars, station=sta, campaign=cam) {
   
   # parsl will be updated below
   parsl<-p
@@ -65,26 +74,26 @@ OmexCal_AdaptForSta <- function (p=pars) {
     # pora   : Exponential decrease rate for the porosity profile
 
     if (!is.null(localdatasta$portop)){# & !is.na(localdatasta$portop)){
-      warning(paste0(c('Using local portop value for ',sta,' ',cam)))
+      warning(paste0(c('Using local portop value for ',station,' ',campaign)))
       portop <- localdatasta$portop
     }else{
-      warning(paste0(c('Using global portop value for ',sta,' ',cam)))
+      warning(paste0(c('Using global portop value for ',station,' ',campaign)))
       portop <- p['portop']
     }
     
     if (!is.null(localdatasta$porbot)){# & !is.na(localdatasta$porbot)){
-      warning(paste0(c('Using local porbot value for ',sta,' ',cam)))
+      warning(paste0(c('Using local porbot value for ',station,' ',campaign)))
       porbot <- localdatasta$porbot
     }else{
-      warning(paste0(c('Using global porbot value for ',sta,' ',cam)))
+      warning(paste0(c('Using global porbot value for ',station,' ',campaign)))
       porbot <- p['porbot']
     }
     
     if (!is.null(localdatasta$pora)){# & !is.na(localdatasta$pora)){
-      warning(paste0(c('Using local pora value for ',sta,' ',cam)))
+      warning(paste0(c('Using local pora value for ',station,' ',campaign)))
       pora <- localdatasta$pora
     }else{
-      warning(paste0(c('Using global pora value for ',sta,' ',cam)))
+      warning(paste0(c('Using global pora value for ',station,' ',campaign)))
       pora <- p['pora']
     }
     
@@ -100,6 +109,7 @@ OmexCal_AdaptForSta <- function (p=pars) {
     porGridSolid$int <- 1-porGrid$int
   }
   
+  # ! Those are global variables, ie. they're not passed as argument between functions, but defined globally
   porGrid      <<- porGrid
   porGridSolid <<- porGridSolid
     
@@ -111,19 +121,19 @@ OmexCal_AdaptForSta <- function (p=pars) {
   bwlocal <- localdatasta[which(substr(names(localdatasta),0,2)=='bw')]
   bwlocal <- bwlocal[which(names(bwlocal)%in% names(p))]
   
-  parsl[names(bwlocal)]<-as.numeric(bwlocal)
+  parsl[names(bwlocal)] <- as.numeric(bwlocal)
   
   # The following gives sediment advection at depth in cm/d
   
   if (!is.null(localdatasta$Accumulation)){# & !is.na(localdatasta$pora)){
-    warning(paste0(c('Using local \'w\' value for ',sta,' ',cam)))
+    warning(paste0(c('Using local \'w\' value for ',station,' ',campaign)))
     warning(paste0("Assuming Accumulation given in ", datafile,
                    " are gr/cm²/yr and a dry sediment density of 2.5 gr/cm³.
           Consider adapting OmexCal_AdaptParsForStation if needed (or, better, convert your data)"))
     
     parsl["w"]<-as.numeric(localdatasta["Accumulation"]/2.5/365 )
   }else{
-    warning(paste0(c('Using default \'w\' value for ',sta,' ',cam)))
+    warning(paste0(c('Using default \'w\' value for ',station,' ',campaign)))
   }
   return(parsl)
 }
