@@ -31,7 +31,6 @@ Simplot<-function(p, plotdata=FALSE, YL=20, runnames=NULL) {
   # Setting names if not provided
   if (is.null(runnames)){runnames<-as.character(seq(1,length(DIs))) }
   
-
   bo<-lapply(DIs, function(DI){
     as.data.frame(cbind(DI$y,grid=Grid$x.mid,por=porGrid$mid))
   })

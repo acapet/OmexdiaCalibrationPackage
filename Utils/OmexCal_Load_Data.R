@@ -220,7 +220,9 @@ if (plotting) {
 ### Mapping Stations
 if (mapping) {
 
+  maporigin <- "stammen"
   ##Mapping with stamen
+  if (maporigin == "stammen"){
   myMap_stamen <- get_map(location=Loc_stamen,source="stamen", maptype="watercolor")
   ms<-ggmap(myMap_stamen)
   ms1<-
@@ -230,8 +232,9 @@ if (mapping) {
   Sys.sleep(10) 
   
   pdf(paste0(plotdir,"/StationMap.pdf"))
-  ms1
+  print(ms1)
   dev.off()
+  }else{
 
   ##Mapping with google
   myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)
@@ -240,7 +243,9 @@ if (mapping) {
     mg+
     geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
     geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
-  
-  mg1
+  pdf(paste0(plotdir,"/StationMap.pdf"))
+  print(mg1)
+  dev.off()
+  }
   }
 
