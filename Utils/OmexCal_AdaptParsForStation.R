@@ -1,7 +1,7 @@
 ################
 #
 # This script is part of the OmexdiaCalibration suite (https://github.com/MAST-ULiege/OmexdiaCalibrationPackage) 
-# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
+# This toolbox exploits essentially codes and methods developed by K. Soetaert (NIOZ)
 #
 # Arthur Capet (acapet@ulg.ac.be), Oct 2017.
 #
@@ -129,7 +129,7 @@ OmexCal_AdaptForSta <- function (p=pars, station=sta, campaign=cam) {
     warning(paste0(c('Using local \'w\' value for ',station,' ',campaign)))
     warning(paste0("Assuming Accumulation given in ", datafile,
                    " are gr/cm²/yr and a dry sediment density of 2.5 gr/cm³.
-          Consider adapting OmexCal_AdaptParsForStation if needed (or, better, convert your data)"))
+          Consider adapting Utils/OmexCal_AdaptParsForStation if needed (or, better, convert your data)"))
     
     parsl["w"]<-as.numeric(localdatasta["Accumulation"]/2.5/365 )
   }else{
