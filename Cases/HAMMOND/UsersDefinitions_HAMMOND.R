@@ -36,58 +36,19 @@
 ################
 
 ##Define Excel-File
-datafile<-"Datas/HAMMOND_Data.xls"  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
-
-#########################
-# Calibration Procedure #
-#########################
-
-# Here follows the definition of the calibration steps
-PLIST<-list()
-VLIST<-list()
-FLIST<-list()
-MLIST<-list()
-
-## 1. calibration step
-# Parameters 
-PLIST[[1]] <- c("pFast","MeanFlux","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
-# Observation profiles 
-VLIST[[1]] <- c("TOC","TN")
-# Observation fluxes
-FLIST[[1]] <- c("DIC")
-# Observation Microprofiles
-MLIST[[1]] <- c() #c("O2micro")
-
-## 2. calibration step
-PLIST[[2]] <- c("NCrSdet","mixL","biot","AlphIrr") 
-VLIST[[2]] <- c("TOC","DIC","NH3","TN")
-FLIST[[2]] <- c("DIC","NH3","NOx","O2")
-MLIST[[2]] <- c()
-
-## 3. calibration step
-PLIST[[3]] <- c("rSi","SiCdet","EquilSiO")
-VLIST[[3]] <- c("SIO","SiDet") #
-FLIST[[3]] <- c("SIO")
-MLIST[[3]] <- c()
-
-## 4. calibration step
-PLIST[[4]] <- c("PCrSdet","rCaPprod")
-VLIST[[4]] <- c("PO4")
-FLIST[[4]] <- c("PO4")
-MLIST[[4]] <- c()
-
-stepNames <-c("Fit C","Fit N","Fit Si","Fit PO")
+datafile <- paste0(casedir,'/',"Data.xls")  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
 #####################
 #Plotting and Mapping
 #####################
 # Directory for Plot outputs
-plotdir  <- paste0(getwd(),"/Plots_HAM/")
+plotdir  <- casedir
 
 #Define if you wish to plot your observation data before the calibration procedure
-plotting<-0 #set to 1 if you want to produce plots of your observation data
+plotting<-1 #set to 1 if you want to produce plots of your observation data
+
 #Define if you wish to map the locations of your observational stations
-mapping<-0 #set to 1 if you want to produce maps
+mapping<-1 #set to 1 if you want to produce maps
 
 
 #If yes please define the following variables
@@ -137,9 +98,42 @@ AddDiagnostics <- function (Dy,p) {
   return (Dy)
 }
 
+#########################
+# Calibration Procedure #
+#########################
 
-##############################
-## now you can run the script!
-##############################
+# Here follows the definition of the calibration steps
+PLIST<-list()
+VLIST<-list()
+FLIST<-list()
+MLIST<-list()
 
-# source(OmexCal_StepwiseCalibration_MC.R)
+## 1. calibration step
+# Parameters 
+PLIST[[1]] <- c("pFast","MeanFlux","pRef","biot","NCrref","NCrSdet","mixL","rSlow")
+# Observation profiles 
+VLIST[[1]] <- c("TOC","TN")
+# Observation fluxes
+FLIST[[1]] <- c("DIC")
+# Observation Microprofiles
+MLIST[[1]] <- c() #c("O2micro")
+
+## 2. calibration step
+PLIST[[2]] <- c("NCrSdet","mixL","biot","AlphIrr") 
+VLIST[[2]] <- c("TOC","DIC","NH3","TN")
+FLIST[[2]] <- c("DIC","NH3","NOx","O2")
+MLIST[[2]] <- c()
+
+## 3. calibration step
+PLIST[[3]] <- c("rSi","SiCdet","EquilSiO")
+VLIST[[3]] <- c("SIO","SiDet") #
+FLIST[[3]] <- c("SIO")
+MLIST[[3]] <- c()
+
+## 4. calibration step
+PLIST[[4]] <- c("PCrSdet","rCaPprod")
+VLIST[[4]] <- c("PO4")
+FLIST[[4]] <- c("PO4")
+MLIST[[4]] <- c()
+
+stepNames <-c("Fit C","Fit N","Fit Si","Fit PO")

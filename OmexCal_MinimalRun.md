@@ -1,4 +1,4 @@
-OmexdiaCalibration Tool Box: Minimal Example
+OmexdiaCalibration Toolbox: Minimal Example
 ================
 Arthur Capet
 Nov, 2017
@@ -42,10 +42,9 @@ User data are be stored in a .xls file, respecting the [user data file structure
 ``` r
 # The Hammond dataset is used as example and is provided in the package. 
 # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
+casedir<-'Cases/HAMMOND'
 
-source('UsersDefinitions_HAMMOND.R')
-sta<-"H2" 
-cam<-"Sep89"
+source(paste0(casedir,'/','UsersDefinitions.R'))
 
 ## To test your own data, create a file "UsersDefinitions_OwnData.R" on the basis of UsersDefinitions_HAMMOND.R, and uncomment the following lines
 #source('UsersDefinitions_OwnData.R')
@@ -57,6 +56,8 @@ cam<-"Sep89"
 source('Utils/OmexCal_Load_Data.R')
 
 # We then create "local" dataframes, specific to one station in one campaign.
+sta<-"H2" 
+cam<-"Sep89"
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
 localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
 localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
