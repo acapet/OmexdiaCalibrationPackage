@@ -23,6 +23,7 @@ ReportGen <- function (userfile,Parlist, Costlist, totdir,camsta) {
     camsta      = camsta
   ))
   
-  file.copy(from = paste0(getwd(),"/OmexCal_FitReport.pdf"),
+  file.copy(from = paste0(getwd(),"/Utils/OmexCal_FitReport.pdf"),
             to = paste0(totdir,"Calib_Report_",camsta,".pdf"), overwrite = T)
+  
 }

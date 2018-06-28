@@ -19,22 +19,21 @@
 # Load model and observation data
 ################################################
 
-# load OMXEDIA model
+# load toolbox 
 source("Utils/OmexCal_Load.R")  
 
 # load station data
-if (TRUE){
-  userfile   <- 'UsersDefinitions_HAMMOND.R'
-  stalist    <- c("H2","H4","H6","H7")
-  camlist    <- "Sep89"
-  pseudoNrun <- 20000
-  } else {
-  userfile <- 'UsersDefinitions_OwnData.R'
-  stalist  <- c("Station_A","Station_B","Station_C")
-  camlist  <- c("Campaign_1")
-  pseudoNrun <- 20000
-}
+casedir   <- 'HAMMOND'
+stalist    <- c("H2","H4","H6","H7")
+camlist    <- c("Sep89")
+pseudoNrun <- 20 # Number of iterations for each calibration step
 
+#  userfile <- 'UsersDefinitions_OwnData.R'
+#  stalist  <- c("Station_A","Station_B","Station_C")
+#  camlist  <- c("Campaign_1")
+#  pseudoNrun <- 20000
+
+userfile <- paste0('Cases/',casedir,'/','UsersDefinitions.R')
 source(userfile)
 source("Utils/OmexCal_Load_Data.R") 
 
@@ -47,9 +46,9 @@ for (icamosta in (1:nrow(dsStasub))){
   cam<-dsStasub$Campaign[icamosta]
   
   # Create "local" dataframes, specific to one station/campaign.
-  localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
-  localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
-  localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
+  localdata      <- subset(dfProfiles, Station==sta & Campaign == cam)
+  localdatafl    <- subset(dfFluxes,   Station==sta & Campaign == cam)
+  localdatasta   <- subset(dfStations, Station==sta & Campaign == cam)
   localdatamicro <- subset(dfO2micro, Station==sta & Campaign == cam)
   
   # Set the non-local irrigation framework
@@ -59,14 +58,16 @@ for (icamosta in (1:nrow(dsStasub))){
   # Load parameters
   parRange    <- parsdf[,c("guess","min","max","unit","printfactor","printunit")]
   
-  # Update parameters with local value (+ update of the global porosity grid )
-  parSta    <<- OmexCal_AdaptForSta(pars)
+  # Update parameters with station-specifc values (+ update of the global porosity grid )
+  parSta      <<- OmexCal_AdaptForSta(pars)
   
   # Create new folder
-  totdir <- paste(plotdir,'FITNEW_',sta,'/',sep="")    
-  dir.create(totdir) 
+  dir.create(paste0('Cases/',casedir,'/',cam))
+  dir.create(paste0('Cases/',casedir,'/',cam,'/',sta))
   
-  # Defining the list of parameters that may be calibrated in one of the calibration steps
+  totdir <- paste0('Cases/',casedir,'/',cam,'/',sta,'/')
+  
+  # Defining the list of parameters that will be calibrated in at least one of the calibration steps
   parRange <- parRange[which(rownames(parRange) %in% unlist(PLIST)),] 
   parsmin  <- as.numeric(as.matrix(parRange$min)); names(parsmin) <- rownames(parRange); 
   parsmax  <- as.numeric(as.matrix(parRange$max)); names(parsmax) <- rownames(parRange); 
@@ -105,8 +106,8 @@ for (icamosta in (1:nrow(dsStasub))){
                               Flist=unique(unlist(FLIST)),
                               Mlist=unique(unlist(MLIST)))$var
     
-    save(list = 'Fit', file = paste(totdir,"_Fit",ifit,".RData",sep=""))
-    save(list = 'parSta', file = paste(totdir,"_Fit",ifit,"_pSta.RData",sep=""))
+    save(list = 'Fit', file = paste(totdir,"Fit",ifit,".RData",sep=""))
+    save(list = 'parSta', file = paste(totdir,"Fit",ifit,"_pSta.RData",sep=""))
     print(parSta)
   }
   
@@ -123,11 +124,11 @@ for (icamosta in (1:nrow(dsStasub))){
                   )
   
   # Some Sensitivity Plots
-  pdf(paste(totdir,"_Sens.pdf",sep=""),width=10,height=10)
+  pdf(paste(totdir,"Sens.pdf",sep=""),width=10,height=10)
   pairs(Sens)
   dev.off()
   
-  pdf(paste(totdir,"_Sens2.pdf",sep=""),width=10,height=10)
+  pdf(paste(totdir,"Sens2.pdf",sep=""),width=10,height=10)
   plot(Sens)
   dev.off()
   
@@ -136,7 +137,7 @@ for (icamosta in (1:nrow(dsStasub))){
   sS$param <- factor(sS$param, levels = sS$param[order( sS$L1,decreasing = T)])
   
   g1<-ggplot(as.data.frame(sS),aes(x=param,y=L1))+geom_point()
-  pdf(paste(totdir,"_Sens3.pdf",sep=""),width=10,height=10)
+  pdf(paste(totdir,"Sens3.pdf",sep=""),width=10,height=10)
   print(g1)
   dev.off()
   
@@ -170,15 +171,13 @@ for (icamosta in (1:nrow(dsStasub))){
                      upper=parsmax[PLISTFinal], 
                      method="Pseudo")
   
-
-
   parSta[c(names(FitFinal$par))]<-as.numeric(FitFinal$par)
 
   Fitlist[[length(PLIST)+1]]<-FitFinal
   Parlist[[length(PLIST)+2]]<-parSta
   
-  save(list = 'Fit', file = paste(totdir,"_FitFinal.RData",sep=""))
-  save(list = 'parSta', file = paste(totdir,"_FitFinal_pSta.RData",sep=""))
+  save(list = 'Fit', file = paste(totdir,"FitFinal.RData",sep=""))
+  save(list = 'parSta', file = paste(totdir,"FitFinal_pSta.RData",sep=""))
   
   Cost <- OCOST_GEN(parSta,
                   Vlist=unique(unlist(VLIST)),
@@ -188,7 +187,7 @@ for (icamosta in (1:nrow(dsStasub))){
 
   Costlist[[length(PLIST)+2]] <- Cost
   
-  save(list = 'Cost', file = paste(totdir,"_Fit","_Cost.RData",sep=""))
+  save(list = 'Cost', file = paste(totdir,"Fit","_Cost.RData",sep=""))
   ReportGen(userfile,Parlist, Costlist, totdir,paste0(sta,"_",cam))
 
 }

@@ -20,7 +20,6 @@ header-includes:
 - \usepackage{pdflscape}
 - \usepackage{tabu}
 - \usepackage{threeparttable}
-
 ---
 
 ---
@@ -32,6 +31,7 @@ library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.table.format = "latex")
 library(kableExtra)
+setwd('../')
 source("Utils/OmexCal_Load.R")
 source(params$userfile)
 ```

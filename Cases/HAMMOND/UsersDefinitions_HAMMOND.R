@@ -36,20 +36,16 @@
 ################
 
 ##Define Excel-File
-datafile <- paste0(casedir,'/',"Data.xls")  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
+datafile <- paste0('Cases/',casedir,'/',"Data.xls")  #data-file including sheets of nutrients, fluxes, station informations and later on microprofiles
 
 #####################
 #Plotting and Mapping
 #####################
 # Directory for Plot outputs
-plotdir  <- casedir
+plotdir  <-  paste0('Cases/',casedir,'/')
 
-#Define if you wish to plot your observation data before the calibration procedure
-plotting<-1 #set to 1 if you want to produce plots of your observation data
-
-#Define if you wish to map the locations of your observational stations
-mapping<-1 #set to 1 if you want to produce maps
-
+# origin of the map data used to generate spatial plots
+maporigin <- "stammen"
 
 #If yes please define the following variables
 ##Define variables that should be plotted

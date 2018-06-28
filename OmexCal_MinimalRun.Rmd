@@ -57,9 +57,9 @@ By default, when loading the data, plot and maps are generated in a dedicated di
 ```{r, Load Data}
 # The Hammond dataset is used as example and is provided in the package. 
 # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
-casedir<-'Cases/HAMMOND'
+casedir<-'HAMMOND'
 
-source(paste0(casedir,'/','UsersDefinitions.R'))
+source(paste0('Cases/',casedir,'/','UsersDefinitions.R'))
 
 ## To test your own data, create a file "UsersDefinitions_OwnData.R" on the basis of UsersDefinitions_HAMMOND.R, and uncomment the following lines
 #source('UsersDefinitions_OwnData.R')
@@ -69,6 +69,8 @@ source(paste0(casedir,'/','UsersDefinitions.R'))
 # This loads data the based on info given in the UserDefinitions....R
 # The default behavior is to generate plots of flux and profile data.
 source('Utils/OmexCal_Load_Data.R')
+
+source('Utils/OmexCal_PlotCase.R')
 
 # We then create "local" dataframes, specific to one station in one campaign.
 sta<-"H2" 
