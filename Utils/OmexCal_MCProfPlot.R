@@ -81,6 +81,7 @@ if(!is.null(NumRun)){
         geom_errorbar(data=localdata,aes(y=value,x=(LowerDepth+UpperDepth)/2,ymin=value-err,ymax=value+err),color='black')
     }
     
+    # Second plot is for smaller depth variables
     p2<-ggplot(subset(SDNL,variable %in% c('O2','NOx')), aes(x=x))+
       geom_ribbon(aes(ymin=Min, ymax=Max), alpha=.2)+
       geom_ribbon(aes(ymin=q05, ymax=q95), alpha=.2)+
@@ -95,9 +96,11 @@ if(!is.null(NumRun)){
     
     if (plotdata) {
     localdata <- subset(localdatamicro,variable %in% c("O2") & Depth>0 & !is.na(localdatamicro$value+ localdatamicro$err))  
+    if (nrow(localdata)>1){
     p2 <- p2 +
       geom_errorbar(data=localdata,aes(y=value,x=(Depth)/2,ymin=value-err,ymax=value+err),color='black')+
       geom_point(data=localdata,aes(y=value,x=(Depth)/2),color='black')
+    }
     }
     
     

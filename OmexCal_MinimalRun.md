@@ -37,14 +37,14 @@ Simplot(pars)
 User Data
 =========
 
-User data are be stored in a .xls file, respecting the [user data file structure](wiki/Data-Preparation). User-specific options (eg. filepaths, etc ..) are to be given in a [user file](wiki/User-Definitions-File), just like the example [UsersDefinitions\_HAMMOND.R](UsersDefinitions_HAMMOND.R). The script [OmexCal\_Load\_Data.R](Utils/OmexCal_Load_Data.R) interprets the data, following some informations providing in the user file. By default, when loading the data, plot and maps are generated in a dedicated directory (the map generation may take some time, tho disable this option switch off the `mapping` flag in the user file).
+User data are be stored in a .xls file, respecting the [user data file structure](https://github.com/MAST-ULiege/OmexdiaCalibrationPackage/wiki/Data-Preparation). User-specific options (eg. filepaths, etc ..) are to be given in a [user file](https://github.com/MAST-ULiege/OmexdiaCalibrationPackage/wiki/User-Definitions-File), just like the example [UsersDefinitions\_HAMMOND.R](UsersDefinitions_HAMMOND.R). The script [OmexCal\_Load\_Data.R](Utils/OmexCal_Load_Data.R) interprets the data, following some informations providing in the user file. By default, when loading the data, plot and maps are generated in a dedicated directory (the map generation may take some time, tho disable this option switch off the `mapping` flag in the user file).
 
 ``` r
 # The Hammond dataset is used as example and is provided in the package. 
 # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
-casedir<-'Cases/HAMMOND'
+casedir<-'HAMMOND'
 
-source(paste0(casedir,'/','UsersDefinitions.R'))
+source(paste0('Cases/',casedir,'/','UsersDefinitions.R'))
 
 ## To test your own data, create a file "UsersDefinitions_OwnData.R" on the basis of UsersDefinitions_HAMMOND.R, and uncomment the following lines
 #source('UsersDefinitions_OwnData.R')
@@ -54,6 +54,8 @@ source(paste0(casedir,'/','UsersDefinitions.R'))
 # This loads data the based on info given in the UserDefinitions....R
 # The default behavior is to generate plots of flux and profile data.
 source('Utils/OmexCal_Load_Data.R')
+
+source('Utils/OmexCal_PlotCase.R')
 
 # We then create "local" dataframes, specific to one station in one campaign.
 sta<-"H2" 
@@ -225,4 +227,4 @@ kable(fluxtable(pars)$d)
 Calibration
 ===========
 
-We haven't mentioned calibration so far. The general calibration approach is applied in [OmexCal\_StepwiseCalibration.R](OmexCal_StepwiseCalibration.R). The Monte Carlo Markov Chain approach to calibration can be applied using [OmexCal\_StepwiseCalibration\_MC.R](OmexCal_StepwiseCalibration_MC.R).
+The calibration approach is implemented in [OmexCal\_Calibration.R](OmexCal_Calibration.R).

@@ -37,6 +37,31 @@ source(params$userfile)
 ```
 # Stepwise calibration
 
+## Steps
+
+```{r, echo=FALSE, warning=FALSE, fig.height=6}
+
+steptable<-data.frame(Step     = NA,
+                      Profiles = NA,
+                      Fluxes   = NA,
+                      MicroProfiles = NA,
+                      Parameters   =NA)
+
+  for (ifit in c(1:length(PLIST))){
+    steptable[ifit,"Step"]        <- stepNames[ifit]
+    try ( steptable$Profiles[ifit]      <- paste(VLIST[[ifit]],sep ="\n"), silent = TRUE)
+    try ( steptable$Fluxes[ifit]        <- paste(FLIST[[ifit]],sep ="\n"), silent = TRUE)
+    try ( steptable$MicroProfiles[ifit] <- paste(MLIST[[ifit]],sep ="\n"), silent = TRUE)
+    try ( steptable$Parameters[ifit]    <- paste(PLIST[[ifit]],sep ="\n"), silent = TRUE)
+  }
+    
+kable(steptable)
+
+```
+
+
+
+
 ## Profiles
 
 ```{r, echo=FALSE, warning=FALSE, fig.height=6}
@@ -119,7 +144,7 @@ kable(allpdfs,booktabs=T,longtable=T, escape=F) %>%
 The next figure represents the model cost's sensitivity to perturbation of the parameters around their final calibrated value. 
 In short the higher the metric, the most this parameter is having a high impact on the overall model misfit metric.
 
-```{recho=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 
   parSta<-Parlist[[length(Parlist)]]
 
@@ -154,7 +179,7 @@ rownames(dfSSR)<-Costlist[[1]][,"name"]
 
 ggplot(melt(dfSSR), aes(x=Var2, y=value, color=Var2))+
   geom_point(size=2)+
-  facet_wrap(~Var1, scales = "free")+
+  facet_wrap(~Var1, scales = "free",ncol=3 )+
   ylab("Variables Costs")+
   xlab("Calibration Steps")+
   scale_color_brewer(palette = "RdYlGn", name="Calibration Steps")+

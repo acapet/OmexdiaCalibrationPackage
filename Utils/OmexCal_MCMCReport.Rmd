@@ -31,7 +31,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 options(knitr.table.format = "latex")
 library(kableExtra)
-source("OmexCal_Load.R")
+setwd('../')
+source("Utils/OmexCal_Load.R")
 source(params$userfile)
 ```
 # MCMC

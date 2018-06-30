@@ -27,6 +27,7 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
   DIA<-OCALL (p)
   
   # Shaping Profiles Data 
+  if(!is.null(Vlist) ) { 
   llocaldata <- subset(localdata,variable %in% Vlist & MidDepth>0 & !is.na(localdata$value+ localdata$err))
   llocaldata <- DIA2OBS(DIA,llocaldata,p)
   sindex <-1
@@ -34,9 +35,9 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
     d$slice<-sindex
     sindex <<-sindex+1
     return(d)})
-  
   Mp <- dcast(llocaldata,slice~variable,value.var="modval")
   Op <- llocaldata[,c("variable","slice","value","err")]
+  }
   
   # Shaping Fluxes Data 
   if(!is.null(Flist) ) { 
@@ -69,33 +70,48 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
     Mmicro  <- cbind(Grid$x.mid,DIA$y[,Fi])
     
     colnames(Mmicro)<-c('Depth',Fi)
-    # llocaldata <- DIA2OBS(DIA,llocaldata,p)
-    #}
-    #)
-    
   }
   
   # Considering Profiles
+  if(!is.null(Vlist) ) { 
   Cost<-modCost(model = Mp,
                 obs   = Op,
                 x="slice",
                 y= "value",
                 err= "err",
                 scaleVar = TRUE)  
+  }
   
   # Considering Fluxes
-  if(!is.null(Flist) ) { 
-    Cost<-modCost(model = Mf,
+  if(!is.null(Flist) ) {
+    if(is.null(Vlist) ){
+      Cost<-modCost(model = Mf,
+                    obs   = Of,
+                    x=NULL,
+                    y= "value",
+                    err= "err",
+                    scaleVar = TRUE)  
+    }else{
+      Cost<-modCost(model = Mf,
                   obs   = Of,
                   x=NULL,
                   y= "value",
                   err= "err",
                   scaleVar = TRUE, 
                   cost = Cost) 
+    }
   }
 
   # Considering Microprofiles  
   if(!is.null(Mlist) ) { 
+    if(is.null(Vlist) & is.null(Flist) ){
+      Cost<-modCost(model = Mp,
+                    obs   = Op,
+                    x=NULL,
+                    y= "value",
+                    err= "err",
+                    scaleVar = TRUE)  
+    }else{
     Cost<-modCost(model = Mmicro,
                   obs=obsMicro,
                   x="Depth",
@@ -103,6 +119,7 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
                   err = "err",
                   scaleVar=TRUE, 
                   cost = Cost)
+    }
   }
   
   return (Cost)

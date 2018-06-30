@@ -1,78 +1,89 @@
-################
-#
-# This script is part of the OmexdiaCalibration suite (https://github.com/MAST-ULiege/OmexdiaCalibrationPackage) 
-# This toolbox exploits essentially codes and methods developped by K. Soetaert (NIOZ)
-#
-# Arthur Capet (acapet@ulg.ac.be), Oct 2017.
-#
-################
-# Contributors : 
-# A. Capet , acapet@ulg.ac.be 
-# A. Eisele, annika.eisele@hzg.de
-################
-#
-# Description :
-# This script loads all the auxiliary functions, and runs + display a first simulation.
-# It then provides an example of how to load data, compute model misfits for specific variables, 
-# and display the comparison with model outputs
-#
-################
+#' ---
+#' title: " OmexdiaCalibration Toolbox: Minimal Example"
+#' author: "Arthur Capet"
+#' date: "Nov, 2017"
+#' output: 
+#' #  pdf_document:
+#' #    toc: yes
+#'   #slidy_presentation:
+#'   #  toc: yes
+#'   github_document:
+#'     toc: yes
+#' urlcolor: blue
+#' ---
+#' 
+## ----global_options, include=FALSE---------------------------------------
+rm(list=ls()) ### To clear namespace
+library(knitr)
+opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+               echo=TRUE, warning=FALSE, message=FALSE)
 
+#' 
+#' This example script runs and display a first simulation of OMEXDIA (local version).
+#' It then provides an example of how to load data, compute model misfits for specific variables, 
+#' and display the comparison with model outputs.
+#' 
+## ------------------------------------------------------------------------
+# Loading OmexCal functions and the Omexdia model dynamic library
 source("Utils/OmexCal_Load.R")
 
-############################
-#      EXAMPLE OF USE      #
-############################
-
-# The global variable  parSta is used inside auxiliary functions
-# It contains the full parameter list as given in "OMEXDIA_OG3_BasicSetup.R"
+#' 
+#' # Example of use
+#' 
+#' In this example we consider steady-state model simulations. 
+#' Since the model is deterministic, one set of value for parameters (which includes boundary conditions), provides a unique model solution.
+#' The global variable `parSta` has to be defined, since it is used inside auxiliary functions.
+#' It contains the full parameter list given in [Utils/OmexCal_BasicSetup.R](Utils/OmexCal_BasicSetup.R). 
+#' Later on, during calibration procedure, the values given in [Utils/OmexCal_BasicSetup.R](Utils/OmexCal_BasicSetup.R) will be used as starting points for the calibration of individual parameters. 
+#' 
+## ---- Model Run, warning=FALSE-------------------------------------------
 # local copy of the global parameter vector
 parSta<-pars
 
 # OCALL gets the model solution for parameters given in argument
 DIA <-OCALL(parSta)
 
-# Display can be done directly with parameter values
+# Display is called directly with parameters value (the model solution is computed internally)
 Simplot(pars)
 
-# .. or with model outputs -> TO UPDATE
-# Simplot(DIA)
+#' 
+#' #  User Data
+#' User data are be stored in a .xls file, respecting the [user data file structure](https://github.com/MAST-ULiege/OmexdiaCalibrationPackage/wiki/Data-Preparation).
+#' User-specific options (eg. filepaths, etc ..) are to be given in a [user file](https://github.com/MAST-ULiege/OmexdiaCalibrationPackage/wiki/User-Definitions-File), just like the example [UsersDefinitions_HAMMOND.R](UsersDefinitions_HAMMOND.R).
+#' The script [OmexCal_Load_Data.R](Utils/OmexCal_Load_Data.R) interprets the data, following some informations providing in the user file. 
+#' By default, when loading the data, plot and maps are generated in a dedicated directory (the map generation may take some time, tho disable this option switch off the `mapping` flag in the user file).
+#' 
+## ---- Load Data----------------------------------------------------------
+# The Hammond dataset is used as example and is provided in the package. 
+# Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
+casedir<-'HAMMOND'
 
-################
-##  USER DATA ##
-################
+source(paste0('Cases/',casedir,'/','UsersDefinitions.R'))
 
-# User data are to be stored in a .xls file, respecitng the [user data file structure](datastructure.md).
-# User-specific options (eg. filepahts, etc ..) are to be given in a file like (UsersDefinitions_HAMMOND.R)[UsersDefinitions_HAMMOND.R]
+## To test your own data, create a file "UsersDefinitions_OwnData.R" on the basis of UsersDefinitions_HAMMOND.R, and uncomment the following lines
+#source('UsersDefinitions_OwnData.R')
+#sta<-"Station_example"
+#cam<-"Campaign_example"
 
-if (TRUE){
-  # The Hammond dataset is used as example and is provided in the package. 
-  # Hammond, D. E., et al. "Diagenesis of carbon and nutrients and benthic exchange in sediments of the Northern Adriatic Sea." Marine Chemistry 66.1-2 (1999): 53-79.
-  source('UsersDefinitions_HAMMOND.R')
-  sta<-"H2" 
-  cam<-"Sep89"
-} else{
-  # Upload your own data set and use the package for calibrating OMEXDIA to your data
-  source('UsersDefinitions_OwnData.R') 
-  # for the minimal run: specify a station and cruise
-  sta<-"Station_example"
-  cam<-"Campaign_example"
-}
-
-# This loads data based on informations given in the UserDefinitions....R
+# This loads data the based on info given in the UserDefinitions....R
+# The default behavior is to generate plots of flux and profile data.
 source('Utils/OmexCal_Load_Data.R')
 
+source('Utils/OmexCal_PlotCase.R')
+
 # We then create "local" dataframes, specific to one station in one campaign.
+sta<-"H2" 
+cam<-"Sep89"
 localdata    <- subset(dfProfiles, Station==sta & Campaign == cam)
 localdatafl  <- subset(dfFluxes,   Station==sta & Campaign == cam)
 localdatasta <- subset(dfStations, Station==sta & Campaign == cam)
-localdatamicro <-subset(dfO2micro, Station==sta & Campaign == cam)
 
-# Some parameters are general, some have to be adapted for each station/campaign.
-# This is the case, for instance, for the porosity grid and bottom water concentration for nutrients.
-
-
-# In addition, some global parameters have to be given a local (station+campagin) value
+#' 
+#' Some parameters are general, some have to be adapted for each station/campaign.
+#' This is the case, for instance, for the porosity grid and bottom water concentration for nutrients.
+#' 
+## ---- warning=FALSE------------------------------------------------------
+# In addition, some global parameters have to be given a local (station+campaign) value
 parSta    <- OmexCal_AdaptForSta()
 
 ggplot(localdata,
@@ -85,44 +96,41 @@ ggplot(localdata,
   facet_wrap(~variable,scales = "free")+ylim(c(30,0))
 
 
-# Modal-Data metrics
-
-# Once data are loaded, the generic cost function can be used 
-# while specifying which data should be used to asess the model skills.
-
+#' 
+#' # Modal-Data metrics
+#' 
+#' Once data are loaded, the generic cost function can be used while specifying which data should be used to asess the model skills.
+## ------------------------------------------------------------------------
 #  Cost function can be called with a list of profile variables and a list of flux variables
  C1 <- OCOST_GEN(pars,Vlist = "NH3")
- C1$var
+kable( as.data.frame(C1$var))
 
  C2 <- OCOST_GEN(parSta,Vlist = "NH3")
- C2$var
+ kable( as.data.frame(C2$var))
  
  C3 <- OCOST_GEN(parSta,Vlist = c("NOx","PO4","NH3"))
- C3$var
+ kable( as.data.frame(C3$var))
  
  C4 <- OCOST_GEN(parSta,Vlist = c("NH3","DIC"), Flist = c("SIO","NH3","NOx"))
- C4$var
+ kable( as.data.frame(C4$var))
 
 
-# Display
- 
-# The toolbox then contains a number of functions to display model outputs and useful summary tables.
- 
+#' 
+#' # Display 
+#' 
+#' The toolbox then contains a number of functions to display model outputs and useful summary tables.
+## ------------------------------------------------------------------------
 # Some result display scripts, first one by one : 
-Simplot(pars,plotdata=TRUE)+     # The flag TRUE is used to disaply the data along model outputs
+Simplot(pars,plotdata=TRUE)+        # The flag TRUE is used to display the data along model outputs
   ggtitle(paste(sta,"0. No Fit"))
 
-partableplot(pars)
-
-fluxtable(pars)$p
-
-# Collect all on the same plot
-# pdf(paste(plotdir,sta,"_Fit0.pdf",sep=""),width=5*(3+1)+2,height=15)
-grid.arrange(Simplot(parSta,TRUE)+ggtitle(paste(sta,"1. Pseudo")),
-             arrangeGrob(partableplot(parSta)$t),
-             arrangeGrob(fluxtable(parSta)$p,
-                         fittableplot(C3),ncol=1,heights=c(6,4)),
-             ncol = 3,nrow=1, widths=c(5*3,7,3), heights = c(12))
-# dev.off()
+kable(partableplot(pars)$df )
+kable(fluxtable(pars)$d)
 
 
+#' 
+#' 
+#' # Calibration
+#' 
+#' The calibration approach is implemented in [OmexCal_Calibration.R](OmexCal_Calibration.R).
+#' 
