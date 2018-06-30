@@ -92,7 +92,7 @@ fluxtable<-function(p1, tableoutput=TRUE) {
   }
   
   pout1<-treatp(p1)
-  suppressWarnings(  d<-melt(pout1) )
+  suppressWarnings(  d<-melt(pout1, id=c()) )
   
   if (tableoutput) {
     dforp<-subset(d,select=value)

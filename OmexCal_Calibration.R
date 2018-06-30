@@ -14,7 +14,7 @@
 # Description :
 # The present script implement a calibration of the OMEXDIA model on user data, looping through stations, 
 # or campaigns. Calibration is based on the FME package.
-# * The first pase follows the stepwise approach defined in Capet et al . (in prep.)
+# * The first phase follows the stepwise approach defined in Capet et al . (in prep.)
 # * Second phase considers a MCMC procedure
 ################################################
 # Load model and observation data
@@ -29,7 +29,7 @@ source("Utils/OmexCal_Load.R")
   camlist    <- c("Sep89")
   # The Stepwise calibration procedure consists in using subset of data to approximate subset of parameters. 
   # It ends with a global calibration starting from the guess value obtained from previous steps
-  doStepWise <- FALSE
+  doStepWise <- TRUE
   pseudoNrun <- 5000
   
   # The MCMC calibration needs an acceptable starting point, as may be provided from the stepwise procedure
@@ -39,6 +39,11 @@ source("Utils/OmexCal_Load.R")
 userfile <- paste0('Cases/',casedir,'/','UsersDefinitions.R')
 source(userfile)
 source("Utils/OmexCal_Load_Data.R") 
+
+# Summarize ( generate summary plot in the case directory)
+if (TRUE){
+  source('Utils/OmexCal_PlotCase.R')
+}
 
 # subsetting station list
 dsStasub <- subset(dfStations,Station%in%stalist & Campaign %in% camlist)
