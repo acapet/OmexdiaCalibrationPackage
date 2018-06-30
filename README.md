@@ -16,3 +16,6 @@ Arthur Capet (acapet@uliege.be), Oct 2017.
 Contributors : 
  A. Capet , acapet@ulg.ac.be 
  A.Eisele, 2017, annika.eisele@hzg.de
+ 
+ [![DOI](https://zenodo.org/badge/107144286.svg)](https://zenodo.org/badge/latestdoi/107144286)
+
