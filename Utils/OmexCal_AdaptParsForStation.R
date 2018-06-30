@@ -56,11 +56,11 @@ OmexCal_AdaptForSta <- function (p=pars, station=sta, campaign=cam) {
   ############
   if('Porosity'%in% unique(dfProfiles$variable)){
     ## First option : porosity is provided as a profile in the "Profiles" sheet of the input .xls file.
-    print('Not tested yet, please complete OmexCal_AdaptParsForStation.R if needed')
     
-    dfPor <- subset(dfProfiles, variable==Porosity, select=c(MidDepth,value))
+    dfPor <- subset(localdata, variable=="Porosity", select=c(MidDepth,value))
+    dfPor <- subset(dfPor,!is.na(MidDepth)&!is.na(value))
     
-    porGrid <- setup.prop.1D(xy = dfPor,
+    porGrid <- setup.prop.1D(xy = as.matrix(dfPor),
                              grid = Grid,
                              interpolate = "linear")
     

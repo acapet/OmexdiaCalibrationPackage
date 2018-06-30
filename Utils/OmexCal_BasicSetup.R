@@ -169,26 +169,3 @@ pars["DispPO4"]    <- as.numeric(DiffCoeffs["PO4"])
   porGridSolid$mid <- 1-porGrid$mid
   porGridSolid$int <- 1-porGrid$int
 }
-
-  
-  AddDiagnostics <- function (Dy,p) {
-
-    ###########
-    ##  TOC  ##
-    ###########
-    Dy<-cbind(Dy,TOC=( Dy[,"FDET"]+Dy[,"SDET"]+                                # Slow and Fast OrgC
-                         p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1]))*   # "Refractory", not accounted for by Omexdia, derived from parameters
-                14*100*1e-9/2.5                                         # [nmolC/cm³ ] -> [% of dry weight] ; 2.5 gr/cm³ is the bulk sediment desnity
-    )
-    
-    ########
-    ## TN ##
-    ########
-    Dy<-cbind(Dy,TN=( Dy[,"FDET"]*p["NCrFdet"]+Dy[,"SDET"]*p["NCrSdet"]+
-                        p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1])*p["NCrref"])*
-                14*100*1e-9/2.5
-    )
-    
-    return (Dy)
-  }
-  
