@@ -92,6 +92,11 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
                     err= "err",
                     scaleVar = TRUE)  
     }else{
+      if (exists('Debug')){
+        print("end of OCOST")
+      print(Mf)
+      print(Of)
+      }
       Cost<-modCost(model = Mf,
                   obs   = Of,
                   x=NULL,

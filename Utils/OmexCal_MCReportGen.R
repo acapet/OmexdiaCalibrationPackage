@@ -14,14 +14,15 @@
 # This functions serves as a transfer function to generate a pdf report for a MCMC calibration procedure
 ################
 
-MC_ReportGen <- function (userfile,MCMC, totdir,camsta) {
+MC_ReportGen <- function (userfile,MCMC, totdir,cam,sta) {
   
   rmarkdown::render("Utils/OmexCal_MCMCReport.Rmd", params = list(
-    MCMC = MCMC , 
+    MCMC      = MCMC , 
     userfile  = userfile , 
-    camsta      = camsta
+    cam       = cam ,
+    sta       = sta
   ))
   
   file.copy(from = paste0(getwd(),"/Utils/OmexCal_MCMCReport.pdf"),
-            to = paste0(totdir,"MCMC_Report_",camsta,".pdf"), overwrite = T)
+            to = paste0(totdir,"MCMC_Report_",cam,'_',sta,".pdf"), overwrite = T)
 }

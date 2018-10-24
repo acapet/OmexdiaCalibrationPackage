@@ -5,6 +5,8 @@
   ###Convert datafiles to data frames and subsets of data
   dfProfilesforp <-subset(dfProfiles,variable %in% plotvars) # creating subset of data with only model variables (given in svarnames)
   
+  dfProfilesforp <- subset(dfProfilesforp, !is.na(value))
+    
   ###Plot data according to Campaigns
   
   ##Specfiy color affiliation
@@ -15,7 +17,7 @@
   colordfmicroaffi<-eval(parse(text=coloraffiname),envir = dfO2micro) 
   
   ##Plot nutrient data
-  G1 <- ggplot(dfProfiles, aes(y=MidDepth, x=value, color=colordfnuaffi))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
+  G1 <- ggplot( subset(dfProfiles, !is.na(value)), aes(y=MidDepth, x=value, color=factor(Station)))+ #colordfnuaffi is a generalized term for the color affiliation in this plot. The user can specify in the beginning if he wants to plot different stations or different cruises
     geom_point()+
     geom_errorbarh(aes(xmin=value-err,xmax=value+err))+geom_path()+
     facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
@@ -26,7 +28,7 @@
   dev.off()
   
   ##Plot subset of nutrient data
-  G2 <- ggplot(dfProfilesforp, aes(y=MidDepth, x=value, color=colordfnuaffi2))+ 
+  G2 <- ggplot(dfProfilesforp, aes(y=MidDepth, x=value, color=factor(Station)))+ 
     geom_point()+
     geom_errorbarh(aes(xmin=value-err,xmax=value+err))+geom_path()+
     facet_wrap(~variable,scales="free")+scale_y_reverse()+scale_color_discrete(name=coloraffiname)+
@@ -76,7 +78,7 @@
       ms+
       geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
       geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
-    Sys.sleep(10) 
+  #  Sys.sleep(10) 
     
     pdf(paste0(plotdir,"/StationMap.pdf"))
     print(ms1)

@@ -24,14 +24,8 @@
 partableplot<-function(p, tableoutput=TRUE) {
   
   parsdfl<-parsdf
-  
-#   [c("Temp","biot","mixL","AlphIrr","IrrEnh","w","MeanFlux","rFast","rSlow","pFast","pRef",
-#                           "NCrFdet","NCrSdet","pdepo","NH3Ads","rnit","bwO2","bwNH3","bwNOx","bwODU","bwDIC"),]
-#   
   parsdfl[names(parSta),"guess"]<-as.numeric(parSta)
   parsdfl[c("Temp","bwO2","bwNH3","bwNOx","bwODU","bwDIC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","DispSIO","DispPO4"),"origin"]<-"sta"
- #parsdfl[names(p),"guess"]<-as.numeric(p)
- #parsdfl[names(p),"origin"]<-"CALIB"
   parsdfl[names(p),"guess"]<-NA
   parsdfl[names(p),"Cal."]<-as.numeric(p)
   parsdfl[names(p),"origin"]<-"CALIB"
@@ -45,29 +39,24 @@ partableplot<-function(p, tableoutput=TRUE) {
   parsdfl["DispSIO","printunit"]<-"cm2/d"
   parsdfl["DispPO4","printunit"]<-"cm2/d"
   
+  parsdfl[c("DispO2","DispNOx","DispNH3","DispDIC","DispODU","DispSIO","DispPO4"),"printfactor"]<-1
   
-  #parsdfl[c("WPOC","DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
-  parsdfl[c("DispO2","DispNOx","DispNH3","DispDIC","DispODU","Flux"),"printfactor"]<-1
-  
-#parsdfforprint<-subset(parsdfl,select = c("guess","unit","origin"))#,"min","max"
-parsdfforprint<-subset(parsdfl,select = c("guess","printunit","origin","Cal."))#,"min","max"
-parsdfforprint[which(parsdfforprint$origin=="sta"), "Sta."]<-parsdfforprint[which(parsdfforprint$origin=="sta"), "guess"]
-parsdfforprint[which(parsdfforprint$origin=="sta"), "guess"]<-NA
-parsdfforprint$guess <- parsdfforprint$guess*parsdfl$printfactor
-parsdfforprint$"Sta." <- parsdfforprint$"Sta."*parsdfl$printfactor
-parsdfforprint$"Cal." <- parsdfforprint$"Cal."*parsdfl$printfactor
-parsdfforprint<-parsdfforprint[,c("guess","Sta.","Cal.","printunit")]
-fpdf<-format(parsdfforprint,digits = 3,nsmall=0,scientific=F,drop0trailing=T)
-fpdf[ grep("NA",fpdf[,1]),1]<-""
-fpdf[ grep("NA",fpdf[,2]),2]<-""
-fpdf[ grep("NA",fpdf[,3]),3]<-""
-fpdf[ grep("NA",fpdf[,4]),4]<-""
+  parsdfforprint<-subset(parsdfl,select = c("guess","printunit","origin","Cal."))#,"min","max"
+  parsdfforprint[which(parsdfforprint$origin=="sta"), "Sta."]<-parsdfforprint[which(parsdfforprint$origin=="sta"), "guess"]
+  parsdfforprint[which(parsdfforprint$origin=="sta"), "guess"]<-NA
+  parsdfforprint$guess <- parsdfforprint$guess*parsdfl$printfactor
+  parsdfforprint$"Sta." <- parsdfforprint$"Sta."*parsdfl$printfactor
+  parsdfforprint$"Cal." <- parsdfforprint$"Cal."*parsdfl$printfactor
+  parsdfforprint<-parsdfforprint[,c("guess","Sta.","Cal.","printunit")]
+  fpdf<-format(parsdfforprint,digits = 3,nsmall=0,scientific=F,drop0trailing=T)
+  fpdf[ grep("NA",fpdf[,1]),1]<-""
+  fpdf[ grep("NA",fpdf[,2]),2]<-""
+  fpdf[ grep("NA",fpdf[,3]),3]<-""
+  fpdf[ grep("NA",fpdf[,4]),4]<-""
 
-parsdfforprint$guess<-parsdfl$guess*parsdfl$printfactor
-#parsdfforprint$min<-parsdfl$min*parsdfl$printfactor
-#parsdfforprint$max<-parsdfl$max*parsdfl$printfactor
-parsdfforprint$unit<-parsdfl$printunit
-parsdfforprint<-parsdfforprint[c("Temp","biot","mixL","AlphIrr",
+  parsdfforprint$guess<-parsdfl$guess*parsdfl$printfactor
+  parsdfforprint$unit<-parsdfl$printunit
+  parsdfforprint<-parsdfforprint[c("Temp","biot","mixL","AlphIrr",
                                  "IrrEnh","w","Flux","rFast","rSlow","pFast","pRef",
                                  "NCrFdet","NCrSdet","pdepo","NH3Ads","rnit","bwO2",
                                  "bwNH3","bwNOx","bwODU","bwDIC","MeanFlux",

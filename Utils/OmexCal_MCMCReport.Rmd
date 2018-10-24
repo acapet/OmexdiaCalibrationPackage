@@ -3,9 +3,10 @@ output:
   pdf_document:
     toc : true
 params:
-  MCMC  : NA
+  MCMC      : NA
   userfile  : NA
-  camsta  : NA
+  cam       : NA
+  sta       : NA
 
 header-includes:
 - \usepackage{booktabs}
@@ -34,16 +35,25 @@ library(kableExtra)
 setwd('../')
 source("Utils/OmexCal_Load.R")
 source(params$userfile)
+
+parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
+
 ```
-# MCMC
+# Convergence
 
-## Profiles
+```{r Conv, echo=FALSE, warning=FALSE, fig.height=6}
 
-```{r, echo=FALSE, warning=FALSE, fig.height=6}
+plot(MCMC)
+```
 
-pProfs<-MCProfPlot(MCMC, TRUE)
 
-print(pProfs)
+# Profiles
+
+```{r Profs, echo=FALSE, warning=FALSE, fig.height=6}
+
+pProfs<-MCProfPlot(MCMC, TRUE,YL=max(dfProfiles$LowerDepth))
+
+print(pProfs$pProfs)
 ```
 
 \pagebreak
@@ -53,9 +63,9 @@ print(pProfs)
 Fluxes at the sediment-water interface (positive upwards). Available observations are indicate as ranges on the plots.
 The curve indicates the probability density of Fluxes inferred from the MCMC procedure.
 
-```{r, echo=FALSE, warning=FALSE, fig.height=5}
+```{r Fluxes, echo=FALSE, warning=FALSE, fig.height=5}
 
-pl<-MCFluxPlot(MCMC, TRUE)
+pl<-MCFluxPlot(MCMC, plotdata = any(!is.na(dfFluxes$value)))
 pl
 
 ```
@@ -64,9 +74,9 @@ pl
 
 ## MicroProfiles
 
-```{r, echo=FALSE, warning=FALSE, fig.height=6}
+```{r MicroProfiles, echo=FALSE, warning=FALSE, fig.height=6}
 
-pl[[2]]
+print(pProfs$pMicro)
 
 ```
 
@@ -78,11 +88,12 @@ pl[[2]]
 !! Parameter values are not converted to "print" value for now .. 
 
 
-```{r, echo=FALSE, warning=FALSE, fig.height=5}
+```{r Parameters, echo=FALSE, warning=FALSE, fig.height=5}
 
 pl<-MCParsPlot(MCMC, TRUE)
 pl
 
+pairs(MCMC)
 ```
 
 \pagebreak

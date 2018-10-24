@@ -6,7 +6,8 @@ params:
   Parlist   : NA
   Costlist  : NA
   userfile  : NA
-  camsta  : NA
+  cam       : NA
+  sta       : NA
 
 header-includes:
 - \usepackage{booktabs}
@@ -34,57 +35,99 @@ library(kableExtra)
 setwd('../')
 source("Utils/OmexCal_Load.R")
 source(params$userfile)
+
+
+parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
+
 ```
-# Stepwise calibration
+#Station
+```{r Map, echo=FALSE, warning=FALSE, fig.height=4}
+if (maporigin == "stammen"){
+    myMap_stamen <- get_map(location=Loc_stamen,source="stamen", maptype="watercolor")
+    ms<-ggmap(myMap_stamen)
+    gmap<-
+      ms+
+      geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+      geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
+  }else{
+    ##Mapping with google
+    myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)
+    mg<-ggmap(myMap_google)
+    gmap<-
+      mg+
+      geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+      geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
+  }
 
-## Steps
 
-```{r, echo=FALSE, warning=FALSE, fig.height=6}
+print(gmap+ggtitle(dfStations$Date))
 
-steptable<-data.frame(Step     = NA,
-                      Profiles = NA,
-                      Fluxes   = NA,
-                      MicroProfiles = NA,
-                      Parameters   =NA)
+```
+
+
+# Steps
+
+```{r Steps, echo=FALSE, warning=FALSE, fig.height=6}
+
+steptableL<- list()
 
   for (ifit in c(1:length(PLIST))){
-    steptable[ifit,"Step"]        <- stepNames[ifit]
-    try ( steptable$Profiles[ifit]      <- paste(VLIST[[ifit]],sep ="\n"), silent = TRUE)
-    try ( steptable$Fluxes[ifit]        <- paste(FLIST[[ifit]],sep ="\n"), silent = TRUE)
-    try ( steptable$MicroProfiles[ifit] <- paste(MLIST[[ifit]],sep ="\n"), silent = TRUE)
-    try ( steptable$Parameters[ifit]    <- paste(PLIST[[ifit]],sep ="\n"), silent = TRUE)
+    
+    VLISTl <- NULL ;  try ( VLISTl<-VLIST[[ifit]], silent = TRUE)
+    FLISTl <- NULL ;  try ( FLISTl<-FLIST[[ifit]], silent = TRUE)
+    PLISTl <- NULL ;  try ( PLISTl<-PLIST[[ifit]], silent = TRUE)
+    MLISTl <- NULL ;  try ( MLISTl<-MLIST[[ifit]], silent = TRUE)
+    
+    # there may be a problem at some point in the following lines
+    # since we consider that either VLIST or PLIST as the maximum numbre of lines
+    nlines <- max(length(VLISTl),
+                  length(PLISTl),
+                  length(FLISTl),
+                  length(MLISTl))
+    
+    steptableloc              <-  data.frame(Step=c(stepNames[ifit]   , rep("", nlines - 1)))
+    steptableloc$Profiles      <-  c(VLISTl     , rep("", nlines - length(VLISTl)))
+    steptableloc$Fluxes        <-  c(FLISTl     , rep("", nlines - length(FLISTl)))
+          steptableloc$Microprofiles        <-  c(MLISTl     , rep("", nlines - length(MLISTl)))
+              steptableloc$Parameters        <-  c(PLISTl     , rep("", nlines - length(PLISTl)))
+    
+  kable(steptableloc)
+   steptableL[[ifit]]<- steptableloc
   }
     
-kable(steptable)
+kable(do.call(rbind,steptableL))
 
 ```
 
 
 
 
-## Profiles
+# Profiles
 
-```{r, echo=FALSE, warning=FALSE, fig.height=6}
-rn<-c("Guess",stepNames,"Final")
-runnames=factor(rn,levels=rn,ordered=T)
-Simplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
+```{r Profiles, echo=FALSE, warning=FALSE, fig.height=6}
+rn       <- c("Guess",stepNames,"Final")
+runnames <- factor(rn,levels=rn,ordered=T)
+
+
+  
+Simplot(Parlist,TRUE,runnames = runnames, YL=max(dfProfiles$LowerDepth))+ggtitle(paste(sta,"_",cam,"1"))
 ```
 
 \pagebreak
 
-## Fluxes
+# Fluxes
 
 Fluxes at the sediment-water interface (positive upwards). Available observations are indicate as ranges on the plots.
 
-```{r, echo=FALSE, warning=FALSE, fig.height=5}
-Fluxplot(Parlist,TRUE,runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
+```{r Fluxes, echo=FALSE, warning=FALSE, fig.height=5}
+Fluxplot(p=Parlist,plotdata = any(!is.na(dfFluxes$value)),runnames = runnames)+ggtitle(paste(sta,"_",cam,"1"))
 ```
 
 \pagebreak
 
-## MicroProfiles
+# MicroProfiles
 
-```{r, echo=FALSE, warning=FALSE, fig.height=6}
+```{r Micro, echo=FALSE, warning=FALSE, fig.height=6}
 if (!is.null( unlist(MLIST) )) { 
 SimplotMicro( Parlist, TRUE, YL=1, runnames = runnames) + ggtitle(paste(sta,"_",cam,"1"))
 }
@@ -92,9 +135,9 @@ SimplotMicro( Parlist, TRUE, YL=1, runnames = runnames) + ggtitle(paste(sta,"_",
 
 \pagebreak
 
-## Parameters
+# Parameters
 
-### Values
+## Values
 *"* in the table means that the parameter is same as in the previous column. 
 
 Highlighted in red are parameter values that are close to the minimum/maximum, indicating that the calibration procedure is somehow "blocked" by the ranges imposed on those parameters.
@@ -139,7 +182,7 @@ kable(allpdfs,booktabs=T,longtable=T, escape=F) %>%
  
 ```
 
-### Sensitivity
+## Sensitivity
 
 The next figure represents the model cost's sensitivity to perturbation of the parameters around their final calibrated value. 
 In short the higher the metric, the most this parameter is having a high impact on the overall model misfit metric.
@@ -165,7 +208,7 @@ In short the higher the metric, the most this parameter is having a high impact 
 
 \pagebreak
 
-## Misfits
+# Misfits
 
 The variables cost are estimated as the sum of squared weighted residuals for each: 
 

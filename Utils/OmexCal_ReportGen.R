@@ -14,16 +14,17 @@
 # This functions serves as a transfer function to generate a pdf report for a stepwise calibration procedure
 ################
 
-ReportGen <- function (userfile,Parlist, Costlist, totdir,camsta) {
+ReportGen <- function (userfile,Parlist, Costlist, totdir, cam, sta) {
   
   rmarkdown::render("Utils/OmexCal_FitReport.Rmd", params = list(
     Parlist   = Parlist  ,
     Costlist  = Costlist , 
     userfile  = userfile , 
-    camsta      = camsta
+    cam       = cam      ,
+    sta       = sta
   ))
   
   file.copy(from = paste0(getwd(),"/Utils/OmexCal_FitReport.pdf"),
-            to = paste0(totdir,"Calib_Report_",camsta,".pdf"), overwrite = T)
+            to = paste0(totdir,"Calib_Report_",cam,"_", sta,".pdf"), overwrite = T)
   
 }
