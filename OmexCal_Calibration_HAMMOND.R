@@ -220,7 +220,12 @@ for (icamosta in (1:nrow(dsStasub))){
   }
 
   
-  sF    <- summary(FitFinal)
+  sF    <- tryCatch (summary(FitFinal), error = function (e) {
+    print ("Leaving this case because of following error")
+    print(e)
+    next
+    })
+  
   svar0 <- FitFinal$var_ms_unweighted
   covar <- sF$cov.scaled*2.4^2/5
   

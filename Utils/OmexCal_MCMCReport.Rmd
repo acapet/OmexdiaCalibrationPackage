@@ -38,6 +38,11 @@ source(params$userfile)
 
 parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
 
+
+
+
+
+
 ```
 # Convergence
 
@@ -85,7 +90,7 @@ print(pProfs$pMicro)
 
 ## Parameters
 
-!! Parameter values are not converted to "print" value for now .. 
+!! Parameter values are not converted to "print" value yet .. 
 
 
 ```{r Parameters, echo=FALSE, warning=FALSE, fig.height=5}
@@ -93,7 +98,26 @@ print(pProfs$pMicro)
 pl<-MCParsPlot(MCMC, TRUE)
 pl
 
-pairs(MCMC)
+# Reducing the MCMC size
+MCMCr<- MCMC  
+NumRun<-2000
+
+if(!is.null(NumRun)){
+  NLINES <- max(length(MCMC$SS),NumRun)
+  # not sure which best way to select within the MCMC
+  if (TRUE){
+    inds <- which(MCMC$SS <= quantile(MCMC$SS,NumRun/NLINES))
+  }else{
+    inds <-  (length(MCMC$SS)-NumRun): length(MCMC$SS)    
+    }
+  MCMCr$pars  <- MCMC$pars  [inds,]
+  MCMCr$SS    <- MCMC$SS    [inds]
+  MCMCr$sig   <- MCMC$sig   [inds]
+  MCMCr$prior <- MCMC$prior [inds]
+} 
+
+
+pairs(MCMCr)
 ```
 
 \pagebreak
