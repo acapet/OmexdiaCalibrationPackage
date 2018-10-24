@@ -24,9 +24,9 @@
 source("Utils/OmexCal_Load.R")
 
 # load station data
-  casedir   <- 'HAMMOND'               # ADAPT HERE TO YOUR CASE
-  stalist    <- c("H2","H4","H6","H7") # ADAPT HERE TO YOUR CASE
-  camlist    <- c("Sep89")             # ADAPT HERE TO YOUR CASE
+  casedir   <- 'HAMMOND'
+  stalist    <- c("H2","H4","H6","H7")
+  camlist    <- c("Sep89")
   # The Stepwise calibration procedure consists in using subset of data to approximate subset of parameters. 
   # It ends with a global calibration starting from the guess value obtained from previous steps
   doStepWise <- TRUE
