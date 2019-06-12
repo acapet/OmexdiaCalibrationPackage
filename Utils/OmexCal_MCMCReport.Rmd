@@ -24,7 +24,7 @@ header-includes:
 ---
 
 ---
-title: `r paste0("Calibration Report for ", params$camsta)`
+title: `r paste0("MCMC Calibration Report for ", params$sta," - ", params$cam )`
 ---
 
 ```{r setup, include=FALSE}
@@ -38,17 +38,15 @@ source(params$userfile)
 
 parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
 
-
-
-
-
-
 ```
 # Convergence
 
-```{r Conv, echo=FALSE, warning=FALSE, fig.height=6}
+```{r Conv, echo=FALSE, warning=FALSE, fig.height=6, fig.show='asis'}
 
-plot(MCMC)
+plot(MCMC, Full=TRUE, ask=FALSE )
+
+
+plot(MCMC, Full=TRUE, ask=FALSE, which=NULL)
 ```
 
 
@@ -56,9 +54,9 @@ plot(MCMC)
 
 ```{r Profs, echo=FALSE, warning=FALSE, fig.height=6}
 
-pProfs<-MCProfPlot(MCMC, TRUE,YL=max(dfProfiles$LowerDepth))
-
+pProfs<-MCProfPlot(MCMC, TRUE,YL=max(dfProfiles$LowerDepth, na.rm = TRUE))
 print(pProfs$pProfs)
+
 ```
 
 \pagebreak
@@ -91,7 +89,6 @@ print(pProfs$pMicro)
 ## Parameters
 
 !! Parameter values are not converted to "print" value yet .. 
-
 
 ```{r Parameters, echo=FALSE, warning=FALSE, fig.height=5}
 

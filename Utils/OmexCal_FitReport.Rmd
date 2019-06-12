@@ -24,7 +24,7 @@ header-includes:
 ---
 
 ---
-title: `r paste0("Calibration Report for ", params$camsta)`
+title: `r paste0("Calibration Report for ", params$sta," - ", params$cam )`
 ---
 
 ```{r setup, include=FALSE}
@@ -41,15 +41,21 @@ parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
 
 ```
 #Station
-```{r Map, echo=FALSE, warning=FALSE, fig.height=4}
+```{r Map, echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+
+
+
+
+
 if (maporigin == "stammen"){
     myMap_stamen <- get_map(location=Loc_stamen,source="stamen", maptype="watercolor")
     ms<-ggmap(myMap_stamen)
     gmap<-
       ms+
-      geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
-      geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
-  }else{
+      geom_point(data=subset(dfStations,!is.na(dfStations$Lat)), aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+      geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)+
+      scale_color_discrete(name = "Station")
+  }else if(maporigin == "google"){
     ##Mapping with google
     myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)
     mg<-ggmap(myMap_google)
@@ -57,10 +63,12 @@ if (maporigin == "stammen"){
       mg+
       geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
       geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
+  }else{
+    
   }
 
 
-print(gmap+ggtitle(dfStations$Date))
+print(gmap)
 
 ```
 
@@ -95,8 +103,8 @@ steptableL<- list()
    steptableL[[ifit]]<- steptableloc
   }
     
-kable(do.call(rbind,steptableL))
-
+kable(do.call(rbind,steptableL)) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 
@@ -108,9 +116,8 @@ kable(do.call(rbind,steptableL))
 rn       <- c("Guess",stepNames,"Final")
 runnames <- factor(rn,levels=rn,ordered=T)
 
-
-  
-Simplot(Parlist,TRUE,runnames = runnames, YL=max(dfProfiles$LowerDepth))+ggtitle(paste(sta,"_",cam,"1"))
+Simplot(Parlist,TRUE,runnames = runnames, YL=50)+#, #YL=max(subset(dfProfiles,Station==sta,select="LowerDepth"),na.rm=TRUE))+
+          ggtitle(paste(sta,"_",cam,"1"))
 ```
 
 \pagebreak

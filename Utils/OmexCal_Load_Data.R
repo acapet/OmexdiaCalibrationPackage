@@ -45,7 +45,10 @@ sheet_variables <- "Variables" # data-file including variable information (e.g u
 sheet_O2micro   <- "O2Microprofiles" #data-file of O2-microprofiles
 
 ##Load nutrient data and create dataframe
-dfProfiles  <-read.xls(datafile, sheet_profiles, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1",header=T) #Loading data
+dfProfiles  <-read.xls(datafile, sheet_profiles, 
+                       na.strings=c("#"),
+                       as.is = TRUE,
+                       fileEncoding="latin1",header=T) #Loading data
 
 ##Load benthic fluxes and create dataframe
 dfFluxes    <- read.xls(datafile, sheet_fluxes, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
