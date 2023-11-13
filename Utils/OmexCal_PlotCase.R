@@ -44,6 +44,8 @@ print(G2)
 dev.off()
 
 ##Plot flux data according to Campaigns
+
+if (nrow(dfFluxes)>0){
 xlabname<-"value [mmol/m^2/d]"
 
 dfFluxesforpv <- dfFluxes 
@@ -65,6 +67,7 @@ G3 <-
 pdf(paste0(plotdir,"/FluxData2.pdf"))
 print(G3)
 dev.off()
+}
 
 ##Plot O2microprofile data
 if (nrow(dfO2micro)>1){
@@ -82,21 +85,21 @@ if (nrow(dfO2micro)>1){
 
 ### Mapping Stations
 ##Mapping with stamen
-if (maporigin == "stammen"){
-  myMap_stamen <- get_map(location=Loc_stamen,source="stamen", maptype="watercolor")
-  mgs<-ggmap(myMap_stamen)
-}else{
-  ##Mapping with google
-  myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)
-  mgs<-ggmap(myMap_google)
+if (!is.na(sum(dfStations$Lon + dfStations$Lat))){
+  if (maporigin == "stammen"){
+    myMap_stamen <- get_map(location=Loc_stamen,source="stamen", maptype="watercolor")
+    mgs<-ggmap(myMap_stamen)
+  }else{
+    ##Mapping with google
+    myMap_google <- get_map(location=Loc_google,source="google", maptype="satellite", crop=FALSE)
+    mgs<-ggmap(myMap_google)
+  }
+  ms1<-
+    mgs+
+    geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=Station,shape=Campaign),size=6)+
+    geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
+  
+  pdf(paste0(plotdir,"/StationMap.pdf"))
+  print(ms1)
+  dev.off()
 }
-ms1<-
-  mgs+
-  geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=Station,shape=Campaign),size=6)+
-  geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
-
-pdf(paste0(plotdir,"/StationMap.pdf"))
-print(ms1)
-dev.off()
-
-

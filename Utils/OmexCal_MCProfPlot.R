@@ -69,7 +69,7 @@ if(!is.null(NumRun)){
       facet_wrap(~variable,scales="free", ncol=3)+
       theme_bw()+
       scale_x_reverse()+
-      coord_flip(xlim=c(0,YL))+
+      coord_flip(xlim=c(YL,0))+
       xlab(label="Sed. depth - [cm]")+
       xlab(label="")
     
@@ -90,7 +90,7 @@ if(!is.null(NumRun)){
       facet_wrap(~variable,scales="free", ncol=3)+
       theme_bw()+
       scale_x_reverse()+
-      coord_flip(xlim=c(0,3))+
+      coord_flip(xlim=c(3,0))+
       xlab(label="Sed. depth - [cm]")+
       ylab(label="")
     

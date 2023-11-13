@@ -68,7 +68,9 @@ Loc_google <- c(11, 43, 15, 47)
 # Diagnostic from the model state variable
 ##########################################
 
-AddDiagnostics <- function (Dy,p) {
+AddDiagnostics <- function (DIA,p) {
+  
+  Dy <- DIA$y
   ###########
   ## SiDet ##
   ###########
@@ -78,9 +80,9 @@ AddDiagnostics <- function (Dy,p) {
   ###########
   ##  TOC  ##
   ###########
-  Dy<-cbind(Dy,TOC=( Dy[,"FDET"]+Dy[,"SDET"]+                                # Slow and Fast OrgC
-                       p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1]))*   # "Refractory", not accounted for by Omexdia, derived from parameters
-              14*100*1e-9/2.5                                         # [nmolC/cm³ ] -> [% of dry weight] ; 2.5 gr/cm³ is the bulk sediment desnity
+  Dy<-cbind(Dy,TOC=( Dy[,"FDET"]+Dy[,"SDET"]+                                  # Slow and Fast OrgC
+                     p["MeanFlux"]*p["pRef"]/p["w"]/(1-porGrid$int[N+1]))*   # "Refractory", not accounted for by Omexdia, derived from parameters
+              12*100*1e-9/2.5                                                  # [nmolC/cm³ ] -> [% of dry weight] ; 2.5 gr/cm³ is the bulk sediment desnity
   )
   
   ########
@@ -91,7 +93,13 @@ AddDiagnostics <- function (Dy,p) {
               14*100*1e-9/2.5
   )
   
-  return (Dy)
+  DIA$y<- Dy
+  
+  ########
+  ## O2P #
+  ########
+  DIA[["OPDflux"]]=min(Grid$x.mid[which(Dy[,"O2"]<1)])
+  return (DIA)
 }
 
 #########################

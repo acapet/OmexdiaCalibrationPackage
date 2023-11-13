@@ -45,10 +45,11 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
       # It is considered that irrigative and diffusive fluxes should be merged to match measured (incubation) fluxes
       ff<-( (DIA[[paste0(Fi,"flux")]] +IntegratedRate(DIA[[paste0(Fi,"Irrflux")]]))/100)
       if (Fi =="O2"){
+      # Similarly Oxygen fluxes include consumption from ODU fluxes
         ff<- ff-
           (DIA[[paste0("ODU","flux")]] +IntegratedRate(DIA[[paste0("ODU","Irrflux")]]))/100
       }
-      return(-ff) # Changing convention to positive from sediment to water column (upward) 
+      return(-ff) # Changing convention to positive upward, from sediment to water column 
     })
     
     Mf<-as.data.frame(flist)
@@ -74,6 +75,20 @@ OCOST_GEN <- function (p,Vlist=NULL,Flist=NULL,Mlist=NULL){
   
   # Considering Profiles
   if(!is.null(Vlist) ) { 
+    ##############
+    for (v in Vlist){
+      Mpl <- Mp[!is.na(Mp[,v]),c('slice',v)]
+      Mpl <- rbind(Mpl, Mpl)
+      Opl <- subset(Op,variable==v)
+      Cost<-modCost(model = Mpl,
+                    obs   = Opl,
+                    x="slice",
+                    y= "value",
+                    err= "err",
+                    scaleVar = TRUE)  
+      
+    }
+    ##############
   Cost<-modCost(model = Mp,
                 obs   = Op,
                 x="slice",

@@ -13,7 +13,7 @@ header-includes:
 - \usepackage{longtable}
 - \usepackage{array}
 - \usepackage{multirow}
-- \usepackage[table]{xcolor}
+#- \usepackage[table]{xcolor}
 - \usepackage{wrapfig}
 - \usepackage{float}
 - \usepackage{colortbl}
@@ -31,7 +31,7 @@ title: `r paste0("MCMC Calibration Report for ", params$sta," - ", params$cam )`
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 options(knitr.table.format = "latex")
-library(kableExtra)
+#library(kableExtra)
 setwd('../')
 source("Utils/OmexCal_Load.R")
 source(params$userfile)
@@ -46,7 +46,7 @@ parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
 plot(MCMC, Full=TRUE, ask=FALSE )
 
 
-plot(MCMC, Full=TRUE, ask=FALSE, which=NULL)
+#plot(MCMC, Full=TRUE, ask=FALSE, which=NULL)
 ```
 
 
@@ -63,8 +63,9 @@ print(pProfs$pProfs)
 
 ## Fluxes
 
-Fluxes at the sediment-water interface (positive upwards). Available observations are indicate as ranges on the plots.
-The curve indicates the probability density of Fluxes inferred from the MCMC procedure.
+Dissolved fluxes at the sediment-water interface (positive upwards), and integrated diagnostics.
+Available observations are indicate as ranges on the plots.
+The curves indicate the probability density distributions inferred from the MCMC procedure.
 
 ```{r Fluxes, echo=FALSE, warning=FALSE, fig.height=5}
 

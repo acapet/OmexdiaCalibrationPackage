@@ -14,7 +14,7 @@ header-includes:
 - \usepackage{longtable}
 - \usepackage{array}
 - \usepackage{multirow}
-- \usepackage[table]{xcolor}
+#- \usepackage[table]{xcolor}
 - \usepackage{wrapfig}
 - \usepackage{float}
 - \usepackage{colortbl}
@@ -31,7 +31,7 @@ title: `r paste0("Calibration Report for ", params$sta," - ", params$cam )`
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.table.format = "latex")
-library(kableExtra)
+#library(kableExtra)
 setwd('../')
 source("Utils/OmexCal_Load.R")
 source(params$userfile)
@@ -41,18 +41,21 @@ parSta      <<- OmexCal_AdaptForSta(pars,station = sta, campaign = cam)
 
 ```
 #Station
-```{r Map, echo=FALSE, warning=FALSE, message=FALSE, fig.height=6}
+```{r Map, echo=FALSE, warning=FALSE, message=FALSE, include=FALSE,fig.height=6}
 
 
 
-
+maporigin <- ""
+print('maporigin  is ')
+print(maporigin )
 
 if (maporigin == "stammen"){
     myMap_stamen <- get_map(location=Loc_stamen,source="stamen", maptype="watercolor")
     ms<-ggmap(myMap_stamen)
     gmap<-
       ms+
-      geom_point(data=subset(dfStations,!is.na(dfStations$Lat)), aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+#      geom_point(data=subset(dfStations,!is.na(dfStations$Lat)), aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+      geom_point(data=subset(dfStations,!is.na(dfStations$Lat)), aes(x = Lon, y = Lat, color=factor(Station),label=Station),size=10)+
       geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)+
       scale_color_discrete(name = "Station")
   }else if(maporigin == "google"){
@@ -61,14 +64,17 @@ if (maporigin == "stammen"){
     mg<-ggmap(myMap_google)
     gmap<-
       mg+
-      geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+      #geom_point(data=dfStations, aes(x = Lon, y = Lat, colour=factor(Station),label=Station),size=10)+
+      geom_point(data=dfStations, aes(x = Lon, y = Lat, color=factor(Station),label=Station),size=10)+
       geom_text( data=dfStations, aes(x = Lon, y = Lat, label=Station),hjust=.5, vjust=.5,size=2)
   }else{
     
   }
 
+if (maporigin != ""){
+print(gmap)  
+}
 
-print(gmap)
 
 ```
 
@@ -103,8 +109,8 @@ steptableL<- list()
    steptableL[[ifit]]<- steptableloc
   }
     
-kable(do.call(rbind,steptableL)) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+kable(do.call(rbind,steptableL)) #%>%
+#  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 
@@ -116,7 +122,7 @@ kable(do.call(rbind,steptableL)) %>%
 rn       <- c("Guess",stepNames,"Final")
 runnames <- factor(rn,levels=rn,ordered=T)
 
-Simplot(Parlist,TRUE,runnames = runnames, YL=50)+#, #YL=max(subset(dfProfiles,Station==sta,select="LowerDepth"),na.rm=TRUE))+
+Simplot(Parlist,TRUE,runnames = runnames, YL=30)+#, #YL=max(subset(dfProfiles,Station==sta,select="LowerDepth"),na.rm=TRUE))+
           ggtitle(paste(sta,"_",cam,"1"))
 ```
 
@@ -149,7 +155,7 @@ SimplotMicro( Parlist, TRUE, YL=1, runnames = runnames) + ggtitle(paste(sta,"_",
 
 Highlighted in red are parameter values that are close to the minimum/maximum, indicating that the calibration procedure is somehow "blocked" by the ranges imposed on those parameters.
 
-```{r, echo=FALSE, warning=FALSE, fig.height=5}
+```{r ParamTable, echo=FALSE, warning=FALSE, fig.height=5}
 bo<-lapply(Parlist, function (p){
   pdf<-subset(partableplot(p, tableoutput = FALSE), select="Cal.")
 })
@@ -166,26 +172,26 @@ allpdfs$max<-"-"
 allpdfs[ intersect(rownames(allpdfs),rownames(parsdfforprint)),c("units","min","max")]<-
   format(parsdfforprint[intersect(rownames(allpdfs),rownames(parsdfforprint)), c("unit","min","max")], digits = 3,nsmall=0,scientific=F,drop0trailing=T)
 
-for (ir in (length(stepNames)+2):2) {
-  for (jr in (1:nrow(allpdfs))){
-    if (allpdfs[jr,ir]==allpdfs[jr,ir-1]) {allpdfs[jr,ir]=" \" "}
-    if ((rownames(allpdfs)[jr]%in% unlist(PLIST)) && ( allpdfs[jr,ir]!=" \" ")){
-      if ((abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"min"]))
-          /( .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"min"]))+1e-14)<0.02)|(
-            abs(as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"max"]))/
-              (.5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"max"])))<0.02))
-      {
-        allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
-          }
-    }
-  }
-}
+# for (ir in (length(stepNames)+2):2) {
+#   for (jr in (1:nrow(allpdfs))){
+#     if (allpdfs[jr,ir]==allpdfs[jr,ir-1]) {allpdfs[jr,ir]=" \" "}
+#     if ((rownames(allpdfs)[jr]%in% unlist(PLIST)) && ( allpdfs[jr,ir]!=" \" ")){
+#       if ((abs( as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"min"]))
+#           /( .5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"min"]))+1e-14)<0.02)|(
+#             abs(as.numeric(allpdfs[jr,ir])- as.numeric(allpdfs[jr,"max"]))/
+#               (.5*(as.numeric(allpdfs[jr,ir])+as.numeric(allpdfs[jr,"max"])))<0.02))
+#       {
+#         allpdfs[jr,ir]    <- cell_spec( allpdfs[jr,ir] ,"latex", color ="red")
+#           }
+#     }
+#   }
+# }
+# 
 
 
 
-
-kable(allpdfs,booktabs=T,longtable=T, escape=F) %>% 
-  kable_styling(latex_options = "striped")
+kable(allpdfs,booktabs=T,longtable=T, escape=F) # %>% 
+#  kable_styling(latex_options = "striped")
  
 ```
 
@@ -194,7 +200,7 @@ kable(allpdfs,booktabs=T,longtable=T, escape=F) %>%
 The next figure represents the model cost's sensitivity to perturbation of the parameters around their final calibrated value. 
 In short the higher the metric, the most this parameter is having a high impact on the overall model misfit metric.
 
-```{r, echo=FALSE, warning=FALSE}
+```{r Sens, echo=FALSE, warning=FALSE}
 
   parSta<-Parlist[[length(Parlist)]]
 
@@ -221,7 +227,7 @@ The variables cost are estimated as the sum of squared weighted residuals for ea
 
 $$\mathcal{C}_j=\sum\limits_{i=1}^{n_{obs,j}} \frac{Model_i- Obs_i}{Err_i}$$
 
-```{r, echo=FALSE}
+```{r Errors, echo=FALSE}
 
 dfSSR<-do.call(cbind,lapply(Costlist, function(d){d[,"SSR"]}))
 colnames(dfSSR)<-runnames
@@ -232,7 +238,7 @@ ggplot(melt(dfSSR), aes(x=Var2, y=value, color=Var2))+
   facet_wrap(~Var1, scales = "free",ncol=3 )+
   ylab("Variables Costs")+
   xlab("Calibration Steps")+
-  scale_color_brewer(palette = "RdYlGn", name="Calibration Steps")+
+#  scale_color_brewer(palette = "RdYlGn", name="Calibration Steps")+
   theme_bw()+theme(legend.position = "none")
 
 #kable(dfSSR)
@@ -245,7 +251,7 @@ $$\mathcal{C}=\sum\limits_{j=1}^{n_{var}}\frac{\mathcal{C}_j}{n_{obs,j}}$$
 Here the total height of each bar indicate the model cost, while colored fraction of the bar indicate the contribution of each type of observations in the model cost.
 
 
-```{r, echo=FALSE, fig.height=4}
+```{r Errors2, echo=FALSE, fig.height=4}
 dfModCost <- do.call(cbind,lapply(Costlist, function(d){ d[,"SSR"]*d[,"scale"]  }))
 colnames(dfModCost)<-runnames
 rownames(dfModCost)<-Costlist[[1]][,"name"]

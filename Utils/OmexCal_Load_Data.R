@@ -32,7 +32,7 @@ dfmicrovarsstay<-c("Station","Campaign","Depth","Time")
 
 ###Load necessary packages
 require(reshape2)
-require(gdata)
+#require(gdata)
 library(readxl)
 require(plyr)
 library(ggmap)
@@ -45,25 +45,26 @@ sheet_variables <- "Variables" # data-file including variable information (e.g u
 sheet_O2micro   <- "O2Microprofiles" #data-file of O2-microprofiles
 
 ##Load nutrient data and create dataframe
-dfProfiles  <-read.xls(datafile, sheet_profiles, 
-                       na.strings=c("#"),
-                       as.is = TRUE,
-                       fileEncoding="latin1",header=T) #Loading data
+dfProfiles  <-read_xls(datafile, sheet_profiles)#, 
+#                       na.strings=c("#"),
+#                       as.is = TRUE,
+#                       fileEncoding="latin1",header=T) #Loading data
 
 ##Load benthic fluxes and create dataframe
-dfFluxes    <- read.xls(datafile, sheet_fluxes, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+dfFluxes    <- read_xls(datafile, sheet_fluxes)#, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 ##Load station information and create dataframe
-dfStations  <- read.xls(datafile, sheet_stations, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+dfStations  <- read_xls(datafile, sheet_stations)#, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 ##Load variable information and create dataframe
-dfVariables <- read.xls(datafile, sheet_variables, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+dfVariables <- read_xls(datafile, sheet_variables)#, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 ## Load O2 microprofiles and create dataframe
-dfO2micro   <- read.xls(datafile, sheet_O2micro, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
+dfO2micro   <- read_xls(datafile, sheet_O2micro)#, na.strings=c("#"),as.is = TRUE,fileEncoding="latin1")
 
 #########################################
 # Completing the profiles dataframe
+dfProfiles <- dfProfiles[,!apply(is.na(dfProfiles),2,all)]
 
 ## Adding MidDepth
 dfProfiles  <- cbind(dfProfiles,MidDepth=(dfProfiles$LowerDepth+dfProfiles$UpperDepth)/2)
@@ -81,24 +82,26 @@ dfProfiles              <- subset(dfProfiles,!grepl("_ERR",variable))
 
 # The following might probably be better coded with a "plyr" approach
 for (VAR in unique(dfProfiles$variable)){
-  if(VAR %in% dfProfiles_err$variable ) { # If a column VAR_ERR is present in the .xls file, then it is used for the error.
+  print(VAR)
+  if(VAR %in% unique(dfProfiles_err$variable)) { # If a column VAR_ERR is present in the .xls file, then it is used for the error.
     dfProfiles[ which(dfProfiles$variable==VAR) , "err"]  <- dfProfiles_err[ which(dfProfiles_err$variable==VAR) , "value"]
   } else {
     # Else, we look for a corresponding relative error in the "Variables" sheet 
     if(VAR %in% dfVariables$Variable ){
+      print(VAR)
       dfProfiles[ which(dfProfiles$variable==VAR), "err"] <- 
-        dfProfiles[ which(dfProfiles$variable==VAR), "value"] * dfVariables[which(dfVariables$Variable==VAR),"RelativeError"]
+        dfProfiles[ which(dfProfiles$variable==VAR), "value"] * dfVariables[[which(dfVariables$Variable==VAR),"RelativeError"]]
      
-      dfProfiles[ which( dfProfiles$variable==VAR  &
-                           dfProfiles$err < dfVariables[which(dfVariables$Variable==VAR),"MinError"] ),
-                  "err"] <- dfVariables[which(dfVariables$Variable==VAR),"MinError"]
+      dfProfiles[ which(dfProfiles$variable==VAR  &
+                           dfProfiles$err < dfVariables[[which(dfVariables$Variable==VAR),"MinError"]] ),
+                  "err"] <- dfVariables[[which(dfVariables$Variable==VAR),"MinError"]]
     } else {
       # If no relative error is given in the .xls file we assume 30% error
       dfProfiles[ which(dfProfiles$variable==VAR), "err"] <-dfProfiles[ which(dfProfiles$variable==VAR), "value"]*0.3
       
       dfProfiles[ which( dfProfiles$variable==VAR  &
-                           dfProfiles$err < dfVariables[which(dfVariables$Variable==VAR),"MinError"] ),
-                  "err"] <- dfVariables[which(dfVariables$Variable==VAR),"MinError"]
+                           dfProfiles$err < dfVariables[[which(dfVariables$Variable==VAR),"MinError"]] ),
+                  "err"] <- dfVariables[[which(dfVariables$Variable==VAR),"MinError"]]
     }    
   } 
 }

@@ -17,23 +17,25 @@
 ################
 
 
-OCALL <- function (p) {
-  parpert              <- parSta
+OCALL23 <- function (mycase,p) {
+  caseloc              <- mycase
+  parpert              <- mycase$defpars
   parpert[c(names(p))] <- as.numeric(p)
   
   ## Update of global variables
-  DbGrid          <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
+  caseloc$DbGrid       <- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
                                          y.0 = parpert["biot"], y.inf = 0, x.att = 1, 
-                                         grid = Grid)
+                                         grid = mycase$grid)
   
-  AlphIrrGrid     <<- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
+  caseloc$AlphIrrGrid  <- setup.prop.1D(func = exp.profile, x.0 = parpert["mixL"],
                                         y.0 = parpert["AlphIrr"], y.inf = 0, x.att = 1, 
-                                        grid = Grid)
+                                        grid = mycase$grid)
   
-  IrrEnhGrid      <<- setup.prop.1D(func = exp.profile  , x.0 = parpert["mixL"],
+  caseloc$IrrEnhGrid  <- setup.prop.1D(func = exp.profile  , x.0 = parpert["mixL"],
                                         y.0 = parpert["IrrEnh"], y.inf = 1, x.att = 1, 
-                                        grid = Grid)
+                                        grid = mycase$grid)
   
+  Grid <- mycase$grid
   Flux            <- parpert["MeanFlux"]
   
   initpar <- c(
